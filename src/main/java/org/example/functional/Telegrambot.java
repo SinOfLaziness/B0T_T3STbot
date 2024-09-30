@@ -33,38 +33,39 @@ public class Telegrambot extends TelegramLongPollingBot {
             String sourceText = update.getMessage().getText();
 
             switch (sourceText) {
-                case "/start": {
-                    try {
-                        this.execute(sendStartCommandAnswer(chatID, update.getMessage().getChat().getFirstName()));
-                    } catch (TelegramApiException e) {
-                        throw new RuntimeException(e);
-                    }
+                case "/start":
+                    sendStartCommandAnswer(chatID, update.getMessage().getChat().getFirstName());
                     break;
-                }
+                case "/help":
+                    sendHelpMessage(chatID);
+                    break;
                 default:
-                    try {
-                        this.execute(sendIfUnknownCommand(chatID));
-                    } catch (TelegramApiException e) {
-                        throw new RuntimeException(e);
-                    }
+                    sendIfUnknownCommand(chatID);
             }
         }
     }
 
-    private SendMessage sendStartCommandAnswer(long chatID, String name) {
+    private void sendStartCommandAnswer(long chatID, String name) {
         String answerToSend = "Приветствую тебя, дорогой " + name + ". Чем я могу тебе помочь?";
-        return sendMessage(chatID, answerToSend);
+        sendMessage(chatID, answerToSend);
     }
 
-    private SendMessage sendIfUnknownCommand(long chatID) {
+    private void sendIfUnknownCommand(long chatID) {
         String answerToSend = "Извини, такую команду я не знаю. Напиши /help, чтобы увидеть полный список команд";
-        return sendMessage(chatID, answerToSend);
+        sendMessage(chatID, answerToSend);
     }
-
-    private SendMessage sendMessage(long chatID, String answerToSend) {
+    private void sendHelpMessage(long chatID) {
+        String answerToSend =  "Функционал бота \n\n/start - начинает работу с ботом \n/help - выводит список доступных команд";
+        sendMessage(chatID, answerToSend);
+    }
+    private void sendMessage(long chatID, String answerToSend) {
         SendMessage newMessage = new SendMessage();
         newMessage.setChatId(String.valueOf(chatID));
         newMessage.setText(answerToSend);
-        return newMessage;
+        try {
+            this.execute(newMessage);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
