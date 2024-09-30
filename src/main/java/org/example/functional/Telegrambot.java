@@ -1,29 +1,25 @@
 package org.example.functional;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-@Component
+
 public class Telegrambot extends TelegramLongPollingBot {
 
-    @Value("${bot.name}")
-    private String botName;
-
-    @Value("${bot.token}")
-    private String botToken;
+    private final String botName=System.getenv("botname");
+    private final String botToken=System.getenv("bottoken");
 
     @Override
     public String getBotUsername() {
-        return "B0T_T3STbot";
+        return botName;
     }
 
     @Override
     public String getBotToken() {
-        return "7359784003:AAEpEvYzu9c2ipB7u7SQJVcmcIAKWxESED";
+        return botToken;
     }
 
     @Override
@@ -46,7 +42,7 @@ public class Telegrambot extends TelegramLongPollingBot {
     }
 
     private void sendStartCommandAnswer(long chatID, String name) {
-        String answerToSend = "Приветствую тебя, дорогой " + name + ". Чем я могу тебе помочь?";
+        String answerToSend = "Приветствую тебя, " + name + ". Чем я могу тебе помочь?";
         sendMessage(chatID, answerToSend);
     }
 
