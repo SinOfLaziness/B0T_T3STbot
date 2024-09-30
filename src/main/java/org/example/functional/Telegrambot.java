@@ -1,40 +1,59 @@
 package org.example.functional;
 
-import org.example.config.BotConfig;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
 
 @Component
 public class Telegrambot extends TelegramLongPollingBot {
 
-    private final BotConfig config;
+    @Value("${bot.name}")
+    private String botName;
 
-    @Autowired
-    public Telegrambot(BotConfig config) {
-        this.config = config;
-    }
+    @Value("${bot.token}")
+    private String botToken;
 
-    @Override
     public String getBotUsername() {
-        return config.getBotName();
+        return botName;
     }
 
-    @Override
     public String getBotToken() {
-        return config.getBotToken();
+        return botToken;
     }
 
     @Override
     public void onUpdateReceived(Update update) {
         if(update.hasMessage() && update.getMessage().hasText()) {
-            String chatID = update.getMessage().getChatId().toString();
+            long chatID = update.getMessage().getChatId();
             String sourceText = update.getMessage().getText();
 
-
+            switch (sourceText){
+                case "/start": {
+                    sendStartCommandAnswer(chatID, update.getMessage().getChat().getFirstName());
+                    break;
+                }
+                default:
+                    sendIfUnknownCommand(chatID);
+            }
+            System.out.println("Hello");
         }
     }
+
+    private void sendStartCommandAnswer(long chatID, String name){
+        String answerToSend = "Приветствую тебя, дорогой" + name + ". Чем я могу тебе помочь?";
+        sendMessage(chatID, answerToSend);
+    }
+    private void sendIfUnknownCommand(long chatID) {
+        String answerToSend = "Извини, такую команду я не знаю. Напиши /help, чтобы увидеть полный список команд";
+        sendMessage(chatID, answerToSend);
+    }
+    private void sendMessage (long chatID, String answerToSend){
+        SendMessage newMessage = new SendMessage();
+        newMessage.setChatId(String.valueOf(chatID));
+        newMessage.setText(answerToSend);
+    }
+
 }

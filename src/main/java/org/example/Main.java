@@ -14,7 +14,6 @@ public class Main {
     public static void main(String[] args) throws TelegramApiException {
         ApplicationContext context = SpringApplication.run(Main.class, args);
         Telegrambot telegrambot = context.getBean(Telegrambot.class);
-
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
         telegramBotsApi.registerBot(telegrambot);
     }

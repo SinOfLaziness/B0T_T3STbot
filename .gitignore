@@ -37,4 +37,4 @@ build/
 ### Mac OS ###
 .DS_Store
 
-.scratch.properties
+!**/src/main/resources/application.properties
