@@ -1,6 +1,6 @@
-package org.example;
+package org.example.database;
 
-public class Configs
+public class  Configs
 {
     protected String dbHost = "localhost";
     protected String dbPort = "3306";
