@@ -5,6 +5,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.example.database.DatabaseHandler;
 
 
 public class Telegrambot extends TelegramLongPollingBot {
@@ -35,6 +36,9 @@ public class Telegrambot extends TelegramLongPollingBot {
                 case "/help":
                     sendHelpMessage(chatID);
                     break;
+                case "/sign":
+                    caseSignUpUsers(chatID);
+                    break;
                 default:
                     sendIfUnknownCommand(chatID);
             }
@@ -63,5 +67,10 @@ public class Telegrambot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
         }
+    }
+    private void caseSignUpUsers(long chatID)
+    {
+        DatabaseHandler dbHandler = new DatabaseHandler();
+        dbHandler.signUpUser(String.valueOf(chatID));
     }
 }
