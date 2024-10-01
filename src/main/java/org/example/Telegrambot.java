@@ -17,7 +17,7 @@ public class Telegrambot extends TelegramLongPollingBot
     @Override
     public String getBotToken()
     {
-        return "7359784003:AAHOIEPggFESQEc-WZCOX80hOyqtx1YkVt0";
+        return "7359784003:AAEpEvYzu9c2ipB7u7SQJVcmcIAKWxESEDE";
     }
 
     @Override
@@ -26,13 +26,17 @@ public class Telegrambot extends TelegramLongPollingBot
 
         String chatId = update.getMessage().getChatId().toString();
         String text = update.getMessage().getText();
-
         String newText = new StringBuilder(text).reverse().toString();
 
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
-        sendMessage.setText(newText);
-
+        if (text.equals("/sign")) {
+            DatabaseHandler dbHandler = new DatabaseHandler();
+            dbHandler.signUpUser(chatId);
+        }
+        else {
+            sendMessage.setText(newText);
+        }
         try
         {
             this.execute(sendMessage);
