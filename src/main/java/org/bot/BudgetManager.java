@@ -1,6 +1,6 @@
-package org.example;
+package org.bot;
 
-import org.example.functional.Telegrambot;
+import org.bot.functional.Telegrambot;
 
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;

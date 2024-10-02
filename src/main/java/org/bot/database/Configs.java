@@ -1,4 +1,4 @@
-package org.example.database;
+package org.bot.database;
 
 public class  Configs
 {
