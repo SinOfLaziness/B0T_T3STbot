@@ -1,17 +1,19 @@
 package org.bot.functional;
 
-
+import org.bot.database.Const;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.bot.database.DatabaseHandler;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class Telegrambot extends TelegramLongPollingBot {
 
-    private final String botName=System.getenv("botname");
-    private final String botToken=System.getenv("bottoken");
+    private final String botName = System.getenv("botname");
+    private final String botToken = System.getenv("bottoken");
 
     @Override
     public String getBotUsername() {
@@ -45,8 +47,9 @@ public class Telegrambot extends TelegramLongPollingBot {
     }
 
     private void sendStartCommandAnswer(long chatID, String name) {
-        if(checkIfSigned(chatID))
+        if (checkIfSigned(chatID)) {
             return;
+        }
         String answerToSend = "Приветствую тебя, " + name + ". Перед началом пользования прошу тебя зарегистрироваться. Для этого напиши команду /sign";
         sendMessage(chatID, answerToSend);
     }
@@ -57,7 +60,7 @@ public class Telegrambot extends TelegramLongPollingBot {
     }
 
     private void sendHelpMessage(long chatID) {
-        String answerToSend =  "Функционал бота \n\n/start - начинает работу с ботом \n/help - выводит список доступных команд";
+        String answerToSend = "Функционал бота \n\n/start - начинает работу с ботом \n/help - выводит список доступных команд\n/sign - регистрирует пользователя";
         sendMessage(chatID, answerToSend);
     }
 
@@ -73,21 +76,33 @@ public class Telegrambot extends TelegramLongPollingBot {
     }
 
     private void caseSignUpUsers(long chatID) {
-        if(checkIfSigned(chatID))
+        if (checkIfSigned(chatID)) {
             return;
+        }
         DatabaseHandler dbHandler = new DatabaseHandler();
         dbHandler.signUpUser(String.valueOf(chatID));
         String answerToSend = "Поздравляю! Теперь, ты можешь пользоваться всеми моими полезными штуками!";
-        sendMessage(chatID,answerToSend);
+        sendMessage(chatID, answerToSend);
     }
 
-    private boolean checkIfSigned(long chatID){
-        //TODO
-        if (true) {
+    private boolean checkIfSigned(long chatID) {
+        DatabaseHandler dbHandler = new DatabaseHandler();
+        ResultSet result = dbHandler.getUser(String.valueOf(chatID));
+        int counter = 0;
+        try {
+            if (result != null) {
+                while (result.next()) {
+                    counter++;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        if (counter >= 1) {
+            System.out.println(counter);
             sendMessage(chatID, "Ты уже зарегистрирован, можешь продолжить свою работу");
             return true;
         }
         return false;
     }
-
 }
