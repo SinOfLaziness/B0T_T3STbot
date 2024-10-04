@@ -7,6 +7,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.example.database.DatabaseHandler;
 
+import java.sql.Connection;
+
 
 public class Telegrambot extends TelegramLongPollingBot {
 
@@ -55,7 +57,8 @@ public class Telegrambot extends TelegramLongPollingBot {
         sendMessage(chatID, answerToSend);
     }
     private void sendHelpMessage(long chatID) {
-        String answerToSend =  "Функционал бота \n\n/start - начинает работу с ботом \n/help - выводит список доступных команд";
+        String answerToSend =  "Функционал бота \n\n/start - начинает работу с ботом \n/help - выводит список доступных команд " +
+                "\n/sign регистрирует пользователя в базе данных";
         sendMessage(chatID, answerToSend);
     }
     private void sendMessage(long chatID, String answerToSend) {
@@ -72,5 +75,6 @@ public class Telegrambot extends TelegramLongPollingBot {
     {
         DatabaseHandler dbHandler = new DatabaseHandler();
         dbHandler.signUpUser(String.valueOf(chatID));
+        sendMessage(chatID, "пользователь успешно зарегистрирован");
     }
 }
