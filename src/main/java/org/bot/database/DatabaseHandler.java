@@ -33,8 +33,8 @@ public class DatabaseHandler extends Configs {
     public ResultSet getUser(String telegramID) {
         ResultSet resultSet = null;
         String select = "SELECT * FROM " + Const.USER_TABLE + " WHERE " + Const.USERS_ID + "=?";
-        try (Connection connection = getDbConnection();
-             PreparedStatement prSt = connection.prepareStatement(select)) {
+        try{
+            PreparedStatement prSt = getDbConnection().prepareStatement(select) ;
             prSt.setString(1, telegramID);
             resultSet = prSt.executeQuery();
         } catch (SQLException | ClassNotFoundException e) {
