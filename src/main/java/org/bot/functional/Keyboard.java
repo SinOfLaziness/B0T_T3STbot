@@ -8,28 +8,29 @@ import java.util.List;
 
 public class Keyboard {
 
-    public ReplyKeyboardMarkup generateGeneralKeyboard() {
+    private ReplyKeyboardMarkup createKeyboard(List<String> buttons) {
         ReplyKeyboardMarkup replyKeyboard = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboardRowList = new ArrayList<>();
         KeyboardRow row = new KeyboardRow();
-        row.add("Записать расходы");
-        row.add("Вывести список расходов");
+        row.addAll(buttons);
         keyboardRowList.add(row);
         replyKeyboard.setKeyboard(keyboardRowList);
         replyKeyboard.setResizeKeyboard(true);
         replyKeyboard.setOneTimeKeyboard(false);
         return replyKeyboard;
     }
+
+    public ReplyKeyboardMarkup generateGeneralKeyboard() {
+        List<String> buttons = new ArrayList<>();
+        buttons.add("Записать расходы");
+        buttons.add("Вывести список расходов");
+        return createKeyboard(buttons);
+    }
+
     public ReplyKeyboardMarkup generateStartKeyboard() {
-        ReplyKeyboardMarkup replyKeyboard = new ReplyKeyboardMarkup();
-        List<KeyboardRow> keyboardRowList = new ArrayList<>();
-        KeyboardRow row = new KeyboardRow();
-        row.add("Зарегистрироваться");
-        row.add("Список команд");
-        keyboardRowList.add(row);
-        replyKeyboard.setKeyboard(keyboardRowList);
-        replyKeyboard.setResizeKeyboard(true);
-        replyKeyboard.setOneTimeKeyboard(false);
-        return replyKeyboard;
+        List<String> buttons = new ArrayList<>();
+        buttons.add("Зарегистрироваться");
+        buttons.add("Список команд");
+        return createKeyboard(buttons);
     }
 }
