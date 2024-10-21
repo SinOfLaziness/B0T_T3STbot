@@ -30,16 +30,17 @@ public class DatabaseHandler extends Configs {
         }
     }
 
-    public ResultSet getUser(String telegramID) {
+    public ResultSet getUserCount(long chatID) {
         ResultSet resultSet = null;
-        String select = "SELECT * FROM " + Const.USER_TABLE + " WHERE " + Const.USERS_ID + "=?";
-        try{
-            PreparedStatement prSt = getDbConnection().prepareStatement(select) ;
-            prSt.setString(1, telegramID);
+        String insert = "SELECT COUNT(*) FROM " + Const.USER_TABLE + " WHERE " + Const.USERS_ID + "=?";
+        try {
+            PreparedStatement prSt = getDbConnection().prepareStatement(insert);
+            prSt.setLong(1, chatID);
             resultSet = prSt.executeQuery();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return resultSet;
     }
+
 }
