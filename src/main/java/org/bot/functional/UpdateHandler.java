@@ -84,13 +84,10 @@ public class UpdateHandler {
 
     private boolean checkIfSigned(long chatID) {
         DatabaseHandler dbHandler = new DatabaseHandler();
-        ResultSet result = dbHandler.getUser(String.valueOf(chatID));
         int counter = 0;
-        try {
-            if (result != null) {
-                while (result.next()) {
-                    counter++;
-                }
+        try (ResultSet result = dbHandler.getUserCount(chatID)) {
+            if (result.next()) {
+                counter = result.getInt(1);
             }
         } catch (SQLException e) {
             e.printStackTrace();
