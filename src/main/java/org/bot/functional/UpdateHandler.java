@@ -185,7 +185,7 @@ public class UpdateHandler {
     }
 
     private void alreadyRegistered (long chatID){
-        String answerToSend = "Ты должен зарегистрироваться, чтобы использовать эту команду";
+        String answerToSend = "Ты уже зарегистрирован, можешь продолжить свою работу";
         sendMessage(chatID, answerToSend, keyboard.generateGeneralKeyboard(), null);
     }
 
