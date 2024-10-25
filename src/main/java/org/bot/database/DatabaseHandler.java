@@ -42,5 +42,7 @@ public class DatabaseHandler extends Configs {
         }
         return resultSet;
     }
+    public void addToDatabase(long chatID, String Info , double amountValue){
 
+    }
 }

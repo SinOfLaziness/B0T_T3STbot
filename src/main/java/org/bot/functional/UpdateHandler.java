@@ -130,29 +130,42 @@ public class UpdateHandler {
     }
 
     private void pressedButtonCase(long chatID, String buttonInfo, String amount) {
-        // TO DO:
+        // Черновой вариант записи суммы в базу данных
+        double amountValue = Double.parseDouble(amount);
+        DatabaseHandler dbHandler = new DatabaseHandler();
         switch (buttonInfo) {
             case "HomeAndRenovation":
+                dbHandler.addToDatabase(chatID, "HomeAndRenovation", amountValue);
                 break;
             case "Transport":
+                dbHandler.addToDatabase(chatID, "Transport", amountValue);
                 break;
             case "Food":
+                dbHandler.addToDatabase(chatID, "Food", amountValue);
                 break;
             case "Entertainment":
+                dbHandler.addToDatabase(chatID, "Entertainment", amountValue);
                 break;
             case "Pharmacies":
+                dbHandler.addToDatabase(chatID, "Pharmacies", amountValue);
                 break;
             case "Cosmetics":
+                dbHandler.addToDatabase(chatID, "Cosmetics", amountValue);
                 break;
             case "ItemsOfClothing":
+                dbHandler.addToDatabase(chatID, "ItemsOfClothing", amountValue);
                 break;
             case "Supermarkets":
+                dbHandler.addToDatabase(chatID, "Supermarkets", amountValue);
                 break;
             case "Souvenirs":
+                dbHandler.addToDatabase(chatID, "Souvenirs", amountValue);
                 break;
             case "ElectronicsAndTechnology":
+                dbHandler.addToDatabase(chatID, "ElectronicsAndTechnology", amountValue);
                 break;
             case "Books":
+                dbHandler.addToDatabase(chatID, "Books", amountValue);
                 break;
         }
         userAmounts.remove(chatID);
