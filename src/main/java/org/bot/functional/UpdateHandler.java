@@ -105,22 +105,20 @@ public class UpdateHandler {
     }
 
     private void sendUsersExpenses(long chatID) {
-        if(checkIfSigned(chatID))
-            return;
+//        if(checkIfSigned(chatID))
+//            return;
         String answerToSend = "Функция на этапе разработки. Пока я такое не могу делать";
         sendMessage(chatID, answerToSend, keyboard.generateGeneralKeyboard(), null);
     }
 
     private void sendExpensesList(long chatID) {
-        if(checkIfSigned(chatID))
-            return;
         String answerToSend = "Какие расходы ты хочешь указать?";
         sendMessage(chatID, answerToSend, keyboard.generateGeneralKeyboard(), attachedButtons.createButtonsForExpenses());
     }
 
     private void sendStartCommandAnswer(long chatID, String name) {
-        if (checkIfSigned(chatID))
-            return;
+//        if (checkIfSigned(chatID))
+//            return;
         String answerToSend = "Приветствую тебя, " + name + ". Перед началом пользования прошу тебя зарегистрироваться. Для этого напиши команду Зарегистрироваться";
         sendMessage(chatID, answerToSend, keyboard.generateStartKeyboard(), null);
     }
@@ -157,8 +155,8 @@ public class UpdateHandler {
     }
 
     private void caseSignUpUsers(long chatID) {
-        if (checkIfSigned(chatID))
-            return;
+//        if (checkIfSigned(chatID))
+//            return;
         DatabaseHandler dbHandler = new DatabaseHandler();
         dbHandler.signUpUser(String.valueOf(chatID));
         String answerToSend = "Поздравляю! Теперь, ты можешь пользоваться всеми моими полезными штуками!";

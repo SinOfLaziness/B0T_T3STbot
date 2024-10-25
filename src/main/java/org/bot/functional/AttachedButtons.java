@@ -4,53 +4,49 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class AttachedButtons {
+    public enum Button {
+        HOME_AND_RENOVATION("Дом и ремонт", "HomeAndRenovation"),
+        TRANSPORT("Транспорт", "Transport"),
+        FOOD("Еда", "Food"),
+        ENTERTAINMENT("Развлечения", "Entertainment"),
+        PHARMACIES("Аптека", "Pharmacies"),
+        COSMETICS("Косметика", "Cosmetics"),
+        ITEMS_OF_CLOTHING("Предметы одежды", "ItemsOfClothing"),
+        SUPERMARKETS("Супермаркет", "Supermarkets"),
+        SOUVENIRS("Сувениры", "Souvenirs"),
+        ELECTRONICS_AND_TECHNOLOGY("Электроника и технологии", "ElectronicsAndTechnology"),
+        BOOKS("Книги", "Books");
 
-    private InlineKeyboardMarkup createButtons(List<String> buttons) {
+        private final String text;
+        private final String callbackData;
+
+        Button(String text, String callbackData) {
+            this.text = text;
+            this.callbackData = callbackData;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public String getCallbackData() {
+            return callbackData;
+        }
+    }
+
+    private InlineKeyboardMarkup createButtons(List<Button> buttons) {
         InlineKeyboardMarkup inlineKeyboard = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> keyboardRowList = new ArrayList<>();
         List<InlineKeyboardButton> row = new ArrayList<>();
-        for (String buttonText : buttons) {
-            InlineKeyboardButton button = new InlineKeyboardButton();
-            button.setText(buttonText);
-            switch(buttonText){
-                case "Дом и ремонт":
-                    button.setCallbackData("HomeAndRenovation");
-                    break;
-                case "Транспорт":
-                    button.setCallbackData("Transport");
-                    break;
-                case "Еда":
-                    button.setCallbackData("Food");
-                    break;
-                case "Развлечения":
-                    button.setCallbackData("Entertainment");
-                    break;
-                case "Аптека":
-                    button.setCallbackData("Pharmacies");
-                    break;
-                case "Косметика":
-                    button.setCallbackData("Cosmetics");
-                    break;
-                case "Предметы одежды":
-                    button.setCallbackData("ItemsOfClothing");
-                    break;
-                case "Супермаркет":
-                    button.setCallbackData("Supermarkets");
-                    break;
-                case "Сувениры":
-                    button.setCallbackData("Souvenirs");
-                    break;
-                case "Электроника и технологии":
-                    button.setCallbackData("ElectronicsAndTechnology");
-                    break;
-                case "Книги":
-                    button.setCallbackData("Books");
-                    break;
-            }
-            row.add(button);
+        for (Button button : buttons) {
+            InlineKeyboardButton inlineButton = new InlineKeyboardButton();
+            inlineButton.setText(button.getText());
+            inlineButton.setCallbackData(button.getCallbackData());
+            row.add(inlineButton);
             if(row.size()==2){
                 keyboardRowList.add(row);
                 row=new ArrayList<>();
@@ -64,17 +60,7 @@ public class AttachedButtons {
     }
 
     public InlineKeyboardMarkup createButtonsForExpenses(){
-        List<String> buttons = new ArrayList<>();
-        buttons.add("Дом и ремонт");
-        buttons.add("Транспорт");
-        buttons.add("Еда");
-        buttons.add("Развлечения");
-        buttons.add("Аптека");
-        buttons.add("Косметика");
-        buttons.add("Супермаркет");
-        buttons.add("Сувениры");
-        buttons.add("Электроника и технологии");
-        buttons.add("Книги");
+        List<Button> buttons = Arrays.asList(Button.values());
         return createButtons(buttons);
     }
 
