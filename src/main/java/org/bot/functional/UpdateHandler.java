@@ -17,7 +17,6 @@ public class UpdateHandler {
 
     private final Keyboard keyboard = new Keyboard();
     private final AttachedButtons attachedButtons = new AttachedButtons();
-
     private final TelegramLongPollingBot bot;
     private final Map<Long, String> userStates = new HashMap<>();
     private final Map<Long, String> userAmounts = new HashMap<>();
@@ -38,32 +37,76 @@ public class UpdateHandler {
                     return;
                 }
             }
-            switch (sourceText) {
-                case "/start":
-                    sendStartCommandAnswer(chatID, update.getMessage().getChat().getFirstName());
-                    break;
-                case "Список команд":
-                    sendHelpMessage(chatID);
-                    break;
-                case "Зарегистрироваться":
-                    caseSignUpUsers(chatID);
-                    break;
-                case "Записать расходы":
-                    sendExpensesList(chatID);
-                    break;
-                case "Вывести список расходов":
-                    sendUsersExpenses(chatID);
-                    break;
-                default:
-                    sendIfUnknownCommand(chatID);
-            }
+            handleCommand(chatID, sourceText, update);
         } else if (update.hasCallbackQuery()) {
             long chatID = update.getCallbackQuery().getMessage().getChatId();
             String buttonInfo = update.getCallbackQuery().getData();
-            sendMessage(chatID, "Впишите потраченную сумму", keyboard.generateGeneralKeyboard(), null);
-            userStates.put(chatID, "WAITING_FOR_AMOUNT");
-            userAmounts.put(chatID, buttonInfo);
+            handleCallbackQuery(chatID, buttonInfo);
         }
+    }
+
+    private void handleCommand(long chatID, String sourceText, Update update) {
+        switch (sourceText) {
+            case "/start":
+                if (!checkIfSigned(chatID)) {
+                    sendStartCommandAnswer(chatID, update.getMessage().getChat().getFirstName());
+                } else {
+                    alreadyRegistered(chatID);
+                }
+                break;
+            case "Список команд":
+                sendHelpMessage(chatID);
+                break;
+            case "Зарегистрироваться":
+                if (!checkIfSigned(chatID)) {
+                    caseSignUpUsers(chatID);
+                } else {
+                    alreadyRegistered(chatID);
+                }
+                break;
+            case "Записать расходы":
+                if (checkIfSigned(chatID)) {
+                    sendExpensesList(chatID);
+                } else {
+                    mustRegister(chatID);
+                }
+                break;
+            case "Вывести список расходов":
+                if (checkIfSigned(chatID)) {
+                    sendUsersExpenses(chatID);
+                } else {
+                    mustRegister(chatID);
+                }
+                break;
+            default:
+                sendIfUnknownCommand(chatID);
+        }
+    }
+
+    private void sendMessage(long chatID, String answerToSend, ReplyKeyboardMarkup replyKeyboard, InlineKeyboardMarkup inlineButtons) {
+        SendMessage newMessage = new SendMessage();
+        newMessage.setChatId(String.valueOf(chatID));
+        newMessage.setText(answerToSend);
+        if (replyKeyboard != null) {
+            newMessage.setReplyMarkup(replyKeyboard);
+        }
+        if (inlineButtons != null) {
+            newMessage.setReplyMarkup(inlineButtons);
+        }
+        try {
+            bot.execute(newMessage);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private void sendMessage(long chatID, String answerToSend) {
+        sendMessage(chatID, answerToSend, null, null);
+    }
+
+    private void handleCallbackQuery(long chatID, String buttonInfo) {
+        sendMessage(chatID, "Впишите потраченную сумму", keyboard.generateGeneralKeyboard(), null);
+        userStates.put(chatID, "WAITING_FOR_AMOUNT");
+        userAmounts.put(chatID, buttonInfo);
     }
 
     private void handleAmountInput(long chatID, String amount) {
@@ -73,6 +116,13 @@ public class UpdateHandler {
         String answerToSend = "Вы ввели сумму: " + amount;
         sendMessage(chatID, answerToSend, keyboard.generateGeneralKeyboard(), null);
         pressedButtonCase(chatID, buttonInfo, amount);
+    }
+
+    private void caseSignUpUsers(long chatID) {
+        DatabaseHandler dbHandler = new DatabaseHandler();
+        dbHandler.signUpUser(String.valueOf(chatID));
+        String answerToSend = "Поздравляю! Теперь, ты можешь пользоваться всеми моими полезными штуками!";
+        sendMessage(chatID, answerToSend, keyboard.generateGeneralKeyboard(), null);
     }
 
     private void pressedButtonCase(long chatID, String buttonInfo, String amount) {
@@ -105,8 +155,6 @@ public class UpdateHandler {
     }
 
     private void sendUsersExpenses(long chatID) {
-//        if(checkIfSigned(chatID))
-//            return;
         String answerToSend = "Функция на этапе разработки. Пока я такое не могу делать";
         sendMessage(chatID, answerToSend, keyboard.generateGeneralKeyboard(), null);
     }
@@ -117,8 +165,6 @@ public class UpdateHandler {
     }
 
     private void sendStartCommandAnswer(long chatID, String name) {
-//        if (checkIfSigned(chatID))
-//            return;
         String answerToSend = "Приветствую тебя, " + name + ". Перед началом пользования прошу тебя зарегистрироваться. Для этого напиши команду Зарегистрироваться";
         sendMessage(chatID, answerToSend, keyboard.generateStartKeyboard(), null);
     }
@@ -133,33 +179,13 @@ public class UpdateHandler {
         sendMessage(chatID, answerToSend, keyboard.generateStartKeyboard(), null);
     }
 
-    private void sendMessage(long chatID, String answerToSend) {
-        sendMessage(chatID, answerToSend, null, null);
+    private void mustRegister (long chatID){
+        String answerToSend = "Ты должен зарегистрироваться, чтобы использовать эту команду";
+        sendMessage(chatID, answerToSend, keyboard.generateStartKeyboard(), null);
     }
 
-    private void sendMessage(long chatID, String answerToSend, ReplyKeyboardMarkup replyKeyboard, InlineKeyboardMarkup inlineButtons) {
-        SendMessage newMessage = new SendMessage();
-        newMessage.setChatId(String.valueOf(chatID));
-        newMessage.setText(answerToSend);
-        if (replyKeyboard != null) {
-            newMessage.setReplyMarkup(replyKeyboard);
-        }
-        if (inlineButtons != null) {
-            newMessage.setReplyMarkup(inlineButtons);
-        }
-        try {
-            bot.execute(newMessage);
-        } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void caseSignUpUsers(long chatID) {
-//        if (checkIfSigned(chatID))
-//            return;
-        DatabaseHandler dbHandler = new DatabaseHandler();
-        dbHandler.signUpUser(String.valueOf(chatID));
-        String answerToSend = "Поздравляю! Теперь, ты можешь пользоваться всеми моими полезными штуками!";
+    private void alreadyRegistered (long chatID){
+        String answerToSend = "Ты должен зарегистрироваться, чтобы использовать эту команду";
         sendMessage(chatID, answerToSend, keyboard.generateGeneralKeyboard(), null);
     }
 
@@ -174,7 +200,6 @@ public class UpdateHandler {
             e.printStackTrace();
         }
         if (counter >= 1) {
-            sendMessage(chatID, "Ты уже зарегистрирован, можешь продолжить свою работу", keyboard.generateGeneralKeyboard(), null);
             return true;
         }
         return false;
