@@ -110,9 +110,13 @@ public class UpdateHandler {
     }
 
     private void handleAmountInput(long chatID, String amount) {
-        // Возможно будет переделан или удалён
         String buttonInfo = userAmounts.get(chatID);
         userAmounts.put(chatID, amount);
+        if (!amount.matches("\\d+(\\.\\d+)?")) {
+            String answerToSend = "Пожалуйста, введите числовое значение.";
+            sendMessage(chatID, answerToSend, keyboard.generateGeneralKeyboard(), null);
+            return;
+        }
         String answerToSend = "Вы ввели сумму: " + amount;
         sendMessage(chatID, answerToSend, keyboard.generateGeneralKeyboard(), null);
         pressedButtonCase(chatID, buttonInfo, amount);
@@ -190,18 +194,19 @@ public class UpdateHandler {
     }
 
     private boolean checkIfSigned(long chatID) {
-        DatabaseHandler dbHandler = new DatabaseHandler();
-        int counter = 0;
-        try (ResultSet result = dbHandler.getUserCount(chatID)) {
-            if (result.next()) {
-                counter = result.getInt(1);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        if (counter >= 1) {
-            return true;
-        }
-        return false;
+//        DatabaseHandler dbHandler = new DatabaseHandler();
+//        int counter = 0;
+//        try (ResultSet result = dbHandler.getUserCount(chatID)) {
+//            if (result.next()) {
+//                counter = result.getInt(1);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        if (counter >= 1) {
+//            return true;
+//        }
+//        return false;
+        return true;
     }
 }
