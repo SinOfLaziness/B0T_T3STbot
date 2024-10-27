@@ -1,5 +1,6 @@
 package org.bot.functional;
 
+import org.bot.database.ConstantDB;
 import org.bot.database.DatabaseHandler;
 import org.bot.msg.Constants;
 import org.bot.msg.Message;
@@ -107,38 +108,38 @@ public class UpdateHandler {
         double amountValue = Double.parseDouble(amount);
         DatabaseHandler dbHandler = new DatabaseHandler();
         switch (buttonInfo) {
-            case "HomeAndRenovation":
-                dbHandler.addToDatabase(chatID, "HomeAndRenovation", amountValue);
+            case ConstantDB.USERS_HOME_AND_RENOVATION:
+                dbHandler.addToDatabase(chatID, ConstantDB.USERS_HOME_AND_RENOVATION, amountValue);
                 break;
-            case "Transport":
-                dbHandler.addToDatabase(chatID, "Transport", amountValue);
+            case ConstantDB.USERS_TRANSPORT:
+                dbHandler.addToDatabase(chatID, ConstantDB.USERS_TRANSPORT, amountValue);
                 break;
-            case "Food":
-                dbHandler.addToDatabase(chatID, "Food", amountValue);
+            case ConstantDB.USERS_FOOD:
+                dbHandler.addToDatabase(chatID, ConstantDB.USERS_FOOD, amountValue);
                 break;
-            case "Entertainment":
-                dbHandler.addToDatabase(chatID, "Entertainment", amountValue);
+            case ConstantDB.USERS_ENTERTAINMENT:
+                dbHandler.addToDatabase(chatID, ConstantDB.USERS_ENTERTAINMENT, amountValue);
                 break;
-            case "Pharmacies":
-                dbHandler.addToDatabase(chatID, "Pharmacies", amountValue);
+            case ConstantDB.USERS_PHARMACIES:
+                dbHandler.addToDatabase(chatID, ConstantDB.USERS_PHARMACIES, amountValue);
                 break;
-            case "Cosmetics":
-                dbHandler.addToDatabase(chatID, "Cosmetics", amountValue);
+            case ConstantDB.USERS_COSMETICS:
+                dbHandler.addToDatabase(chatID, ConstantDB.USERS_COSMETICS, amountValue);
                 break;
-            case "ItemsOfClothing":
-                dbHandler.addToDatabase(chatID, "ItemsOfClothing", amountValue);
+            case ConstantDB.USERS_ITEMS_OF_CLOTHING:
+                dbHandler.addToDatabase(chatID, ConstantDB.USERS_ITEMS_OF_CLOTHING, amountValue);
                 break;
-            case "Supermarkets":
-                dbHandler.addToDatabase(chatID, "Supermarkets", amountValue);
+            case ConstantDB.USERS_SUPERMARKETS:
+                dbHandler.addToDatabase(chatID, ConstantDB.USERS_SUPERMARKETS, amountValue);
                 break;
-            case "Souvenirs":
-                dbHandler.addToDatabase(chatID, "Souvenirs", amountValue);
+            case ConstantDB.USERS_SOUVENIRS:
+                dbHandler.addToDatabase(chatID, ConstantDB.USERS_SOUVENIRS, amountValue);
                 break;
-            case "ElectronicsAndTechnology":
-                dbHandler.addToDatabase(chatID, "ElectronicsAndTechnology", amountValue);
+            case ConstantDB.USERS_ELECTRONICS_AND_TECHNOLOGY:
+                dbHandler.addToDatabase(chatID, ConstantDB.USERS_ELECTRONICS_AND_TECHNOLOGY, amountValue);
                 break;
-            case "Books":
-                dbHandler.addToDatabase(chatID, "Books", amountValue);
+            case ConstantDB.USERS_BOOKS:
+                dbHandler.addToDatabase(chatID, ConstantDB.USERS_BOOKS, amountValue);
                 break;
         }
         userAmounts.remove(chatID);

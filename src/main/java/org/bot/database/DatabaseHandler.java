@@ -16,7 +16,7 @@ public class DatabaseHandler extends Configs {
     }
 
     public void signUpUser(String telegramID) {
-        String insert = "INSERT INTO " + Const.USER_TABLE + "(" + Const.USERS_ID + ")" + " VALUES(?)";
+        String insert = "INSERT INTO " + ConstantDB.USER_TABLE + "(" + ConstantDB.USERS_ID + ")" + " VALUES(?)";
         try (Connection connection = getDbConnection();
              PreparedStatement prSt = connection.prepareStatement(insert)) {
             prSt.setString(1, telegramID);
@@ -28,7 +28,7 @@ public class DatabaseHandler extends Configs {
 
     public ResultSet getUserCount(long chatID) {
         ResultSet resultSet = null;
-        String insert = "SELECT COUNT(*) FROM " + Const.USER_TABLE + " WHERE " + Const.USERS_ID + "=?";
+        String insert = "SELECT COUNT(*) FROM " + ConstantDB.USER_TABLE + " WHERE " + ConstantDB.USERS_ID + "=?";
         try {
             PreparedStatement prSt = getDbConnection().prepareStatement(insert);
             prSt.setLong(1, chatID);

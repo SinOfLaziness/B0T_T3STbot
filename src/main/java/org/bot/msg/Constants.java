@@ -4,8 +4,8 @@ import org.bot.functional.AttachedButtons;
 import org.bot.functional.Keyboard;
 
 public class Constants {
-    private static final Keyboard keyboard = new Keyboard();
-    private static final AttachedButtons attachedButtons = new AttachedButtons();
+    private final static Keyboard keyboard = new Keyboard();
+    private final static AttachedButtons attachedButtons = new AttachedButtons();
     public final static Message EXP_SUM = new Message("Впишите потраченную сумму");
     public final static Message INVALID_SUM = new Message("Пожалуйста, введите числовое значение");
     public final static Message NOT_IMPLEMENTED = new Message("Функция на этапе разработки. Пока я такое не могу делать");
