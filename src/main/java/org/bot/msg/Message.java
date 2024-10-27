@@ -4,7 +4,6 @@ import org.bot.functional.Keyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 
-
 public record Message (String answerToSend, ReplyKeyboardMarkup replyKeyboard, InlineKeyboardMarkup inlineButtons) {
     public Message(String answerToSend){
         this(answerToSend, new Keyboard().generateGeneralKeyboard(),null);

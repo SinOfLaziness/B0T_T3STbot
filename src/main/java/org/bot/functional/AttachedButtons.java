@@ -47,19 +47,19 @@ public class AttachedButtons {
             inlineButton.setText(button.getText());
             inlineButton.setCallbackData(button.getCallbackData());
             row.add(inlineButton);
-            if(row.size()==2){
+            if (row.size() == 2) {
                 keyboardRowList.add(row);
-                row=new ArrayList<>();
+                row = new ArrayList<>();
             }
         }
-        if (!row.isEmpty()){
+        if (!row.isEmpty()) {
             keyboardRowList.add(row);
         }
         inlineKeyboard.setKeyboard(keyboardRowList);
         return inlineKeyboard;
     }
 
-    public InlineKeyboardMarkup createButtonsForExpenses(){
+    public InlineKeyboardMarkup createButtonsForExpenses() {
         List<Button> buttons = Arrays.asList(Button.values());
         return createButtons(buttons);
     }

@@ -42,7 +42,7 @@ public class UpdateHandler {
 
     private void handleCommand(long chatID, String sourceText, Update update) {
         switch (sourceText) {
-            case "/start":
+            case Constants.START:
                 if (!checkIfSigned(chatID)) {
                     String name = Constants.START_TEXT_TEMPL.formatted(update.getMessage().getChat().getFirstName());
                     messageSender.send(chatID,new Message(name));
@@ -50,24 +50,24 @@ public class UpdateHandler {
                     messageSender.send(chatID,Constants.ALR_REG);
                 }
                 break;
-            case "Список команд":
+            case Constants.COM_LIST:
                 messageSender.send(chatID,Constants.HELP_COM);
                 break;
-            case "Зарегистрироваться":
+            case Constants.REGISTRATION:
                 if (!checkIfSigned(chatID)) {
                     caseSignUpUsers(chatID);
                 } else {
                     messageSender.send(chatID,Constants.ALR_REG);
                 }
                 break;
-            case "Записать расходы":
+            case Constants.SET_EXP:
                 if (checkIfSigned(chatID)) {
                     messageSender.send(chatID, Constants.EXP_LIST);
                 } else {
                     messageSender.send(chatID, Constants.ASK_FOR_REG);
                 }
                 break;
-            case "Вывести список расходов":
+            case Constants.SEND_EXP:
                 if (checkIfSigned(chatID)) {
                     messageSender.send(chatID,Constants.NOT_IMPLEMENTED);
                 } else {
