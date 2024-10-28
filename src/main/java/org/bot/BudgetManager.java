@@ -1,7 +1,6 @@
 package org.bot;
 
-import org.bot.functional.Telegrambot;
-
+import org.bot.functional.TelegramBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
@@ -9,6 +8,6 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 public class BudgetManager {
     public static void main(String[] args) throws TelegramApiException {
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-        telegramBotsApi.registerBot(new Telegrambot());
+        telegramBotsApi.registerBot(new TelegramBot());
     }
 }

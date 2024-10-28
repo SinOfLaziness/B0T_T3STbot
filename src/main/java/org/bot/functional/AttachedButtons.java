@@ -1,80 +1,67 @@
 package org.bot.functional;
 
+import org.bot.database.ConstantDB;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class AttachedButtons {
+    public enum Button {
+        HOME_AND_RENOVATION(ConstantDB.HOME_AND_RENOVATION, ConstantDB.USERS_HOME_AND_RENOVATION),
+        TRANSPORT(ConstantDB.TRANSPORT, ConstantDB.USERS_TRANSPORT),
+        FOOD(ConstantDB.FOOD, ConstantDB.USERS_FOOD),
+        ENTERTAINMENT(ConstantDB.ENTERTAINMENT, ConstantDB.USERS_ENTERTAINMENT),
+        PHARMACIES(ConstantDB.PHARMACIES, ConstantDB.USERS_PHARMACIES),
+        COSMETICS(ConstantDB.COSMETICS, ConstantDB.USERS_COSMETICS),
+        ITEMS_OF_CLOTHING(ConstantDB.ITEMS_OF_CLOTHING, ConstantDB.USERS_ITEMS_OF_CLOTHING),
+        SUPERMARKETS(ConstantDB.SUPERMARKETS, ConstantDB.USERS_SUPERMARKETS),
+        SOUVENIRS(ConstantDB.SOUVENIRS, ConstantDB.USERS_SOUVENIRS),
+        ELECTRONICS_AND_TECHNOLOGY(ConstantDB.ELECTRONICS_AND_TECHNOLOGY, ConstantDB.USERS_ELECTRONICS_AND_TECHNOLOGY),
+        BOOKS(ConstantDB.BOOKS, ConstantDB.USERS_BOOKS);
 
-    private InlineKeyboardMarkup createButtons(List<String> buttons) {
+        private final String text;
+        private final String callbackData;
+
+        Button(String text, String callbackData) {
+            this.text = text;
+            this.callbackData = callbackData;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public String getCallbackData() {
+            return callbackData;
+        }
+    }
+
+    private InlineKeyboardMarkup createButtons(List<Button> buttons) {
         InlineKeyboardMarkup inlineKeyboard = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> keyboardRowList = new ArrayList<>();
         List<InlineKeyboardButton> row = new ArrayList<>();
-        for (String buttonText : buttons) {
-            InlineKeyboardButton button = new InlineKeyboardButton();
-            button.setText(buttonText);
-            switch(buttonText){
-                case "Дом и ремонт":
-                    button.setCallbackData("HomeAndRenovation");
-                    break;
-                case "Транспорт":
-                    button.setCallbackData("Transport");
-                    break;
-                case "Еда":
-                    button.setCallbackData("Food");
-                    break;
-                case "Развлечения":
-                    button.setCallbackData("Entertainment");
-                    break;
-                case "Аптека":
-                    button.setCallbackData("Pharmacies");
-                    break;
-                case "Косметика":
-                    button.setCallbackData("Cosmetics");
-                    break;
-                case "Предметы одежды":
-                    button.setCallbackData("ItemsOfClothing");
-                    break;
-                case "Супермаркет":
-                    button.setCallbackData("Supermarkets");
-                    break;
-                case "Сувениры":
-                    button.setCallbackData("Souvenirs");
-                    break;
-                case "Электроника и технологии":
-                    button.setCallbackData("ElectronicsAndTechnology");
-                    break;
-                case "Книги":
-                    button.setCallbackData("Books");
-                    break;
-            }
-            row.add(button);
-            if(row.size()==2){
+        for (Button button : buttons) {
+            InlineKeyboardButton inlineButton = new InlineKeyboardButton();
+            inlineButton.setText(button.getText());
+            inlineButton.setCallbackData(button.getCallbackData());
+            row.add(inlineButton);
+            if (row.size() == 2) {
                 keyboardRowList.add(row);
-                row=new ArrayList<>();
+                row = new ArrayList<>();
             }
         }
-        if (!row.isEmpty()){
+        if (!row.isEmpty()) {
             keyboardRowList.add(row);
         }
         inlineKeyboard.setKeyboard(keyboardRowList);
         return inlineKeyboard;
     }
 
-    public InlineKeyboardMarkup createButtonsForExpenses(){
-        List<String> buttons = new ArrayList<>();
-        buttons.add("Дом и ремонт");
-        buttons.add("Транспорт");
-        buttons.add("Еда");
-        buttons.add("Развлечения");
-        buttons.add("Аптека");
-        buttons.add("Косметика");
-        buttons.add("Супермаркет");
-        buttons.add("Сувениры");
-        buttons.add("Электроника и технологии");
-        buttons.add("Книги");
+    public InlineKeyboardMarkup createButtonsForExpenses() {
+        List<Button> buttons = Arrays.asList(Button.values());
         return createButtons(buttons);
     }
 

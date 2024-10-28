@@ -1,5 +1,6 @@
 package org.bot.functional;
 
+import org.bot.msg.Constants;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
@@ -22,15 +23,15 @@ public class Keyboard {
 
     public ReplyKeyboardMarkup generateGeneralKeyboard() {
         List<String> buttons = new ArrayList<>();
-        buttons.add("Записать расходы");
-        buttons.add("Вывести список расходов");
+        buttons.add(Constants.SET_EXP);
+        buttons.add(Constants.SEND_EXP);
         return createKeyboard(buttons);
     }
 
     public ReplyKeyboardMarkup generateStartKeyboard() {
         List<String> buttons = new ArrayList<>();
-        buttons.add("Зарегистрироваться");
-        buttons.add("Список команд");
+        buttons.add(Constants.REGISTRATION);
+        buttons.add(Constants.COM_LIST);
         return createKeyboard(buttons);
     }
 }
