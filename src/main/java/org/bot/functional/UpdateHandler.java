@@ -93,6 +93,10 @@ public class UpdateHandler {
             messageSender.send(chatID, Constants.INVALID_SUM);
             return;
         }
+        if (Double.parseDouble(amount)<0.0){
+            messageSender.send(chatID,Constants.NEG_NUM);
+            return;
+        }
         messageSender.send(chatID, new Message("Вы ввели сумму: " + amount));
         pressedButtonCase(chatID, buttonInfo, amount);
     }
