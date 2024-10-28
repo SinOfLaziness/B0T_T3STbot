@@ -14,7 +14,7 @@ import java.util.Map;
 public class UpdateHandler {
 
     private final Map<Long, String> userStates = new HashMap<>();
-    private final Map<Long, String> userAmounts = new HashMap<>();
+    private final Map<Long, String> buttonInfoState = new HashMap<>();
     private final MessageSender messageSender;
 
     public UpdateHandler(TelegramLongPollingBot bot) {
@@ -83,18 +83,19 @@ public class UpdateHandler {
     private void handleCallbackQuery(long chatID, String buttonInfo) {
         messageSender.send(chatID, Constants.EXP_SUM);
         userStates.put(chatID, "WAITING_FOR_AMOUNT");
-        userAmounts.put(chatID, buttonInfo);
+        buttonInfoState.put(chatID, buttonInfo);
     }
 
     private void handleAmountInput(long chatID, String amount) {
-        String buttonInfo = userAmounts.get(chatID);
-        userAmounts.put(chatID, amount);
         if (!amount.matches("\\d+(\\.\\d+)?")) {
             messageSender.send(chatID, Constants.INVALID_SUM);
+            buttonInfoState.remove(chatID);
             return;
         }
+        String buttonInfo = buttonInfoState.get(chatID);
         messageSender.send(chatID, new Message("Вы ввели сумму: " + amount));
         pressedButtonCase(chatID, buttonInfo, amount);
+        buttonInfoState.remove(chatID);
     }
 
     private void caseSignUpUsers(long chatID) {
@@ -142,7 +143,6 @@ public class UpdateHandler {
                 dbHandler.addToDatabase(chatID, ConstantDB.USERS_BOOKS, amountValue);
                 break;
         }
-        userAmounts.remove(chatID);
     }
 
     private boolean checkIfSigned(long chatID) {
