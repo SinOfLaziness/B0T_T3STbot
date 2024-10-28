@@ -26,4 +26,5 @@ public class Constants {
     public final static String COM_LIST = "Список команд";
     public final static String SET_EXP = "Записать расходы";
     public final static String SEND_EXP = "Вывести список расходов";
+    public final static String WAIT_AMOUNT = "WAITING_FOR_AMOUNT";
 }
