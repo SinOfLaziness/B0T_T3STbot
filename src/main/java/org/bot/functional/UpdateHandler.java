@@ -8,6 +8,8 @@ import org.bot.msg.MessageSender;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,6 +45,24 @@ public class UpdateHandler {
 
     private void handleCommand(long chatID, String sourceText, Update update) {
         switch (sourceText) {
+            case "/str":
+                String cond = "";
+                try {
+                    cond = getStringField(chatID, ConstantDB.USERS_CONDITION);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                messageSender.send(chatID, new Message(cond));
+                break;
+            case "/float":
+                String value = "";
+                try {
+                    value = String.valueOf(getFloatField(chatID, ConstantDB.USERS_HOME_AND_RENOVATION));
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                messageSender.send(chatID, new Message(value));
+                break;
             case Constants.START:
                 if (!checkIfSigned(chatID)) {
                     String name = Constants.START_TEXT_TEMPL.formatted(update.getMessage().getChat().getFirstName());
@@ -143,6 +163,34 @@ public class UpdateHandler {
                 break;
         }
         userAmounts.remove(chatID);
+    }
+
+    private Float getFloatField(long chatID, String field) throws SQLException {
+        DatabaseHandler dbHandler = new DatabaseHandler();
+        ResultSet result = dbHandler.getField(chatID, field);
+        float value = -1;
+        try {
+            result.next();
+            value = result.getFloat(2);
+            System.out.println(value);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return value;
+    }
+
+    private String getStringField(long chatID, String field) throws SQLException {
+        DatabaseHandler dbHandler = new DatabaseHandler();
+        ResultSet result = dbHandler.getField(chatID, field);
+        String value = "empty";
+        try {
+            result.next();
+            value = result.getNString(2);
+            System.out.println(value);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return value;
     }
 
     private boolean checkIfSigned(long chatID) {
