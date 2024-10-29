@@ -3,6 +3,8 @@ package org.bot.functional;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.sql.SQLException;
+
 public class TelegramBot extends TelegramLongPollingBot {
 
     private final String botName = System.getenv("botname");
@@ -25,6 +27,10 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        updateHandler.handleUpdate(update);
+        try {
+            updateHandler.handleUpdate(update);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

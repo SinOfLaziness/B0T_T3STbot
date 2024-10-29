@@ -1,6 +1,5 @@
 package org.bot.functional;
 
-import org.bot.database.ConstantDB;
 import org.bot.database.DatabaseHandler;
 import org.bot.msg.Constants;
 import org.bot.msg.Message;
@@ -8,7 +7,6 @@ import org.bot.msg.MessageSender;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,22 +14,22 @@ import java.util.Map;
 public class UpdateHandler {
 
     private final Map<Long, String> userStates = new HashMap<>();
-    private final Map<Long, String> userAmounts = new HashMap<>();
+    private final Map<Long, String> buttonInfoState = new HashMap<>();
     private final MessageSender messageSender;
+    private final DatabaseHandler dbHandler;
 
     public UpdateHandler(TelegramLongPollingBot bot) {
         messageSender = new MessageSender(bot);
+        dbHandler = new DatabaseHandler();
     }
 
-    public void handleUpdate(Update update) {
+    public void handleUpdate(Update update) throws SQLException {
         if (update.hasMessage() && update.getMessage().hasText()) {
             long chatID = update.getMessage().getChatId();
             String sourceText = update.getMessage().getText();
             if (userStates.containsKey(chatID)) {
-                String state = userStates.get(chatID);
-                if (state.equals("WAITING_FOR_AMOUNT")) {
+                if (userStates.get(chatID).equals(Constants.WAIT_AMOUNT)) {
                     handleAmountInput(chatID, sourceText);
-                    userStates.remove(chatID);
                     return;
                 }
             }
@@ -43,28 +41,10 @@ public class UpdateHandler {
         }
     }
 
-    private void handleCommand(long chatID, String sourceText, Update update) {
+    private void handleCommand(long chatID, String sourceText, Update update) throws SQLException {
         switch (sourceText) {
-            case "/str":
-                String cond = "";
-                try {
-                    cond = getStringField(chatID, ConstantDB.USERS_CONDITION);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-                messageSender.send(chatID, new Message(cond));
-                break;
-            case "/float":
-                String value = "";
-                try {
-                    value = String.valueOf(getFloatField(chatID, ConstantDB.USERS_HOME_AND_RENOVATION));
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-                messageSender.send(chatID, new Message(value));
-                break;
             case Constants.START:
-                if (!checkIfSigned(chatID)) {
+                if (!dbHandler.checkIfSigned(chatID)) {
                     String name = Constants.START_TEXT_TEMPL.formatted(update.getMessage().getChat().getFirstName());
                     messageSender.send(chatID,new Message(name));
                 } else {
@@ -75,21 +55,21 @@ public class UpdateHandler {
                 messageSender.send(chatID,Constants.HELP_COM);
                 break;
             case Constants.REGISTRATION:
-                if (!checkIfSigned(chatID)) {
+                if (!dbHandler.checkIfSigned(chatID)) {
                     caseSignUpUsers(chatID);
                 } else {
                     messageSender.send(chatID,Constants.ALR_REG);
                 }
                 break;
             case Constants.SET_EXP:
-                if (checkIfSigned(chatID)) {
+                if (dbHandler.checkIfSigned(chatID)) {
                     messageSender.send(chatID, Constants.EXP_LIST);
                 } else {
                     messageSender.send(chatID, Constants.ASK_FOR_REG);
                 }
                 break;
             case Constants.SEND_EXP:
-                if (checkIfSigned(chatID)) {
+                if (dbHandler.checkIfSigned(chatID)) {
                     messageSender.send(chatID,Constants.NOT_IMPLEMENTED);
                 } else {
                     messageSender.send(chatID, Constants.ASK_FOR_REG);
@@ -102,14 +82,15 @@ public class UpdateHandler {
 
     private void handleCallbackQuery(long chatID, String buttonInfo) {
         messageSender.send(chatID, Constants.EXP_SUM);
-        userStates.put(chatID, "WAITING_FOR_AMOUNT");
-        userAmounts.put(chatID, buttonInfo);
+        userStates.put(chatID, Constants.WAIT_AMOUNT);
+        buttonInfoState.put(chatID, buttonInfo);
     }
 
     private void handleAmountInput(long chatID, String amount) {
-        String buttonInfo = userAmounts.get(chatID);
-        userAmounts.put(chatID, amount);
-        if (!amount.matches("\\d+(\\.\\d+)?")) {
+        String buttonInfo = buttonInfoState.get(chatID);
+        userStates.remove(chatID);
+        buttonInfoState.remove(chatID);
+        if (!amount.matches("\\d+(\\.\\d+)?") | amount.equals("0")) {
             messageSender.send(chatID, Constants.INVALID_SUM);
             return;
         }
@@ -118,7 +99,6 @@ public class UpdateHandler {
     }
 
     private void caseSignUpUsers(long chatID) {
-        DatabaseHandler dbHandler = new DatabaseHandler();
         dbHandler.signUpUser(String.valueOf(chatID));
         messageSender.send(chatID, Constants.NOW_REG);
     }
@@ -126,87 +106,6 @@ public class UpdateHandler {
     private void pressedButtonCase(long chatID, String buttonInfo, String amount) {
         // Черновой вариант записи суммы в базу данных
         double amountValue = Double.parseDouble(amount);
-        DatabaseHandler dbHandler = new DatabaseHandler();
-        switch (buttonInfo) {
-            case ConstantDB.USERS_HOME_AND_RENOVATION:
-                dbHandler.addToDatabase(chatID, ConstantDB.USERS_HOME_AND_RENOVATION, amountValue);
-                break;
-            case ConstantDB.USERS_TRANSPORT:
-                dbHandler.addToDatabase(chatID, ConstantDB.USERS_TRANSPORT, amountValue);
-                break;
-            case ConstantDB.USERS_FOOD:
-                dbHandler.addToDatabase(chatID, ConstantDB.USERS_FOOD, amountValue);
-                break;
-            case ConstantDB.USERS_ENTERTAINMENT:
-                dbHandler.addToDatabase(chatID, ConstantDB.USERS_ENTERTAINMENT, amountValue);
-                break;
-            case ConstantDB.USERS_PHARMACIES:
-                dbHandler.addToDatabase(chatID, ConstantDB.USERS_PHARMACIES, amountValue);
-                break;
-            case ConstantDB.USERS_COSMETICS:
-                dbHandler.addToDatabase(chatID, ConstantDB.USERS_COSMETICS, amountValue);
-                break;
-            case ConstantDB.USERS_ITEMS_OF_CLOTHING:
-                dbHandler.addToDatabase(chatID, ConstantDB.USERS_ITEMS_OF_CLOTHING, amountValue);
-                break;
-            case ConstantDB.USERS_SUPERMARKETS:
-                dbHandler.addToDatabase(chatID, ConstantDB.USERS_SUPERMARKETS, amountValue);
-                break;
-            case ConstantDB.USERS_SOUVENIRS:
-                dbHandler.addToDatabase(chatID, ConstantDB.USERS_SOUVENIRS, amountValue);
-                break;
-            case ConstantDB.USERS_ELECTRONICS_AND_TECHNOLOGY:
-                dbHandler.addToDatabase(chatID, ConstantDB.USERS_ELECTRONICS_AND_TECHNOLOGY, amountValue);
-                break;
-            case ConstantDB.USERS_BOOKS:
-                dbHandler.addToDatabase(chatID, ConstantDB.USERS_BOOKS, amountValue);
-                break;
-        }
-        userAmounts.remove(chatID);
-    }
-
-    private Float getFloatField(long chatID, String field) throws SQLException {
-        DatabaseHandler dbHandler = new DatabaseHandler();
-        ResultSet result = dbHandler.getField(chatID, field);
-        float value = -1;
-        try {
-            result.next();
-            value = result.getFloat(2);
-            System.out.println(value);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return value;
-    }
-
-    private String getStringField(long chatID, String field) throws SQLException {
-        DatabaseHandler dbHandler = new DatabaseHandler();
-        ResultSet result = dbHandler.getField(chatID, field);
-        String value = "empty";
-        try {
-            result.next();
-            value = result.getNString(2);
-            System.out.println(value);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return value;
-    }
-
-    private boolean checkIfSigned(long chatID) {
-//        DatabaseHandler dbHandler = new DatabaseHandler();
-//        int counter = 0;
-//        try (ResultSet result = dbHandler.getUserCount(chatID)) {
-//            if (result.next()) {
-//                counter = result.getInt(1);
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        if (counter >= 1) {
-//            return true;
-//        }
-//        return false;
-        return true;
+        dbHandler.addToDatabase(chatID,buttonInfo,amountValue);
     }
 }

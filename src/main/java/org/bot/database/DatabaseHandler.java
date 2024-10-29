@@ -5,7 +5,7 @@ import java.sql.*;
 public class DatabaseHandler extends Configs {
     Connection dbConnection;
 
-    public Connection getDbConnection() throws ClassNotFoundException, SQLException {
+    private Connection getDbConnection() throws ClassNotFoundException, SQLException {
         String connectionString = String.format("jdbc:mysql://%s:%s/%s", dbHost, dbPort, dbName);
         Class.forName("com.mysql.cj.jdbc.Driver");
 
@@ -15,7 +15,7 @@ public class DatabaseHandler extends Configs {
     }
 
     public void signUpUser(String telegramID) {
-        String insert = String.format("INSERT INTO %s(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)VALUES(?,0,0,0,0,0,0,0,0,0,0,0,none)",
+        String insert = String.format("INSERT INTO %s(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)VALUES(?,0,0,0,0,0,0,0,0,0,0,0,0)",
                 ConstantDB.USER_TABLE, ConstantDB.USERS_ID, ConstantDB.USERS_BOOKS , ConstantDB.USERS_COSMETICS , ConstantDB.USERS_FOOD ,
                 ConstantDB.USERS_ELECTRONICS_AND_TECHNOLOGY , ConstantDB.USERS_ENTERTAINMENT , ConstantDB.USERS_HOME_AND_RENOVATION ,
                 ConstantDB.USERS_ITEMS_OF_CLOTHING , ConstantDB.USERS_PHARMACIES , ConstantDB.USERS_SOUVENIRS , ConstantDB.USERS_SUPERMARKETS ,
@@ -29,7 +29,21 @@ public class DatabaseHandler extends Configs {
         }
     }
 
-    public ResultSet getUserCount(long chatID) {
+    public boolean checkIfSigned(long chatID) throws SQLException {
+        int counter = 0;
+        try (ResultSet result = getUserCount(chatID)) {
+            if (result.next()) {
+                counter = result.getInt(1);
+            }
+        }
+        return counter >= 1;
+    }
+
+    public void addToDatabase(long chatID, String Info , double amountValue) {
+        // TO DO:
+    }
+
+    private ResultSet getUserCount(long chatID) {
         ResultSet resultSet = null;
         String insert = "SELECT COUNT(*) FROM " + ConstantDB.USER_TABLE + " WHERE " + ConstantDB.USERS_ID + "=?";
         try {
@@ -42,7 +56,7 @@ public class DatabaseHandler extends Configs {
         return resultSet;
     }
 
-    public ResultSet getField(long chatID, String field) {
+    private ResultSet getField(long chatID, String field) {
         ResultSet resultSet = null;
         String insert = String.format("SELECT %s, %s FROM %s WHERE %s =?", ConstantDB.USERS_ID, field, ConstantDB.USER_TABLE, ConstantDB.USERS_ID);
         try {
@@ -55,7 +69,30 @@ public class DatabaseHandler extends Configs {
         return resultSet;
     }
 
-    public void addToDatabase(long chatID, String Info , double amountValue){
-
+    private Float getFloatField(long chatID, String field) throws SQLException {
+        ResultSet result = getField(chatID, field);
+        float value = 0.0F;
+        try {
+            if (result.next()) {
+                value = result.getFloat(2);
+            }
+        } finally {
+            result.close();
+        }
+        return value;
     }
+
+    private String getStringField(long chatID, String field) throws SQLException {
+        ResultSet result = getField(chatID, field);
+        String value = "";
+        try {
+            if (result.next()) {
+                value = result.getString(2);
+            }
+        } finally {
+            result.close();
+        }
+        return value;
+    }
+
 }
