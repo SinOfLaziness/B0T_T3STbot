@@ -11,6 +11,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bot.database.ConstantDB;
+
 public class UpdateHandler {
 
     private final Map<Long, String> userStates = new HashMap<>();
@@ -28,9 +30,40 @@ public class UpdateHandler {
             long chatID = update.getMessage().getChatId();
             String sourceText = update.getMessage().getText();
             if (userStates.containsKey(chatID)) {
-                if (userStates.get(chatID).equals(Constants.WAIT_AMOUNT)) {
-                    handleAmountInput(chatID, sourceText);
-                    return;
+                switch(userStates.get(chatID)) {
+                    case ConstantDB.USERS_HOME_AND_RENOVATION:
+                        handleAmountInput(chatID, sourceText, ConstantDB.USERS_HOME_AND_RENOVATION);
+                        return;
+                    case ConstantDB.USERS_TRANSPORT:
+                        handleAmountInput(chatID, sourceText, ConstantDB.USERS_TRANSPORT);
+                        return;
+                    case ConstantDB.USERS_FOOD:
+                        handleAmountInput(chatID, sourceText, ConstantDB.USERS_FOOD);
+                        return;
+                    case ConstantDB.USERS_ENTERTAINMENT:
+                        handleAmountInput(chatID, sourceText, ConstantDB.USERS_ENTERTAINMENT);
+                        return;
+                    case ConstantDB.USERS_PHARMACIES:
+                        handleAmountInput(chatID, sourceText, ConstantDB.USERS_PHARMACIES);
+                        return;
+                    case ConstantDB.USERS_COSMETICS:
+                        handleAmountInput(chatID, sourceText, ConstantDB.USERS_COSMETICS);
+                        return;
+                    case ConstantDB.USERS_ITEMS_OF_CLOTHING:
+                        handleAmountInput(chatID, sourceText, ConstantDB.USERS_ITEMS_OF_CLOTHING);
+                        return;
+                    case ConstantDB.USERS_SUPERMARKETS:
+                        handleAmountInput(chatID, sourceText, ConstantDB.USERS_SUPERMARKETS);
+                        return;
+                    case ConstantDB.USERS_SOUVENIRS:
+                        handleAmountInput(chatID, sourceText, ConstantDB.USERS_SOUVENIRS);
+                        return;
+                    case ConstantDB.USERS_ELECTRONICS_AND_TECHNOLOGY:
+                        handleAmountInput(chatID, sourceText, ConstantDB.USERS_ELECTRONICS_AND_TECHNOLOGY);
+                        return;
+                    case ConstantDB.USERS_BOOKS:
+                        handleAmountInput(chatID, sourceText, ConstantDB.USERS_BOOKS);
+                        return;
                 }
             }
             handleCommand(chatID, sourceText, update);
@@ -70,7 +103,8 @@ public class UpdateHandler {
                 break;
             case Constants.SEND_EXP:
                 if (dbHandler.checkIfSigned(chatID)) {
-                    messageSender.send(chatID,Constants.NOT_IMPLEMENTED);
+                    String all_amounts = dbHandler.getAllAmounts(chatID);
+                    messageSender.send(chatID, new Message(all_amounts));
                 } else {
                     messageSender.send(chatID, Constants.ASK_FOR_REG);
                 }
@@ -82,11 +116,11 @@ public class UpdateHandler {
 
     private void handleCallbackQuery(long chatID, String buttonInfo) {
         messageSender.send(chatID, Constants.EXP_SUM);
-        userStates.put(chatID, Constants.WAIT_AMOUNT);
+        userStates.put(chatID, buttonInfo);
         buttonInfoState.put(chatID, buttonInfo);
     }
 
-    private void handleAmountInput(long chatID, String amount) {
+    private void handleAmountInput(long chatID, String amount, String type_amount) throws SQLException {
         String buttonInfo = buttonInfoState.get(chatID);
         userStates.remove(chatID);
         buttonInfoState.remove(chatID);
@@ -96,6 +130,9 @@ public class UpdateHandler {
         }
         messageSender.send(chatID, new Message("Вы ввели сумму: " + amount));
         pressedButtonCase(chatID, buttonInfo, amount);
+        float amount_in_DB = dbHandler.getFloatField(chatID, type_amount);
+        amount_in_DB += Float.parseFloat(amount);
+        dbHandler.InputFloatField(chatID, type_amount, amount_in_DB);
     }
 
     private void caseSignUpUsers(long chatID) {
