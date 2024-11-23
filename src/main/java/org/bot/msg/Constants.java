@@ -7,7 +7,11 @@ public class Constants {
     private final static Keyboard keyboard = new Keyboard();
     private final static AttachedButtons attachedButtons = new AttachedButtons();
     public final static Message EXP_SUM = new Message("Впишите потраченную сумму");
-    public final static Message INVALID_SUM = new Message("Пожалуйста, введите положительное числовое  значение");
+    public final static Message INVALID_SUM = new Message("Некорректный формат ввода, проверьте:\n" +
+            "() Положительное ли число вы вводите \n" +
+            "() Учтите, что бот считает только рубли, копейки не принимаются\n" +
+            "() Соответствует ли текст формату ввода:\n" +
+            "положительная_сумма любой_текст_по_желанию");
     public final static Message NOT_IMPLEMENTED = new Message("Функция на этапе разработки. Пока я такое не могу делать");
     public final static Message EXP_LIST = new Message("Какие расходы ты хочешь указать?", attachedButtons.createButtonsForExpenses());
     public final static Message UNK_COM = new Message("Извини, такую команду я не знаю. Напиши Список команд, чтобы увидеть полный список команд", keyboard.generateStartKeyboard());
