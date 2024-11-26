@@ -20,7 +20,9 @@ public class Constants {
             
             /start - начинает работу с ботом\s
             Список команд - выводит список доступных команд
-            Зарегистрироваться - регистрирует пользователя""");
+            Зарегистрироваться - регистрирует пользователя
+            Записать расходы
+            Вывести список расходов""");
     public final static Message ASK_FOR_REG = new Message("Ты должен зарегистрироваться, чтобы использовать эту команду", keyboard.generateStartKeyboard());
     public final static Message ALR_REG = new Message("Ты уже зарегистрирован, можешь продолжить свою работу");
     public final static Message NOW_REG = new Message("Поздравляю! Теперь, ты можешь пользоваться всеми моими полезными штуками!");

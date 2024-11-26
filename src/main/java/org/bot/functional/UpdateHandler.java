@@ -10,8 +10,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
+import org.bot.database.ConstantDB;
 
 public class UpdateHandler {
 
@@ -30,8 +30,41 @@ public class UpdateHandler {
             long chatID = update.getMessage().getChatId();
             String sourceText = update.getMessage().getText();
             if (userStates.containsKey(chatID)) {
-                handleAmountInput(chatID, sourceText);
-                return;
+                switch(userStates.get(chatID)) {
+                    case ConstantDB.USERS_HOME_AND_RENOVATION:
+                        handleAmountInput(chatID, sourceText, ConstantDB.USERS_HOME_AND_RENOVATION);
+                        return;
+                    case ConstantDB.USERS_TRANSPORT:
+                        handleAmountInput(chatID, sourceText, ConstantDB.USERS_TRANSPORT);
+                        return;
+                    case ConstantDB.USERS_FOOD:
+                        handleAmountInput(chatID, sourceText, ConstantDB.USERS_FOOD);
+                        return;
+                    case ConstantDB.USERS_ENTERTAINMENT:
+                        handleAmountInput(chatID, sourceText, ConstantDB.USERS_ENTERTAINMENT);
+                        return;
+                    case ConstantDB.USERS_PHARMACIES:
+                        handleAmountInput(chatID, sourceText, ConstantDB.USERS_PHARMACIES);
+                        return;
+                    case ConstantDB.USERS_COSMETICS:
+                        handleAmountInput(chatID, sourceText, ConstantDB.USERS_COSMETICS);
+                        return;
+                    case ConstantDB.USERS_ITEMS_OF_CLOTHING:
+                        handleAmountInput(chatID, sourceText, ConstantDB.USERS_ITEMS_OF_CLOTHING);
+                        return;
+                    case ConstantDB.USERS_SUPERMARKETS:
+                        handleAmountInput(chatID, sourceText, ConstantDB.USERS_SUPERMARKETS);
+                        return;
+                    case ConstantDB.USERS_SOUVENIRS:
+                        handleAmountInput(chatID, sourceText, ConstantDB.USERS_SOUVENIRS);
+                        return;
+                    case ConstantDB.USERS_ELECTRONICS_AND_TECHNOLOGY:
+                        handleAmountInput(chatID, sourceText, ConstantDB.USERS_ELECTRONICS_AND_TECHNOLOGY);
+                        return;
+                    case ConstantDB.USERS_BOOKS:
+                        handleAmountInput(chatID, sourceText, ConstantDB.USERS_BOOKS);
+                        return;
+                }
             }
             handleCommand(chatID, sourceText, update);
         } else if (update.hasCallbackQuery()) {
@@ -42,14 +75,11 @@ public class UpdateHandler {
     }
 
     private void handleCommand(long chatID, String sourceText, Update update) throws SQLException {
-        if (userStates.containsKey(chatID) && (sourceText.matches("\\d*? .*")) || !sourceText.equals("0 .*")){
-            handleAmountInput(chatID, sourceText);
-            return;
-        }
         switch (sourceText) {
             case Constants.START:
                 if (!dbHandler.checkIfSigned(chatID)) {
-                    caseSignUpUsers(chatID);
+                    String name = Constants.START_TEXT_TEMPL.formatted(update.getMessage().getChat().getFirstName());
+                    messageSender.send(chatID,new Message(name));
                 } else {
                     messageSender.send(chatID,Constants.ALR_REG);
                 }
@@ -68,7 +98,7 @@ public class UpdateHandler {
                 if (dbHandler.checkIfSigned(chatID)) {
                     messageSender.send(chatID, Constants.EXP_LIST);
                 } else {
-                    caseSignUpUsers(chatID);
+                    messageSender.send(chatID, Constants.ASK_FOR_REG);
                 }
                 break;
             case Constants.SEND_EXP:
@@ -86,31 +116,33 @@ public class UpdateHandler {
 
     private void handleCallbackQuery(long chatID, String buttonInfo) {
         messageSender.send(chatID, Constants.EXP_SUM);
+        userStates.put(chatID, buttonInfo);
         buttonInfoState.put(chatID, buttonInfo);
     }
 
-    private void handleAmountInput(long chatID, String string_amount) throws SQLException {
+    private void handleAmountInput(long chatID, String amount, String type_amount) throws SQLException {
         String buttonInfo = buttonInfoState.get(chatID);
         userStates.remove(chatID);
         buttonInfoState.remove(chatID);
-        if (!string_amount.matches("\\d*? .*") || string_amount.equals("0 .*")) {
+        if (!amount.matches("\\d+(\\.\\d+)?") | amount.equals("0")) {
             messageSender.send(chatID, Constants.INVALID_SUM);
             return;
         }
-        Float amount = Float.parseFloat(string_amount.split(" ")[0]);
         messageSender.send(chatID, new Message("Вы ввели сумму: " + amount));
-        float amount_in_DB = dbHandler.getFloatField(chatID, buttonInfo);
-        amount_in_DB += amount;
-        dbHandler.InputFloatField(chatID, buttonInfo, amount_in_DB);
-        userStates.remove(chatID);
+        pressedButtonCase(chatID, buttonInfo, amount);
+        float amount_in_DB = dbHandler.getFloatField(chatID, type_amount);
+        amount_in_DB += Float.parseFloat(amount);
+        dbHandler.InputFloatField(chatID, type_amount, amount_in_DB);
     }
 
     private void caseSignUpUsers(long chatID) {
         dbHandler.signUpUser(String.valueOf(chatID));
-        messageSender.send(chatID, new Message("Вы успешно зарегистрированы!\n" +
-                "Теперь вам доступен функционал бота. Он может:\n" +
-                "() Записывать ваши расходы\n" +
-                "() Выводить список записанных трат"));
+        messageSender.send(chatID, Constants.NOW_REG);
     }
 
+    private void pressedButtonCase(long chatID, String buttonInfo, String amount) {
+        // Черновой вариант записи суммы в базу данных
+        double amountValue = Double.parseDouble(amount);
+        dbHandler.addToDatabase(chatID,buttonInfo,amountValue);
+    }
 }
