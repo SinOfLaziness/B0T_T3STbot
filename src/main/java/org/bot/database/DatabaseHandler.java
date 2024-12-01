@@ -1,6 +1,7 @@
 package org.bot.database;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class DatabaseHandler extends Configs {
     Connection dbConnection;
@@ -82,7 +83,7 @@ public class DatabaseHandler extends Configs {
         return value;
     }
 
-    public String getAllAmounts(long chatID) throws SQLException {
+    public ArrayList<Float> getAllAmounts(long chatID) throws SQLException {
         ResultSet resultSet = null;
         String insert = String.format("SELECT * FROM %s WHERE %s =?",
                 ConstantDB.USER_TABLE, ConstantDB.USERS_ID);
@@ -93,19 +94,12 @@ public class DatabaseHandler extends Configs {
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        String out = "Все записанные расходы: \n";
-        String[] list_type_amounts = {ConstantDB.HOME_AND_RENOVATION, ConstantDB.TRANSPORT, ConstantDB.FOOD,
-                ConstantDB.ENTERTAINMENT, ConstantDB.PHARMACIES, ConstantDB.COSMETICS, ConstantDB.ITEMS_OF_CLOTHING,
-                ConstantDB.SUPERMARKETS, ConstantDB.SOUVENIRS, ConstantDB.ELECTRONICS_AND_TECHNOLOGY, ConstantDB.BOOKS};
-        String[] list_amounts = {ConstantDB.USERS_HOME_AND_RENOVATION, ConstantDB.USERS_TRANSPORT, ConstantDB.USERS_FOOD,
-                ConstantDB.USERS_ENTERTAINMENT, ConstantDB.USERS_PHARMACIES, ConstantDB.USERS_COSMETICS,
-                ConstantDB.USERS_ITEMS_OF_CLOTHING, ConstantDB.USERS_SUPERMARKETS, ConstantDB.USERS_SOUVENIRS,
-                ConstantDB.USERS_ELECTRONICS_AND_TECHNOLOGY, ConstantDB.USERS_BOOKS};
-        for (int i = 0; i < list_type_amounts.length; ++i)
+        ArrayList<Float> all_amounts = new ArrayList<Float>();
+        for (int i = 0; i < ConstantDB.list_type_amounts.length; ++i)
         {
-            out = String.format("%s%s: %s\n",out, list_type_amounts[i], getFloatField(chatID, list_amounts[i]));
+            all_amounts.add(getFloatField(chatID, ConstantDB.list_amounts[i]));
         }
-        return out;
+        return all_amounts;
     }
 
     public String getStringField(long chatID, String field) throws SQLException {

@@ -28,4 +28,12 @@ public class ConstantDB
     public static final String SOUVENIRS = "Сувениры";
     public static final String ELECTRONICS_AND_TECHNOLOGY = "Электроника и технологии";
     public static final String BOOKS = "Книги";
+
+    public static final String[] list_type_amounts = {ConstantDB.HOME_AND_RENOVATION, ConstantDB.TRANSPORT, ConstantDB.FOOD,
+        ConstantDB.ENTERTAINMENT, ConstantDB.PHARMACIES, ConstantDB.COSMETICS, ConstantDB.ITEMS_OF_CLOTHING,
+        ConstantDB.SUPERMARKETS, ConstantDB.SOUVENIRS, ConstantDB.ELECTRONICS_AND_TECHNOLOGY, ConstantDB.BOOKS};
+    public static final String[] list_amounts = {ConstantDB.USERS_HOME_AND_RENOVATION, ConstantDB.USERS_TRANSPORT, ConstantDB.USERS_FOOD,
+            ConstantDB.USERS_ENTERTAINMENT, ConstantDB.USERS_PHARMACIES, ConstantDB.USERS_COSMETICS,
+            ConstantDB.USERS_ITEMS_OF_CLOTHING, ConstantDB.USERS_SUPERMARKETS, ConstantDB.USERS_SOUVENIRS,
+            ConstantDB.USERS_ELECTRONICS_AND_TECHNOLOGY, ConstantDB.USERS_BOOKS};
 }

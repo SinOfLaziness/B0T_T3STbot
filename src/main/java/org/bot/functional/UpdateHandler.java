@@ -1,13 +1,16 @@
 package org.bot.functional;
 
+import org.bot.database.ConstantDB;
 import org.bot.database.DatabaseHandler;
 import org.bot.msg.Constants;
 import org.bot.msg.Message;
 import org.bot.msg.MessageSender;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,8 +47,7 @@ public class UpdateHandler {
         switch (sourceText) {
             case Constants.START:
                 if (!dbHandler.checkIfSigned(chatID)) {
-                    String name = Constants.START_TEXT_TEMPL.formatted(update.getMessage().getChat().getFirstName());
-                    messageSender.send(chatID,new Message(name));
+                    caseSignUpUsers(chatID);
                 } else {
                     messageSender.send(chatID,Constants.ALR_REG);
                 }
@@ -69,8 +71,14 @@ public class UpdateHandler {
                 break;
             case Constants.SEND_EXP:
                 if (dbHandler.checkIfSigned(chatID)) {
-                    String all_amounts = dbHandler.getAllAmounts(chatID);
-                    messageSender.send(chatID, new Message(all_amounts));
+                    ArrayList<Float> all_amounts = dbHandler.getAllAmounts(chatID);
+                    ExpenseChart chart = new ExpenseChart();
+                    chart.createChart(all_amounts);
+                    String out = "Все записанные расходы: \n";
+                    for(int i = 0; i < all_amounts.size(); ++i)
+                        out = String.format("%s%s: %s\n",out, ConstantDB.list_type_amounts[i],
+                                all_amounts.get(i));
+                    messageSender.send(chatID, new Message(out));
                 } else {
                     messageSender.send(chatID, Constants.ASK_FOR_REG);
                 }
@@ -86,17 +94,35 @@ public class UpdateHandler {
         buttonInfoState.put(chatID, buttonInfo);
     }
 
-    private void handleAmountInput(long chatID, String amount) throws SQLException {
+    private void handleAmountInput(long chatID, String string_amount) throws SQLException {
         String buttonInfo = buttonInfoState.get(chatID);
         userStates.remove(chatID);
         buttonInfoState.remove(chatID);
-        if (!amount.matches("\\d+(\\.\\d+)?") | amount.equals("0")) {
+
+        int iFlag = 0;
+        if (string_amount.matches("(\\d+(\\.\\d+)?)+ .*?") ||
+                string_amount.matches("\\d+ .*?")){
+            iFlag = 1;
+        }
+        else if (string_amount.matches("(\\d+(\\.\\d+)?)+") ||
+                string_amount.matches("\\d+")){
+            iFlag = 2;
+        }
+        else{
             messageSender.send(chatID, Constants.INVALID_SUM);
             return;
         }
+
+        float amount = 0;
+        if (iFlag == 1) {
+            amount = Float.parseFloat(string_amount.split(" ")[0]);
+        }
+        else if(iFlag == 2){
+            amount = Float.parseFloat(string_amount);
+        }
         messageSender.send(chatID, new Message("Вы ввели сумму: " + amount));
         float amount_in_DB = dbHandler.getFloatField(chatID, buttonInfo);
-        amount_in_DB += Float.parseFloat(amount);
+        amount_in_DB += amount;
         dbHandler.InputFloatField(chatID, buttonInfo, amount_in_DB);
     }
 
