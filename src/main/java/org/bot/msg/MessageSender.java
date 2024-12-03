@@ -20,7 +20,7 @@ public class MessageSender {
         this.bot = bot;
     }
 
-    public void send (long chatID, Message message){
+    public void send(long chatID, Message message) {
         newMessage.setChatId(String.valueOf(chatID));
         newMessage.setText(message.answerToSend());
         if (message.replyKeyboard() != null) {

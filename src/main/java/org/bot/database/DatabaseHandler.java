@@ -1,5 +1,8 @@
 package org.bot.database;
 
+import org.bot.functional.ExpenseChart;
+import org.bot.msg.MessageSender;
+
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -17,9 +20,9 @@ public class DatabaseHandler extends Configs {
 
     public void signUpUser(String telegramID) {
         String insert = String.format("INSERT INTO %s(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)VALUES(?,0,0,0,0,0,0,0,0,0,0,0,0)",
-                ConstantDB.USER_TABLE, ConstantDB.USERS_ID, ConstantDB.USERS_BOOKS , ConstantDB.USERS_COSMETICS , ConstantDB.USERS_FOOD ,
-                ConstantDB.USERS_ELECTRONICS_AND_TECHNOLOGY , ConstantDB.USERS_ENTERTAINMENT , ConstantDB.USERS_HOME_AND_RENOVATION ,
-                ConstantDB.USERS_ITEMS_OF_CLOTHING , ConstantDB.USERS_PHARMACIES , ConstantDB.USERS_SOUVENIRS , ConstantDB.USERS_SUPERMARKETS ,
+                ConstantDB.USER_TABLE, ConstantDB.USERS_ID, ConstantDB.USERS_BOOKS, ConstantDB.USERS_COSMETICS, ConstantDB.USERS_FOOD,
+                ConstantDB.USERS_ELECTRONICS_AND_TECHNOLOGY, ConstantDB.USERS_ENTERTAINMENT, ConstantDB.USERS_HOME_AND_RENOVATION,
+                ConstantDB.USERS_ITEMS_OF_CLOTHING, ConstantDB.USERS_PHARMACIES, ConstantDB.USERS_SOUVENIRS, ConstantDB.USERS_SUPERMARKETS,
                 ConstantDB.USERS_TRANSPORT, ConstantDB.USERS_CONDITION);
         try (Connection connection = getDbConnection();
              PreparedStatement prSt = connection.prepareStatement(insert)) {
@@ -40,7 +43,7 @@ public class DatabaseHandler extends Configs {
         return counter >= 1;
     }
 
-    public void addToDatabase(long chatID, String Info , double amountValue) {
+    public void addToDatabase(long chatID, String Info, double amountValue) {
         // TO DO:
     }
 
@@ -95,8 +98,7 @@ public class DatabaseHandler extends Configs {
             e.printStackTrace();
         }
         ArrayList<Float> all_amounts = new ArrayList<Float>();
-        for (int i = 0; i < ConstantDB.list_type_amounts.length; ++i)
-        {
+        for (int i = 0; i < ConstantDB.list_type_amounts.length; ++i) {
             all_amounts.add(getFloatField(chatID, ConstantDB.list_amounts[i]));
         }
         return all_amounts;
@@ -115,9 +117,9 @@ public class DatabaseHandler extends Configs {
         return value;
     }
 
-    public void InputFloatField(long chatID, String field, float insertable){
+    public void InputFloatField(long chatID, String field, float insertable) {
         String insert = String.format("UPDATE %s SET %s = %s WHERE %s =?",
-                ConstantDB.USER_TABLE, field, insertable ,ConstantDB.USERS_ID);
+                ConstantDB.USER_TABLE, field, insertable, ConstantDB.USERS_ID);
         try (Connection connection = getDbConnection();
              PreparedStatement prSt = connection.prepareStatement(insert)) {
             prSt.setString(1, String.valueOf(chatID));
@@ -125,5 +127,15 @@ public class DatabaseHandler extends Configs {
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    public void sendAllAmounts(long chatID, MessageSender messageSender) throws SQLException {
+        ArrayList<Float> all_amounts = getAllAmounts(chatID);
+        ExpenseChart chart = new ExpenseChart();
+        String out = "Все записанные расходы: \n";
+        for (int i = 0; i < all_amounts.size(); ++i)
+            out = String.format("%s%s: %s\n", out, ConstantDB.list_type_amounts[i],
+                    all_amounts.get(i));
+        messageSender.sendPhoto(chatID, chart.createChart(all_amounts), out);
     }
 }

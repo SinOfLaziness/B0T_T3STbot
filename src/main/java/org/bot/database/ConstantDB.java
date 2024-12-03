@@ -1,7 +1,6 @@
 package org.bot.database;
 
-public class ConstantDB
-{
+public class ConstantDB {
     public static final String USER_TABLE = "users";
     public static final String USERS_ID = "telegramID";
     public static final String USERS_HOME_AND_RENOVATION = "HomeAndRenovation";
@@ -30,8 +29,8 @@ public class ConstantDB
     public static final String BOOKS = "Книги";
 
     public static final String[] list_type_amounts = {ConstantDB.HOME_AND_RENOVATION, ConstantDB.TRANSPORT, ConstantDB.FOOD,
-        ConstantDB.ENTERTAINMENT, ConstantDB.PHARMACIES, ConstantDB.COSMETICS, ConstantDB.ITEMS_OF_CLOTHING,
-        ConstantDB.SUPERMARKETS, ConstantDB.SOUVENIRS, ConstantDB.ELECTRONICS_AND_TECHNOLOGY, ConstantDB.BOOKS};
+            ConstantDB.ENTERTAINMENT, ConstantDB.PHARMACIES, ConstantDB.COSMETICS, ConstantDB.ITEMS_OF_CLOTHING,
+            ConstantDB.SUPERMARKETS, ConstantDB.SOUVENIRS, ConstantDB.ELECTRONICS_AND_TECHNOLOGY, ConstantDB.BOOKS};
     public static final String[] list_amounts = {ConstantDB.USERS_HOME_AND_RENOVATION, ConstantDB.USERS_TRANSPORT, ConstantDB.USERS_FOOD,
             ConstantDB.USERS_ENTERTAINMENT, ConstantDB.USERS_PHARMACIES, ConstantDB.USERS_COSMETICS,
             ConstantDB.USERS_ITEMS_OF_CLOTHING, ConstantDB.USERS_SUPERMARKETS, ConstantDB.USERS_SOUVENIRS,

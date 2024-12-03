@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class ExpenseChart{
+public class ExpenseChart {
 
     public byte[] createChart(ArrayList<Float> all_amounts) {
 

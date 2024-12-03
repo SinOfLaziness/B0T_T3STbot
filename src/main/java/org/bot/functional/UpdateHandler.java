@@ -49,17 +49,17 @@ public class UpdateHandler {
                 if (!dbHandler.checkIfSigned(chatID)) {
                     caseSignUpUsers(chatID);
                 } else {
-                    messageSender.send(chatID,Constants.ALR_REG);
+                    messageSender.send(chatID, Constants.ALR_REG);
                 }
                 break;
             case Constants.COM_LIST:
-                messageSender.send(chatID,Constants.HELP_COM);
+                messageSender.send(chatID, Constants.HELP_COM);
                 break;
             case Constants.REGISTRATION:
                 if (!dbHandler.checkIfSigned(chatID)) {
                     caseSignUpUsers(chatID);
                 } else {
-                    messageSender.send(chatID,Constants.ALR_REG);
+                    messageSender.send(chatID, Constants.ALR_REG);
                 }
                 break;
             case Constants.SET_EXP:
@@ -71,13 +71,7 @@ public class UpdateHandler {
                 break;
             case Constants.SEND_EXP:
                 if (dbHandler.checkIfSigned(chatID)) {
-                    ArrayList<Float> all_amounts = dbHandler.getAllAmounts(chatID);
-                    ExpenseChart chart = new ExpenseChart();
-                    String out = "Все записанные расходы: \n";
-                    for(int i = 0; i < all_amounts.size(); ++i)
-                        out = String.format("%s%s: %s\n",out, ConstantDB.list_type_amounts[i],
-                                all_amounts.get(i));
-                    messageSender.sendPhoto(chatID, chart.createChart(all_amounts), out);
+                    dbHandler.sendAllAmounts(chatID, messageSender);
                 } else {
                     messageSender.send(chatID, Constants.ASK_FOR_REG);
                 }
@@ -100,14 +94,12 @@ public class UpdateHandler {
 
         int iFlag = 0;
         if (string_amount.matches("(\\d+(\\.\\d+)?)+ .*?") ||
-                string_amount.matches("\\d+ .*?")){
+                string_amount.matches("\\d+ .*?")) {
             iFlag = 1;
-        }
-        else if (string_amount.matches("(\\d+(\\.\\d+)?)+") ||
-                string_amount.matches("\\d+")){
+        } else if (string_amount.matches("(\\d+(\\.\\d+)?)+") ||
+                string_amount.matches("\\d+")) {
             iFlag = 2;
-        }
-        else{
+        } else {
             messageSender.send(chatID, Constants.INVALID_SUM);
             return;
         }
@@ -115,8 +107,7 @@ public class UpdateHandler {
         float amount = 0;
         if (iFlag == 1) {
             amount = Float.parseFloat(string_amount.split(" ")[0]);
-        }
-        else if(iFlag == 2){
+        } else if (iFlag == 2) {
             amount = Float.parseFloat(string_amount);
         }
         messageSender.send(chatID, new Message("Вы ввели сумму: " + amount));
