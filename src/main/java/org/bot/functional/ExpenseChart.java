@@ -1,53 +1,54 @@
 package org.bot.functional;
 
+import javassist.bytecode.ByteArray;
 import org.bot.database.ConstantDB;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class ExpenseChart{
 
-    public void createChart(ArrayList<Float> all_amounts) {
-        // Создаем изображение
+    public byte[] createChart(ArrayList<Float> all_amounts) {
+
         BufferedImage bufferedImage = new BufferedImage(400, 400, BufferedImage.TYPE_INT_RGB);
         Graphics g = bufferedImage.getGraphics();
 
-        // Рисуем диаграмму
         drawChart(g, all_amounts);
 
-        // Сохраняем изображение в файл
         try {
-            ImageIO.write(bufferedImage, "jpg", new File("expense_chart.jpg"));
-            System.out.println("Диаграмма сохранена в expense_chart.jpg");
+            var baos = new ByteArrayOutputStream();
+            ImageIO.write(bufferedImage, "jpg", baos);
+            byte[] data = baos.toByteArray();
+            return data;
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     private void drawChart(Graphics g, ArrayList<Float> all_amounts) {
-        // Получаем общую сумму затрат
+
         int total = 0;
         for (float expense : all_amounts) {
             total += expense;
         }
 
-        // Начальный угол для рисования
         int startAngle = 0;
 
-        // Рисуем круговую диаграмму
         for (int i = 0; i < all_amounts.size(); i++) {
-            // Вычисляем угол для текущей категории
             int angle = (int) Math.round(360.0 * all_amounts.get(i) / total);
-            g.setColor(getColor(i)); // Устанавливаем цвет для сектора
-            g.fillArc(50, 50, 300, 300, startAngle, angle); // Рисуем сектор
-            startAngle += angle; // Обновляем начальный угол
+            g.setColor(getColor(i));
+            g.fillArc(50, 50, 300, 300, startAngle, angle);
+            startAngle += angle;
         }
 
-        // Рисуем легенду
         drawLegend(g, all_amounts);
     }
 
@@ -70,7 +71,7 @@ public class ExpenseChart{
     }
 
     private void drawLegend(Graphics g, ArrayList<Float> all_amounts) {
-        int x = 350;
+        int x = 370;
         int y = 50;
         for (int i = 0; i < ConstantDB.list_type_amounts.length; i++) {
             g.setColor(getColor(i));

@@ -73,12 +73,11 @@ public class UpdateHandler {
                 if (dbHandler.checkIfSigned(chatID)) {
                     ArrayList<Float> all_amounts = dbHandler.getAllAmounts(chatID);
                     ExpenseChart chart = new ExpenseChart();
-                    chart.createChart(all_amounts);
                     String out = "Все записанные расходы: \n";
                     for(int i = 0; i < all_amounts.size(); ++i)
                         out = String.format("%s%s: %s\n",out, ConstantDB.list_type_amounts[i],
                                 all_amounts.get(i));
-                    messageSender.send(chatID, new Message(out));
+                    messageSender.sendPhoto(chatID, chart.createChart(all_amounts), out);
                 } else {
                     messageSender.send(chatID, Constants.ASK_FOR_REG);
                 }
