@@ -47,7 +47,7 @@ public class UpdateHandler {
         switch (sourceText) {
             case Constants.START:
                 if (!dbHandler.checkIfSigned(chatID)) {
-                    caseSignUpUsers(chatID);
+                    messageSender.send(chatID, Constants.START_TEXT_TEMPL);
                 } else {
                     messageSender.send(chatID, Constants.ALR_REG);
                 }
@@ -57,7 +57,7 @@ public class UpdateHandler {
                 break;
             case Constants.REGISTRATION:
                 if (!dbHandler.checkIfSigned(chatID)) {
-                    caseSignUpUsers(chatID);
+                    dbHandler.caseSignUpUsers(chatID, messageSender);
                 } else {
                     messageSender.send(chatID, Constants.ALR_REG);
                 }
@@ -116,9 +116,5 @@ public class UpdateHandler {
         dbHandler.InputFloatField(chatID, buttonInfo, amount_in_DB);
     }
 
-    private void caseSignUpUsers(long chatID) {
-        dbHandler.signUpUser(String.valueOf(chatID));
-        messageSender.send(chatID, Constants.NOW_REG);
-    }
 
 }

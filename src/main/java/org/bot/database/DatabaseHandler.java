@@ -1,6 +1,7 @@
 package org.bot.database;
 
 import org.bot.functional.ExpenseChart;
+import org.bot.msg.Constants;
 import org.bot.msg.MessageSender;
 
 import java.sql.*;
@@ -43,9 +44,6 @@ public class DatabaseHandler extends Configs {
         return counter >= 1;
     }
 
-    public void addToDatabase(long chatID, String Info, double amountValue) {
-        // TO DO:
-    }
 
     private ResultSet getUserCount(long chatID) {
         ResultSet resultSet = null;
@@ -58,6 +56,11 @@ public class DatabaseHandler extends Configs {
             e.printStackTrace();
         }
         return resultSet;
+    }
+
+    public void caseSignUpUsers(long chatID, MessageSender messageSender) {
+        signUpUser(String.valueOf(chatID));
+        messageSender.send(chatID, Constants.NOW_REG);
     }
 
     private ResultSet getField(long chatID, String field) {
