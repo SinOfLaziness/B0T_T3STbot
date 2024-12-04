@@ -3,6 +3,7 @@ package org.bot.functional;
 import org.bot.database.ConstantDB;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +18,7 @@ public class AttachedButtons {
         COSMETICS(ConstantDB.COSMETICS, ConstantDB.USERS_COSMETICS),
         ITEMS_OF_CLOTHING(ConstantDB.ITEMS_OF_CLOTHING, ConstantDB.USERS_ITEMS_OF_CLOTHING),
         SUPERMARKETS(ConstantDB.SUPERMARKETS, ConstantDB.USERS_SUPERMARKETS),
-        SOUVENIRS(ConstantDB.SOUVENIRS, ConstantDB.USERS_SOUVENIRS),
+        SOUVENIRS(ConstantDB.TRANSFERS, ConstantDB.USERS_TRANSFERS),
         ELECTRONICS_AND_TECHNOLOGY(ConstantDB.ELECTRONICS_AND_TECHNOLOGY, ConstantDB.USERS_ELECTRONICS_AND_TECHNOLOGY),
         BOOKS(ConstantDB.BOOKS, ConstantDB.USERS_BOOKS),
         OTHER(ConstantDB.OTHER, ConstantDB.USERS_OTHER);

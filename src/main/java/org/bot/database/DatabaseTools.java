@@ -62,7 +62,6 @@ public class DatabaseTools extends Configs {
         return all_amounts;
     }
 
-
     public void sendAllAmounts(long chatID, MessageSender messageSender) throws SQLException {
         ArrayList<Float> all_amounts = getAllAmounts(chatID);
         ExpenseChart chart = new ExpenseChart();
@@ -145,7 +144,7 @@ public class DatabaseTools extends Configs {
         addNewCategory(category);
         String currentData = getCurrentData();
         String insert = String.format("INSERT INTO %s(%s,%s,%s,%s) " +
-                "VALUES ((SELECT %s FROM %s WHERE %s = ?),(SELECT %s FROM %s WHERE %s = ?),?,?)",
+                        "VALUES ((SELECT %s FROM %s WHERE %s = ?),(SELECT %s FROM %s WHERE %s = ?),?,?)",
                 ConstantDB.ACCOUNTINGS_TABLE, ConstantDB.ACCOUNTINGS_TABLE + '.' + ConstantDB.TABLE_USER_ID,
                 ConstantDB.ACCOUNTINGS_TABLE + '.' + ConstantDB.TABLE_CATEGORIES,
                 ConstantDB.ACCOUNTINGS_TABLE + '.' + ConstantDB.TABLE_DATE,
@@ -155,10 +154,10 @@ public class DatabaseTools extends Configs {
                 ConstantDB.CATEGORIES_TABLE + '.' + ConstantDB.TABLE_CATEGORIES, ConstantDB.CATEGORIES_TABLE,
                 ConstantDB.CATEGORIES_TABLE + '.' + ConstantDB.TABLE_CATEGORY);
         try (PreparedStatement prSt = dbConnection.prepareStatement(insert)) {
-            prSt.setInt(1,(int)chatID);
+            prSt.setInt(1, (int) chatID);
             prSt.setString(2, category);
             prSt.setString(3, currentData);
-            prSt.setFloat(4,insertable);
+            prSt.setFloat(4, insertable);
             prSt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

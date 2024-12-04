@@ -6,6 +6,7 @@ import org.bot.msg.Message;
 import org.bot.msg.MessageSender;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
+
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -88,7 +89,7 @@ public class UpdateHandler {
         userStates.remove(chatID);
         buttonInfoState.remove(chatID);
         float amount = dbHandler.getDatabaseTools().parseFloat(string_amount);
-        if (amount == -1){
+        if (amount == -1) {
             messageSender.send(chatID, Constants.INVALID_SUM);
             return;
         }

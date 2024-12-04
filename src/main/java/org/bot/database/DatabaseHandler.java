@@ -1,6 +1,8 @@
 package org.bot.database;
+
 import org.bot.msg.Constants;
 import org.bot.msg.MessageSender;
+
 import java.sql.*;
 
 public class DatabaseHandler extends Configs {
@@ -25,9 +27,9 @@ public class DatabaseHandler extends Configs {
 
     public void signUpUser(String telegramID) {
         String insert = String.format("INSERT INTO %s(%s) VALUES (?)",
-                    ConstantDB.USER_TABLE, ConstantDB.USERS_ID);
+                ConstantDB.USER_TABLE, ConstantDB.USERS_ID);
         try (PreparedStatement prSt = dbConnection.prepareStatement(insert)) {
-            prSt.setInt(1,Integer.parseInt(telegramID));
+            prSt.setInt(1, Integer.parseInt(telegramID));
             prSt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
