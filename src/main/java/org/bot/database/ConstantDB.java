@@ -3,7 +3,12 @@ package org.bot.database;
 public class ConstantDB {
     public static final String USER_TABLE = "users";
     public static final String CATEGORIES_TABLE = "categories";
+    public static final String TABLE_CATEGORY = "Category";
     public static final String ACCOUNTINGS_TABLE = "accountings";
+    public static final String TABLE_USER_ID = "idUsers";
+    public static final String TABLE_CATEGORIES = "idCategories";
+    public static final String TABLE_DATE = "Date";
+    public static final String TABLE_AMOUNT = "Amount";
     public static final String USERS_ID = "chatID";
     public static final String USERS_HOME_AND_RENOVATION = "HomeAndRenovation";
     public static final String USERS_TRANSPORT = "Transport";
@@ -29,13 +34,13 @@ public class ConstantDB {
     public static final String SOUVENIRS = "Сувениры";
     public static final String ELECTRONICS_AND_TECHNOLOGY = "Электроника и технологии";
     public static final String BOOKS = "Книги";
-    public static final String OTHER = "Указать свою категорию";
+    public static final String OTHER = "Другое";
 
     public static final String[] list_type_amounts = {ConstantDB.HOME_AND_RENOVATION, ConstantDB.TRANSPORT, ConstantDB.FOOD,
             ConstantDB.ENTERTAINMENT, ConstantDB.PHARMACIES, ConstantDB.COSMETICS, ConstantDB.ITEMS_OF_CLOTHING,
-            ConstantDB.SUPERMARKETS, ConstantDB.SOUVENIRS, ConstantDB.ELECTRONICS_AND_TECHNOLOGY, ConstantDB.BOOKS};
+            ConstantDB.SUPERMARKETS, ConstantDB.SOUVENIRS, ConstantDB.ELECTRONICS_AND_TECHNOLOGY, ConstantDB.BOOKS, ConstantDB.OTHER};
     public static final String[] list_amounts = {ConstantDB.USERS_HOME_AND_RENOVATION, ConstantDB.USERS_TRANSPORT, ConstantDB.USERS_FOOD,
             ConstantDB.USERS_ENTERTAINMENT, ConstantDB.USERS_PHARMACIES, ConstantDB.USERS_COSMETICS,
             ConstantDB.USERS_ITEMS_OF_CLOTHING, ConstantDB.USERS_SUPERMARKETS, ConstantDB.USERS_SOUVENIRS,
-            ConstantDB.USERS_ELECTRONICS_AND_TECHNOLOGY, ConstantDB.USERS_BOOKS};
+            ConstantDB.USERS_ELECTRONICS_AND_TECHNOLOGY, ConstantDB.USERS_BOOKS, ConstantDB.USERS_OTHER};
 }

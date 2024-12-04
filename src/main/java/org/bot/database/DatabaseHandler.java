@@ -24,9 +24,10 @@ public class DatabaseHandler extends Configs {
     }
 
     public void signUpUser(String telegramID) {
-        String insert = String.format("INSERT INTO %s(%s) VALUES (%d)",
-                    ConstantDB.USER_TABLE, ConstantDB.USERS_ID, Integer.parseInt(telegramID));
+        String insert = String.format("INSERT INTO %s(%s) VALUES (?)",
+                    ConstantDB.USER_TABLE, ConstantDB.USERS_ID);
         try (PreparedStatement prSt = dbConnection.prepareStatement(insert)) {
+            prSt.setInt(1,Integer.parseInt(telegramID));
             prSt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

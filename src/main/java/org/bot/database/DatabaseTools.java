@@ -62,29 +62,6 @@ public class DatabaseTools extends Configs {
         return all_amounts;
     }
 
-    public String getStringField(long chatID, String field) throws SQLException {
-        ResultSet result = getField(chatID, field);
-        String value = "";
-        try {
-            if (result.next()) {
-                value = result.getString(2);
-            }
-        } finally {
-            result.close();
-        }
-        return value;
-    }
-
-    public void InputFloatField(long chatID, String field, float insertable) {
-        String insert = String.format("UPDATE %s SET %s = %s WHERE %s =?",
-                ConstantDB.USER_TABLE, field, insertable, ConstantDB.USERS_ID);
-        try (PreparedStatement prSt = dbConnection.prepareStatement(insert)) {
-            prSt.setString(1, String.valueOf(chatID));
-            prSt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void sendAllAmounts(long chatID, MessageSender messageSender) throws SQLException {
         ArrayList<Float> all_amounts = getAllAmounts(chatID);
@@ -129,11 +106,62 @@ public class DatabaseTools extends Configs {
         return amount;
     }
 
-
-    public String getCurrentData() {
+    private String getCurrentData() {
         LocalDate currentDate = LocalDate.now();
         DateTimeFormatter formattedDatePattern = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         return currentDate.format(formattedDatePattern);
     }
 
+    private boolean ifCategoryExists(String category) {
+        String insert = "SELECT COUNT(*) FROM " + ConstantDB.CATEGORIES_TABLE + " WHERE " + ConstantDB.TABLE_CATEGORY + "=?";
+        try (PreparedStatement prSt = dbConnection.prepareStatement(insert)) {
+            prSt.setString(1, category);
+            try (ResultSet resultSet = prSt.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt(1) >= 1;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private void addNewCategory(String category) {
+        if (ifCategoryExists(category)) {
+            return;
+        }
+        String insert = String.format("INSERT INTO %s(%s) VALUES (?)",
+                ConstantDB.CATEGORIES_TABLE, ConstantDB.TABLE_CATEGORY);
+        try (PreparedStatement prSt = dbConnection.prepareStatement(insert)) {
+            prSt.setString(1, category);
+            prSt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void inputEntry(long chatID, String category, float insertable) {
+        addNewCategory(category);
+        String currentData = getCurrentData();
+        String insert = String.format("INSERT INTO %s(%s,%s,%s,%s) " +
+                "VALUES ((SELECT %s FROM %s WHERE %s = ?),(SELECT %s FROM %s WHERE %s = ?),?,?)",
+                ConstantDB.ACCOUNTINGS_TABLE, ConstantDB.ACCOUNTINGS_TABLE + '.' + ConstantDB.TABLE_USER_ID,
+                ConstantDB.ACCOUNTINGS_TABLE + '.' + ConstantDB.TABLE_CATEGORIES,
+                ConstantDB.ACCOUNTINGS_TABLE + '.' + ConstantDB.TABLE_DATE,
+                ConstantDB.ACCOUNTINGS_TABLE + '.' + ConstantDB.TABLE_AMOUNT,
+                ConstantDB.USER_TABLE + '.' + ConstantDB.TABLE_USER_ID, ConstantDB.USER_TABLE,
+                ConstantDB.USER_TABLE + '.' + ConstantDB.USERS_ID,
+                ConstantDB.CATEGORIES_TABLE + '.' + ConstantDB.TABLE_CATEGORIES, ConstantDB.CATEGORIES_TABLE,
+                ConstantDB.CATEGORIES_TABLE + '.' + ConstantDB.TABLE_CATEGORY);
+        try (PreparedStatement prSt = dbConnection.prepareStatement(insert)) {
+            prSt.setInt(1,(int)chatID);
+            prSt.setString(2, category);
+            prSt.setString(3, currentData);
+            prSt.setFloat(4,insertable);
+            prSt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

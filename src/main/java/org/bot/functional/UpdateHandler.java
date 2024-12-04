@@ -92,10 +92,8 @@ public class UpdateHandler {
             messageSender.send(chatID, Constants.INVALID_SUM);
             return;
         }
-        messageSender.send(chatID, new Message("Вы ввели сумму: " + amount));
-        float amount_in_DB = dbHandler.getDatabaseTools().getFloatField(chatID, buttonInfo);
-        amount_in_DB += amount;
-        dbHandler.getDatabaseTools().InputFloatField(chatID, buttonInfo, amount_in_DB);
+        messageSender.send(chatID, new Message("Ваша сумма в " + amount + " рублей была успешно записана"));
+        dbHandler.getDatabaseTools().inputEntry(chatID, buttonInfo, amount);
     }
 
 
