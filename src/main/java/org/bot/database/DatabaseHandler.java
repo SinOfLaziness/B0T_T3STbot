@@ -1,11 +1,7 @@
 package org.bot.database;
-
-import org.bot.functional.ExpenseChart;
 import org.bot.msg.Constants;
 import org.bot.msg.MessageSender;
-
 import java.sql.*;
-import java.util.ArrayList;
 
 public class DatabaseHandler extends Configs {
     private Connection dbConnection;
@@ -23,9 +19,7 @@ public class DatabaseHandler extends Configs {
     private Connection getDbConnection() throws ClassNotFoundException, SQLException {
         String connectionString = String.format("jdbc:mysql://%s:%s/%s", dbHost, dbPort, dbName);
         Class.forName("com.mysql.cj.jdbc.Driver");
-
         dbConnection = DriverManager.getConnection(connectionString, dbUser, dbPass);
-
         return dbConnection;
     }
 

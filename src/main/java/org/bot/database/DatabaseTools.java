@@ -1,13 +1,14 @@
 package org.bot.database;
 
 import org.bot.functional.ExpenseChart;
-import org.bot.msg.Constants;
 import org.bot.msg.MessageSender;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class DatabaseTools extends Configs {
@@ -126,6 +127,13 @@ public class DatabaseTools extends Configs {
             amount = Float.parseFloat(string_amount);
         }
         return amount;
+    }
+
+
+    public String getCurrentData() {
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formattedDatePattern = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        return currentDate.format(formattedDatePattern);
     }
 
 }

@@ -5,9 +5,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
 import java.io.ByteArrayInputStream;
-import java.io.File;
+
 
 public class MessageSender {
     private final SendMessage newMessage;

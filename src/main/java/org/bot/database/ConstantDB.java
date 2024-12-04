@@ -2,7 +2,9 @@ package org.bot.database;
 
 public class ConstantDB {
     public static final String USER_TABLE = "users";
-    public static final String USERS_ID = "telegramID";
+    public static final String CATEGORIES_TABLE = "categories";
+    public static final String ACCOUNTINGS_TABLE = "accountings";
+    public static final String USERS_ID = "chatID";
     public static final String USERS_HOME_AND_RENOVATION = "HomeAndRenovation";
     public static final String USERS_TRANSPORT = "Transport";
     public static final String USERS_FOOD = "Food";
@@ -15,7 +17,6 @@ public class ConstantDB {
     public static final String USERS_ELECTRONICS_AND_TECHNOLOGY = "ElectronicsAndTechnology";
     public static final String USERS_BOOKS = "Books";
     public static final String USERS_CONDITION = "User_Condition";
-
     public static final String HOME_AND_RENOVATION = "Дом и ремонт";
     public static final String TRANSPORT = "Транспорт";
     public static final String FOOD = "Еда";
