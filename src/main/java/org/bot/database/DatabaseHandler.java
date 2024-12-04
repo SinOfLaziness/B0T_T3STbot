@@ -24,13 +24,9 @@ public class DatabaseHandler extends Configs {
     }
 
     public void signUpUser(String telegramID) {
-        String insert = String.format("INSERT INTO %s(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)VALUES(?,0,0,0,0,0,0,0,0,0,0,0,0)",
-                ConstantDB.USER_TABLE, ConstantDB.USERS_ID, ConstantDB.USERS_BOOKS, ConstantDB.USERS_COSMETICS, ConstantDB.USERS_FOOD,
-                ConstantDB.USERS_ELECTRONICS_AND_TECHNOLOGY, ConstantDB.USERS_ENTERTAINMENT, ConstantDB.USERS_HOME_AND_RENOVATION,
-                ConstantDB.USERS_ITEMS_OF_CLOTHING, ConstantDB.USERS_PHARMACIES, ConstantDB.USERS_SOUVENIRS, ConstantDB.USERS_SUPERMARKETS,
-                ConstantDB.USERS_TRANSPORT, ConstantDB.USERS_CONDITION);
+        String insert = String.format("INSERT INTO %s(%s) VALUES (%d)",
+                    ConstantDB.USER_TABLE, ConstantDB.USERS_ID, Integer.parseInt(telegramID));
         try (PreparedStatement prSt = dbConnection.prepareStatement(insert)) {
-            prSt.setString(1, telegramID);
             prSt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

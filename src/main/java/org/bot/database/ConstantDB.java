@@ -17,6 +17,7 @@ public class ConstantDB {
     public static final String USERS_ELECTRONICS_AND_TECHNOLOGY = "ElectronicsAndTechnology";
     public static final String USERS_BOOKS = "Books";
     public static final String USERS_CONDITION = "User_Condition";
+    public static final String USERS_OTHER = "Other";
     public static final String HOME_AND_RENOVATION = "Дом и ремонт";
     public static final String TRANSPORT = "Транспорт";
     public static final String FOOD = "Еда";
@@ -28,6 +29,7 @@ public class ConstantDB {
     public static final String SOUVENIRS = "Сувениры";
     public static final String ELECTRONICS_AND_TECHNOLOGY = "Электроника и технологии";
     public static final String BOOKS = "Книги";
+    public static final String OTHER = "Указать свою категорию";
 
     public static final String[] list_type_amounts = {ConstantDB.HOME_AND_RENOVATION, ConstantDB.TRANSPORT, ConstantDB.FOOD,
             ConstantDB.ENTERTAINMENT, ConstantDB.PHARMACIES, ConstantDB.COSMETICS, ConstantDB.ITEMS_OF_CLOTHING,

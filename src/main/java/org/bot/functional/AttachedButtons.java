@@ -19,7 +19,8 @@ public class AttachedButtons {
         SUPERMARKETS(ConstantDB.SUPERMARKETS, ConstantDB.USERS_SUPERMARKETS),
         SOUVENIRS(ConstantDB.SOUVENIRS, ConstantDB.USERS_SOUVENIRS),
         ELECTRONICS_AND_TECHNOLOGY(ConstantDB.ELECTRONICS_AND_TECHNOLOGY, ConstantDB.USERS_ELECTRONICS_AND_TECHNOLOGY),
-        BOOKS(ConstantDB.BOOKS, ConstantDB.USERS_BOOKS);
+        BOOKS(ConstantDB.BOOKS, ConstantDB.USERS_BOOKS),
+        OTHER(ConstantDB.OTHER, ConstantDB.USERS_OTHER);
 
         private final String text;
         private final String callbackData;

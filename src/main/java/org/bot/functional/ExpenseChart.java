@@ -15,12 +15,9 @@ import java.util.ArrayList;
 public class ExpenseChart {
 
     public byte[] createChart(ArrayList<Float> all_amounts) {
-
         BufferedImage bufferedImage = new BufferedImage(400, 400, BufferedImage.TYPE_INT_RGB);
         Graphics g = bufferedImage.getGraphics();
-
         drawChart(g, all_amounts);
-
         try {
             var baos = new ByteArrayOutputStream();
             ImageIO.write(bufferedImage, "jpg", baos);
@@ -34,21 +31,17 @@ public class ExpenseChart {
     }
 
     private void drawChart(Graphics g, ArrayList<Float> all_amounts) {
-
         int total = 0;
         for (float expense : all_amounts) {
             total += expense;
         }
-
         int startAngle = 0;
-
         for (int i = 0; i < all_amounts.size(); i++) {
             int angle = (int) Math.round(360.0 * all_amounts.get(i) / total);
             g.setColor(getColor(i));
             g.fillArc(50, 50, 300, 300, startAngle, angle);
             startAngle += angle;
         }
-
         drawLegend(g, all_amounts);
     }
 
@@ -66,7 +59,6 @@ public class ExpenseChart {
                 new Color(0, 128, 128), // Темно-бирюзовый
                 new Color(255, 20, 147) // Глубокий розовый
         };
-
         return colors[index % colors.length];
     }
 

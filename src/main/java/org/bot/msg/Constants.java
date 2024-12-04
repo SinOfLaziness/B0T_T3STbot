@@ -26,7 +26,7 @@ public class Constants {
     public final static Message ASK_FOR_REG = new Message("Ты должен зарегистрироваться, чтобы использовать эту команду", keyboard.generateStartKeyboard());
     public final static Message ALR_REG = new Message("Ты уже зарегистрирован, можешь продолжить свою работу");
     public final static Message NOW_REG = new Message("Поздравляю! Теперь, ты можешь пользоваться всеми моими полезными штуками!");
-    public final static Message START_TEXT_TEMPL = new Message("Приветствую тебя, мой друг. Перед началом пользования прошу тебя зарегистрироваться. Для этого напиши команду Зарегистрироваться");
+    public final static Message START_TEXT_TEMPL = new Message("Приветствую тебя, мой друг. Перед началом пользования прошу тебя зарегистрироваться. Для этого напиши команду Зарегистрироваться", keyboard.generateStartKeyboard());
     public final static String REGISTRATION = "Зарегистрироваться";
     public final static String START = "/start";
     public final static String COM_LIST = "Список команд";
