@@ -66,7 +66,7 @@ public class DatabaseTools extends Configs {
         } else {
             return new ArrayList<>();
         }
-        if (dates.size()>1) {
+        if (dates.size() > 1) {
             Collections.sort(dates, (date1, date2) -> {
                 LocalDate d1 = LocalDate.parse(date1, formatter1);
                 LocalDate d2 = LocalDate.parse(date2, formatter1);
@@ -77,8 +77,8 @@ public class DatabaseTools extends Configs {
     }
 
     public float parseFloat(String string_amount) throws SQLException {
-         if (string_amount.matches("(\\d+(\\.\\d+)?)") && !string_amount.matches("0")) {
-             return Float.parseFloat(string_amount);
+        if (string_amount.matches("(\\d+(\\.\\d+)?)") && !string_amount.matches("0")) {
+            return Float.parseFloat(string_amount);
         } else {
             return -1;
         }

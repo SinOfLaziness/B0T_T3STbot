@@ -21,8 +21,9 @@ public class ConstantDB {
     public static final String USERS_TRANSFERS = "Transfers";
     public static final String USERS_ELECTRONICS_AND_TECHNOLOGY = "ElectronicsAndTechnology";
     public static final String USERS_BOOKS = "Books";
-    public static final String USERS_CONDITION = "User_Condition";
+    public static final String USERS_REGISTRATION = "User_Registration";
     public static final String USERS_OTHER = "Other";
+    public static final String REGISTRATION = "Зарегистрироваться";
     public static final String HOME_AND_RENOVATION = "\uD83C\uDFE1Дом и ремонт";
     public static final String TRANSPORT = "Транспорт";
     public static final String FOOD = "Еда";

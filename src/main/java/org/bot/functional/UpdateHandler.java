@@ -1,5 +1,6 @@
 package org.bot.functional;
 
+import org.bot.database.ConstantDB;
 import org.bot.database.DatabaseInitializer;
 import org.bot.msg.Constants;
 import org.bot.msg.Message;
@@ -82,9 +83,9 @@ public class UpdateHandler {
     }
 
     private void handleUserStates(long chatID, String sourceText) throws SQLException {
-        if (Objects.equals(userStates.get(chatID), Constants.WAIT_PERIOD)){
+        if (Objects.equals(userStates.get(chatID), Constants.WAIT_PERIOD)) {
             makeStatisticAboutExpenses(chatID, sourceText);
-        }else{
+        } else {
             makeEntryAboutExpenses(chatID, sourceText);
         }
     }
@@ -92,7 +93,7 @@ public class UpdateHandler {
     private void makeStatisticAboutExpenses(long chatID, String period) throws SQLException {
         userStates.remove(chatID);
         ArrayList<String> datesList = dbHandler.getDatabaseTools().parsePeriod(period);
-        if(datesList.isEmpty()){
+        if (datesList.isEmpty()) {
             messageSender.send(chatID, Constants.INV_PERIOD);
             return;
         }
@@ -100,10 +101,18 @@ public class UpdateHandler {
         messageSender.send(chatID, new Message("Круто"));
     }
 
-    private void handleCallbackQuery(long chatID, String buttonInfo) {
-        messageSender.send(chatID, Constants.EXP_SUM);
-        userStates.put(chatID, buttonInfo);
-        buttonInfoState.put(chatID, buttonInfo);
+    private void handleCallbackQuery(long chatID, String buttonInfo) throws SQLException {
+        if (Objects.equals(buttonInfo, ConstantDB.USERS_REGISTRATION)) {
+            if (!dbHandler.checkIfSigned(chatID)) {
+                dbHandler.caseSignUpUsers(chatID, messageSender);
+            } else {
+                messageSender.send(chatID, Constants.ALR_REG);
+            }
+        } else {
+            messageSender.send(chatID, Constants.EXP_SUM);
+            userStates.put(chatID, buttonInfo);
+            buttonInfoState.put(chatID, buttonInfo);
+        }
     }
 
     private void makeEntryAboutExpenses(long chatID, String stringAmount) throws SQLException {

@@ -1,20 +1,17 @@
 package org.bot.functional;
 
-import javassist.bytecode.ByteArray;
 import org.bot.database.ConstantDB;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 public class ExpenseChart {
 
-    public byte[] createChart(ArrayList<Float> all_amounts) {
+    public byte[] createChart(List<Float> all_amounts) {
         BufferedImage bufferedImage = new BufferedImage(400, 400, BufferedImage.TYPE_INT_RGB);
         Graphics g = bufferedImage.getGraphics();
         drawChart(g, all_amounts);
@@ -30,7 +27,7 @@ public class ExpenseChart {
         return null;
     }
 
-    private void drawChart(Graphics g, ArrayList<Float> all_amounts) {
+    private void drawChart(Graphics g, List<Float> all_amounts) {
         int total = 0;
         for (float expense : all_amounts) {
             total += expense;
@@ -62,7 +59,7 @@ public class ExpenseChart {
         return colors[index % colors.length];
     }
 
-    private void drawLegend(Graphics g, ArrayList<Float> all_amounts) {
+    private void drawLegend(Graphics g, List<Float> all_amounts) {
         int x = 370;
         int y = 50;
         for (int i = 0; i < ConstantDB.list_type_amounts.length; i++) {

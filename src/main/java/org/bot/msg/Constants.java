@@ -22,10 +22,10 @@ public class Constants {
             Зарегистрироваться - регистрирует пользователя""");
 
     public final static Message INV_PERIOD = new Message("Период указан в неверном формате");
-    public final static Message ASK_FOR_REG = new Message("Ты должен зарегистрироваться, чтобы использовать эту команду", keyboard.generateStartKeyboard());
+    public final static Message ASK_FOR_REG = new Message("Ты должен зарегистрироваться, чтобы использовать эту команду", keyboard.generateStartKeyboard(), attachedButtons.createButtonsForRegistration());
     public final static Message ALR_REG = new Message("Ты уже зарегистрирован, можешь продолжить свою работу");
     public final static Message NOW_REG = new Message("Поздравляю! Теперь, ты можешь пользоваться всеми моими полезными штуками!");
-    public final static Message START_TEXT_TEMPL = new Message("Приветствую тебя, мой друг. Перед началом пользования прошу тебя зарегистрироваться. Для этого напиши команду Зарегистрироваться", keyboard.generateStartKeyboard());
+    public final static Message START_TEXT_TEMPL = new Message("Приветствую тебя, мой друг. Перед началом пользования прошу тебя зарегистрироваться. Для этого напиши команду Зарегистрироваться или нажми на кнопку снизу", keyboard.generateStartKeyboard(), attachedButtons.createButtonsForRegistration());
     public final static String REGISTRATION = "Зарегистрироваться";
     public final static String START = "/start";
     public final static String COM_LIST = "Список команд";
@@ -33,16 +33,16 @@ public class Constants {
     public final static String SEND_EXP = "Вывести список расходов";
     public final static String WAIT_PERIOD = "WAITING_FOR_PERIOD";
     public final static Message ASK_PERIOD = new Message("""
-    Напишите период, за который вы хотите получить статистику
-    
-    Он может быть представлен в виде двух дат формата
-    
-    <гггг-мм-дд> <гггг-мм-дд>  (пр. 2024-05-01 2024-06-13)
-    
-    Если вы хотите получить статистику за конкретный месяц:
-    
-    <гггг-мм> (пр. 2024-03)
-    
-    Порядок автоматически сделается хронологическим""");
+            Напишите период, за который вы хотите получить статистику
+            
+            Он может быть представлен в виде двух дат формата
+            
+            <гггг-мм-дд> <гггг-мм-дд>  (пр. 2024-05-01 2024-06-13)
+            
+            Если вы хотите получить статистику за конкретный месяц:
+            
+            <гггг-мм> (пр. 2024-03)
+            
+            Порядок автоматически сделается хронологическим""");
 
 }
