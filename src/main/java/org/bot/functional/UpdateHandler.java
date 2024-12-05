@@ -1,6 +1,6 @@
 package org.bot.functional;
 
-import org.bot.database.DatabaseHandler;
+import org.bot.database.DatabaseInitializer;
 import org.bot.msg.Constants;
 import org.bot.msg.Message;
 import org.bot.msg.MessageSender;
@@ -8,8 +8,10 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 
 public class UpdateHandler {
@@ -17,11 +19,11 @@ public class UpdateHandler {
     private final Map<Long, String> userStates = new HashMap<>();
     private final Map<Long, String> buttonInfoState = new HashMap<>();
     private final MessageSender messageSender;
-    private final DatabaseHandler dbHandler;
+    private final DatabaseInitializer dbHandler;
 
     public UpdateHandler(TelegramLongPollingBot bot) {
         messageSender = new MessageSender(bot);
-        dbHandler = new DatabaseHandler();
+        dbHandler = new DatabaseInitializer();
     }
 
     public void handleUpdate(Update update) throws SQLException {
@@ -29,7 +31,7 @@ public class UpdateHandler {
             long chatID = update.getMessage().getChatId();
             String sourceText = update.getMessage().getText();
             if (userStates.containsKey(chatID)) {
-                amountUpdate(chatID, sourceText);
+                handleUserStates(chatID, sourceText);
                 return;
             }
             handleCommand(chatID, sourceText, update);
@@ -68,7 +70,8 @@ public class UpdateHandler {
                 break;
             case Constants.SEND_EXP:
                 if (dbHandler.checkIfSigned(chatID)) {
-                    dbHandler.getDatabaseTools().sendAllAmounts(chatID, messageSender);
+                    messageSender.send(chatID, Constants.ASK_PERIOD);
+                    userStates.put(chatID, Constants.WAIT_PERIOD);
                 } else {
                     messageSender.send(chatID, Constants.ASK_FOR_REG);
                 }
@@ -78,17 +81,35 @@ public class UpdateHandler {
         }
     }
 
+    private void handleUserStates(long chatID, String sourceText) throws SQLException {
+        if (Objects.equals(userStates.get(chatID), Constants.WAIT_PERIOD)){
+            makeStatisticAboutExpenses(chatID, sourceText);
+        }else{
+            makeEntryAboutExpenses(chatID, sourceText);
+        }
+    }
+
+    private void makeStatisticAboutExpenses(long chatID, String period) throws SQLException {
+        userStates.remove(chatID);
+        ArrayList<String> datesList = dbHandler.getDatabaseTools().parsePeriod(period);
+        if(datesList.isEmpty()){
+            messageSender.send(chatID, Constants.INV_PERIOD);
+            return;
+        }
+        messageSender.send(chatID, new Message("Круто"));
+    }
+
     private void handleCallbackQuery(long chatID, String buttonInfo) {
         messageSender.send(chatID, Constants.EXP_SUM);
         userStates.put(chatID, buttonInfo);
         buttonInfoState.put(chatID, buttonInfo);
     }
 
-    private void amountUpdate(long chatID, String string_amount) throws SQLException {
+    private void makeEntryAboutExpenses(long chatID, String stringAmount) throws SQLException {
         String buttonInfo = buttonInfoState.get(chatID);
         userStates.remove(chatID);
         buttonInfoState.remove(chatID);
-        float amount = dbHandler.getDatabaseTools().parseFloat(string_amount);
+        float amount = dbHandler.getDatabaseTools().parseFloat(stringAmount);
         if (amount == -1) {
             messageSender.send(chatID, Constants.INVALID_SUM);
             return;
@@ -96,6 +117,5 @@ public class UpdateHandler {
         messageSender.send(chatID, new Message("Ваша сумма в " + amount + " рублей была успешно записана"));
         dbHandler.getDatabaseTools().inputEntry(chatID, buttonInfo, amount);
     }
-
 
 }

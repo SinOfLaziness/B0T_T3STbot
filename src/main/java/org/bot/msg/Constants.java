@@ -6,6 +6,7 @@ import org.bot.functional.Keyboard;
 public class Constants {
     private final static Keyboard keyboard = new Keyboard();
     private final static AttachedButtons attachedButtons = new AttachedButtons();
+
     public final static Message EXP_SUM = new Message("Впишите потраченную сумму");
     public final static Message INVALID_SUM = new Message("Некорректный формат ввода, проверьте:\n" +
             "() Положительное ли число вы вводите \n" +
@@ -22,6 +23,7 @@ public class Constants {
             Список команд - выводит список доступных команд
             Зарегистрироваться - регистрирует пользователя""");
 
+    public final static Message INV_PERIOD = new Message("Период указан в неверном формате");
     public final static Message ASK_FOR_REG = new Message("Ты должен зарегистрироваться, чтобы использовать эту команду", keyboard.generateStartKeyboard());
     public final static Message ALR_REG = new Message("Ты уже зарегистрирован, можешь продолжить свою работу");
     public final static Message NOW_REG = new Message("Поздравляю! Теперь, ты можешь пользоваться всеми моими полезными штуками!");
@@ -31,5 +33,18 @@ public class Constants {
     public final static String COM_LIST = "Список команд";
     public final static String SET_EXP = "\uD83D\uDCB8Записать расходы";
     public final static String SEND_EXP = "Вывести список расходов";
-    public final static String WAIT_AMOUNT = "WAITING_FOR_AMOUNT";
+    public final static String WAIT_PERIOD = "WAITING_FOR_PERIOD";
+    public final static Message ASK_PERIOD = new Message("""
+    Напишите период, за который вы хотите получить статистику
+    
+    Он может быть представлен в виде двух дат формата
+    
+    <гггг-мм-дд> <гггг-мм-дд>  (пр. 2024-05-01 2024-06-13)
+    
+    Если вы хотите получить статистику за конкретный месяц:
+    
+    <гггг-мм> (пр. 2024-03)
+    
+    Порядок автоматически сделается хронологическим:""");
+
 }

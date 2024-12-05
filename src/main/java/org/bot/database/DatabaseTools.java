@@ -9,7 +9,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class DatabaseTools extends Configs {
     private final Connection dbConnection;
@@ -18,58 +20,12 @@ public class DatabaseTools extends Configs {
         this.dbConnection = dbConnection;
     }
 
-    private ResultSet getField(long chatID, String field) {
-        ResultSet resultSet = null;
-        String insert = String.format("SELECT %s, %s FROM %s WHERE %s =?", ConstantDB.USERS_ID, field, ConstantDB.USER_TABLE, ConstantDB.USERS_ID);
-        try {
-            PreparedStatement prSt = dbConnection.prepareStatement(insert);
-            prSt.setLong(1, chatID);
-            resultSet = prSt.executeQuery();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return resultSet;
-    }
-
-    public Float getFloatField(long chatID, String field) throws SQLException {
-        ResultSet result = getField(chatID, field);
-        float value = 0.0F;
-        try {
-            if (result.next()) {
-                value = result.getFloat(2);
-            }
-        } finally {
-            result.close();
-        }
-        return value;
-    }
-
     public ArrayList<Float> getAllAmounts(long chatID) throws SQLException {
-        ResultSet resultSet = null;
-        String insert = String.format("SELECT * FROM %s WHERE %s =?",
-                ConstantDB.USER_TABLE, ConstantDB.USERS_ID);
-        try {
-            PreparedStatement prSt = dbConnection.prepareStatement(insert);
-            prSt.setLong(1, chatID);
-            resultSet = prSt.executeQuery();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        ArrayList<Float> all_amounts = new ArrayList<Float>();
-        for (int i = 0; i < ConstantDB.list_type_amounts.length; ++i) {
-            all_amounts.add(getFloatField(chatID, ConstantDB.list_amounts[i]));
-        }
-        return all_amounts;
+        return null;
     }
 
     public void sendAllAmounts(long chatID, MessageSender messageSender) throws SQLException {
-        ArrayList<Float> all_amounts = getAllAmounts(chatID);
-        ExpenseChart chart = new ExpenseChart();
-        String out = "Все записанные расходы: \n";
-        for (int i = 0; i < all_amounts.size(); ++i)
-            out = String.format("%s%s: %s\n", out, ConstantDB.list_type_amounts[i],
-                    all_amounts.get(i));
-        messageSender.sendPhoto(chatID, chart.createChart(all_amounts), out);
+
     }
 
     public ResultSet getUserCount(long chatID) {
@@ -85,29 +41,50 @@ public class DatabaseTools extends Configs {
         return resultSet;
     }
 
+    public ArrayList<String> parsePeriod(String period) {
+        ArrayList<String> dates = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        if (period.matches("(\\d{4}-\\d{2}-\\d{2}) (\\d{4}-\\d{2}-\\d{2})")) {
+            String[] splitDates = period.split(" ");
+            for (String dateStr : splitDates) {
+                try {
+                    LocalDate date = LocalDate.parse(dateStr, formatter);
+                    dates.add(dateStr);
+                } catch (DateTimeParseException e) {
+                    return new ArrayList<>();
+                }
+            }
+        } else if (period.matches("\\d{4}-\\d{2}-\\d{2}")) {
+            try {
+                LocalDate date = LocalDate.parse(period, formatter);
+                dates.add(period);
+            } catch (DateTimeParseException e) {
+                return new ArrayList<>();
+            }
+        } else {
+            return new ArrayList<>();
+        }
+        Collections.sort(dates, (date1, date2) -> {
+            LocalDate d1 = LocalDate.parse(date1, formatter);
+            LocalDate d2 = LocalDate.parse(date2, formatter);
+            return d1.compareTo(d2);
+        });
+        return dates;
+    }
+
     public float parseFloat(String string_amount) throws SQLException {
-        int iFlag = 0;
-        if (string_amount.matches("(\\d+(\\.\\d+)?)+ .*?") ||
-                string_amount.matches("\\d+ .*?")) {
-            iFlag = 1;
-        } else if (string_amount.matches("(\\d+(\\.\\d+)?)+") ||
-                string_amount.matches("\\d+")) {
-            iFlag = 2;
+        if (string_amount.matches("(\\d+(\\.\\d+)?)+ .*?") || string_amount.matches("\\d+ .*?")) {
+            return Float.parseFloat(string_amount.split(" ")[0]);
+        } else if (string_amount.matches("(\\d+(\\.\\d+)?)+") || string_amount.matches("\\d+")) {
+            return Float.parseFloat(string_amount);
         } else {
             return -1;
         }
-        float amount = 0;
-        if (iFlag == 1) {
-            amount = Float.parseFloat(string_amount.split(" ")[0]);
-        } else if (iFlag == 2) {
-            amount = Float.parseFloat(string_amount);
-        }
-        return amount;
     }
 
     private String getCurrentData() {
         LocalDate currentDate = LocalDate.now();
-        DateTimeFormatter formattedDatePattern = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        DateTimeFormatter formattedDatePattern = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return currentDate.format(formattedDatePattern);
     }
 
@@ -163,4 +140,6 @@ public class DatabaseTools extends Configs {
             e.printStackTrace();
         }
     }
+
+
 }

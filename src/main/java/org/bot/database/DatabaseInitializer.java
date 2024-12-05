@@ -5,11 +5,11 @@ import org.bot.msg.MessageSender;
 
 import java.sql.*;
 
-public class DatabaseHandler extends Configs {
+public class DatabaseInitializer extends Configs {
     private Connection dbConnection;
     private DatabaseTools databaseTools;
 
-    public DatabaseHandler() {
+    public DatabaseInitializer() {
         try {
             dbConnection = getDbConnection();
             databaseTools = new DatabaseTools(dbConnection);
