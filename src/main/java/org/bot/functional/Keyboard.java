@@ -30,11 +30,5 @@ public class Keyboard {
         buttons.add(Constants.SEND_EXP);
         return createKeyboard(buttons);
     }
-
-    public ReplyKeyboardMarkup generateStartKeyboard() {
-        List<String> buttons = new ArrayList<>();
-        buttons.add(Constants.REGISTRATION);
-        buttons.add(Constants.COM_LIST);
-        return createKeyboard(buttons);
-    }
+    
 }

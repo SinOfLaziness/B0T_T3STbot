@@ -21,21 +21,23 @@ public class ConstantDB {
     public static final String USERS_TRANSFERS = "Transfers";
     public static final String USERS_ELECTRONICS_AND_TECHNOLOGY = "ElectronicsAndTechnology";
     public static final String USERS_BOOKS = "Books";
-    public static final String USERS_REGISTRATION = "User_Registration";
+    public static final String USERS_REGISTRATION = "/register";
     public static final String USERS_OTHER = "Other";
+    public static final String USERS_COMMANDS = "/help";
+    public final static String COM_LIST = "Список команд";
     public static final String REGISTRATION = "Зарегистрироваться";
     public static final String HOME_AND_RENOVATION = "\uD83C\uDFE1Дом и ремонт";
-    public static final String TRANSPORT = "Транспорт";
-    public static final String FOOD = "Еда";
-    public static final String ENTERTAINMENT = "Развлечения";
-    public static final String PHARMACIES = "Аптека";
-    public static final String COSMETICS = "Косметика";
-    public static final String ITEMS_OF_CLOTHING = "Предметы одежды";
-    public static final String SUPERMARKETS = "Супермаркет";
-    public static final String TRANSFERS = "Переводы";
-    public static final String ELECTRONICS_AND_TECHNOLOGY = "Электроника и технологии";
-    public static final String BOOKS = "Книги";
-    public static final String OTHER = "Другое";
+    public static final String TRANSPORT = "\uD83D\uDE8BТранспорт";
+    public static final String FOOD = "\uD83C\uDF55Еда";
+    public static final String ENTERTAINMENT = "\uD83C\uDF87Развлечения";
+    public static final String PHARMACIES = "\uD83D\uDC8AАптека";
+    public static final String COSMETICS = "\uD83E\uDE77Косметика";
+    public static final String ITEMS_OF_CLOTHING = "\uD83D\uDC56Предметы одежды";
+    public static final String SUPERMARKETS = "\uD83C\uDFEAСупермаркет";
+    public static final String TRANSFERS = "\uD83D\uDCE8Переводы";
+    public static final String ELECTRONICS_AND_TECHNOLOGY = "\uD83D\uDDA5\uFE0FЭлектроника и технологии";
+    public static final String BOOKS = "\uD83D\uDCDAКниги";
+    public static final String OTHER = "\uD83D\uDCDCДругое";
 
     public static final String[] list_type_amounts = {ConstantDB.HOME_AND_RENOVATION, ConstantDB.TRANSPORT, ConstantDB.FOOD,
             ConstantDB.ENTERTAINMENT, ConstantDB.PHARMACIES, ConstantDB.COSMETICS, ConstantDB.ITEMS_OF_CLOTHING,

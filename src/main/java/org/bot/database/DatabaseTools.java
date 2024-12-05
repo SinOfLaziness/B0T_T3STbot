@@ -46,8 +46,8 @@ public class DatabaseTools extends Configs {
         ArrayList<String> dates = new ArrayList<>();
         DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM");
-        if (period.matches("(\\d{4}-\\d{2}-\\d{2}) (\\d{4}-\\d{2}-\\d{2})")) {
-            String[] splitDates = period.split(" ");
+        if (period.matches("(\\d{4}-\\d{2}-\\d{2})\\s+(\\d{4}-\\d{2}-\\d{2})")) {
+            String[] splitDates = period.split("\\s+");
             for (String dateStr : splitDates) {
                 try {
                     LocalDate date = LocalDate.parse(dateStr, formatter1);

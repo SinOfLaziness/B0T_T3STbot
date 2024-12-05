@@ -24,6 +24,7 @@ public class ButtonConfig {
         expensesButtonMap.put(ConstantDB.OTHER, ConstantDB.USERS_OTHER);
 
         registrationButtonMap.put(ConstantDB.REGISTRATION, ConstantDB.USERS_REGISTRATION);
+        registrationButtonMap.put(ConstantDB.COM_LIST, ConstantDB.USERS_COMMANDS);
     }
 
     public static Map<String, String> getExpensesButtonMap() {

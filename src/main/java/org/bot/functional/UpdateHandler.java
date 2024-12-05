@@ -52,10 +52,10 @@ public class UpdateHandler {
                     messageSender.send(chatID, Constants.ALR_REG);
                 }
                 break;
-            case Constants.COM_LIST:
+            case ConstantDB.USERS_COMMANDS:
                 messageSender.send(chatID, Constants.HELP_COM);
                 break;
-            case Constants.REGISTRATION:
+            case ConstantDB.USERS_REGISTRATION:
                 if (!dbHandler.checkIfSigned(chatID)) {
                     dbHandler.caseSignUpUsers(chatID, messageSender);
                 } else {
@@ -108,6 +108,8 @@ public class UpdateHandler {
             } else {
                 messageSender.send(chatID, Constants.ALR_REG);
             }
+        }else if (Objects.equals(buttonInfo, ConstantDB.USERS_COMMANDS)){
+            messageSender.send(chatID, Constants.HELP_COM);
         } else {
             messageSender.send(chatID, Constants.EXP_SUM);
             userStates.put(chatID, buttonInfo);
