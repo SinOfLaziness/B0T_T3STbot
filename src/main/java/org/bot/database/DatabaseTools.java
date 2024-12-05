@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class DatabaseTools extends Configs {
         return null;
     }
 
-    public void sendAllAmounts(long chatID, MessageSender messageSender) throws SQLException {
+    public void sendAllAmounts(long chatID, MessageSender messageSender, ArrayList<String> datesList) throws SQLException {
 
     }
 
@@ -43,20 +44,21 @@ public class DatabaseTools extends Configs {
 
     public ArrayList<String> parsePeriod(String period) {
         ArrayList<String> dates = new ArrayList<>();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM");
         if (period.matches("(\\d{4}-\\d{2}-\\d{2}) (\\d{4}-\\d{2}-\\d{2})")) {
             String[] splitDates = period.split(" ");
             for (String dateStr : splitDates) {
                 try {
-                    LocalDate date = LocalDate.parse(dateStr, formatter);
+                    LocalDate date = LocalDate.parse(dateStr, formatter1);
                     dates.add(dateStr);
                 } catch (DateTimeParseException e) {
                     return new ArrayList<>();
                 }
             }
-        } else if (period.matches("\\d{4}-\\d{2}-\\d{2}")) {
+        } else if (period.matches("\\d{4}-\\d{2}")) {
             try {
-                LocalDate date = LocalDate.parse(period, formatter);
+                YearMonth yearMonth = YearMonth.parse(period, formatter2);
                 dates.add(period);
             } catch (DateTimeParseException e) {
                 return new ArrayList<>();
@@ -64,19 +66,19 @@ public class DatabaseTools extends Configs {
         } else {
             return new ArrayList<>();
         }
-        Collections.sort(dates, (date1, date2) -> {
-            LocalDate d1 = LocalDate.parse(date1, formatter);
-            LocalDate d2 = LocalDate.parse(date2, formatter);
-            return d1.compareTo(d2);
-        });
+        if (dates.size()>1) {
+            Collections.sort(dates, (date1, date2) -> {
+                LocalDate d1 = LocalDate.parse(date1, formatter1);
+                LocalDate d2 = LocalDate.parse(date2, formatter1);
+                return d1.compareTo(d2);
+            });
+        }
         return dates;
     }
 
     public float parseFloat(String string_amount) throws SQLException {
-        if (string_amount.matches("(\\d+(\\.\\d+)?)+ .*?") || string_amount.matches("\\d+ .*?")) {
-            return Float.parseFloat(string_amount.split(" ")[0]);
-        } else if (string_amount.matches("(\\d+(\\.\\d+)?)+") || string_amount.matches("\\d+")) {
-            return Float.parseFloat(string_amount);
+         if (string_amount.matches("(\\d+(\\.\\d+)?)") && !string_amount.matches("0")) {
+             return Float.parseFloat(string_amount);
         } else {
             return -1;
         }

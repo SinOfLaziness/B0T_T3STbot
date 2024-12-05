@@ -96,6 +96,7 @@ public class UpdateHandler {
             messageSender.send(chatID, Constants.INV_PERIOD);
             return;
         }
+        //dbHandler.getDatabaseTools().sendAllAmounts(chatID, messageSender, datesList);
         messageSender.send(chatID, new Message("Круто"));
     }
 
