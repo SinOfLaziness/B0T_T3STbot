@@ -23,7 +23,7 @@ public class ConstantDB {
     public static final String USERS_BOOKS = "Books";
     public static final String USERS_CONDITION = "User_Condition";
     public static final String USERS_OTHER = "Other";
-    public static final String HOME_AND_RENOVATION = "Дом и ремонт";
+    public static final String HOME_AND_RENOVATION = "\uD83C\uDFE1Дом и ремонт";
     public static final String TRANSPORT = "Транспорт";
     public static final String FOOD = "Еда";
     public static final String ENTERTAINMENT = "Развлечения";

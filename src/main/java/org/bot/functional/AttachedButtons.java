@@ -1,5 +1,6 @@
 package org.bot.functional;
 
+import com.vdurmont.emoji.EmojiParser;
 import org.bot.database.ConstantDB;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
@@ -27,7 +28,7 @@ public class AttachedButtons {
         private final String callbackData;
 
         Button(String text, String callbackData) {
-            this.text = text;
+            this.text = EmojiParser.parseToUnicode(text);
             this.callbackData = callbackData;
         }
 
