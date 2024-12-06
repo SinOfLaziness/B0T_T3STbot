@@ -15,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class DatabaseTools extends Configs {
     private final Connection dbConnection;
@@ -44,40 +45,40 @@ public class DatabaseTools extends Configs {
         return resultSet;
     }
 
-    private ArrayList<String> parsePeriod(String period, int flag) {
-        ArrayList<String> dates = new ArrayList<>();
-        DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM");
+    private List<String> parsePeriod(String period, int flag) {
+        List<String> dates = new ArrayList<>();
+        DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM");
+        DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         if (period.matches("(\\d{4}-\\d{2}-\\d{2})\\s+(\\d{4}-\\d{2}-\\d{2})") && flag == 2) {
             String[] splitDates = period.split("\\s+");
             for (String dateStr : splitDates) {
                 try {
-                    LocalDate date = LocalDate.parse(dateStr, formatter1);
-                    if (!dateStr.equals(date.format(formatter1))) {
-                        return new ArrayList<>();
+                    LocalDate date = LocalDate.parse(dateStr, formatter2);
+                    if (!dateStr.equals(date.format(formatter2))) {
+                        return List.of();
                     }
                     dates.add(dateStr);
                 } catch (DateTimeParseException e) {
-                    return new ArrayList<>();
+                    return List.of();
                 }
             }
         } else if (period.matches("\\d{4}-\\d{2}") && flag == 1) {
             try {
-                YearMonth yearMonth = YearMonth.parse(period, formatter2);
-                if (!period.equals(yearMonth.format(formatter2))) {
-                    return new ArrayList<>();
+                YearMonth yearMonth = YearMonth.parse(period, formatter1);
+                if (!period.equals(yearMonth.format(formatter1))) {
+                    return List.of();
                 }
                 dates.add(period);
             } catch (DateTimeParseException e) {
-                return new ArrayList<>();
+                return List.of();
             }
         } else {
-            return new ArrayList<>();
+            return List.of();
         }
         if (dates.size() > 1) {
             Collections.sort(dates, (date1, date2) -> {
-                LocalDate d1 = LocalDate.parse(date1, formatter1);
-                LocalDate d2 = LocalDate.parse(date2, formatter1);
+                LocalDate d1 = LocalDate.parse(date1, formatter2);
+                LocalDate d2 = LocalDate.parse(date2, formatter2);
                 return d1.compareTo(d2);
             });
         }
@@ -162,7 +163,7 @@ public class DatabaseTools extends Configs {
     }
 
     public void makeStatisticAboutExpenses(long chatID, String period, int flag, MessageSender messageSender) throws SQLException {
-        ArrayList<String> datesList = parsePeriod(period, flag);
+        List<String> datesList = parsePeriod(period, flag);
         if (datesList.isEmpty()) {
             messageSender.send(chatID, Constants.INV_PERIOD);
             return;
