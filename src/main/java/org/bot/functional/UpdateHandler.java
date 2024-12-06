@@ -3,7 +3,6 @@ package org.bot.functional;
 import org.bot.database.ConstantDB;
 import org.bot.database.DatabaseInitializer;
 import org.bot.msg.Constants;
-import org.bot.msg.Message;
 import org.bot.msg.MessageSender;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -11,7 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
+
 
 public class UpdateHandler {
 

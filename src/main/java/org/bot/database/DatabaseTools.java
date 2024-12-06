@@ -53,6 +53,9 @@ public class DatabaseTools extends Configs {
             for (String dateStr : splitDates) {
                 try {
                     LocalDate date = LocalDate.parse(dateStr, formatter1);
+                    if (!dateStr.equals(date.format(formatter1))) {
+                        return new ArrayList<>();
+                    }
                     dates.add(dateStr);
                 } catch (DateTimeParseException e) {
                     return new ArrayList<>();
@@ -61,6 +64,9 @@ public class DatabaseTools extends Configs {
         } else if (period.matches("\\d{4}-\\d{2}") && flag == 1) {
             try {
                 YearMonth yearMonth = YearMonth.parse(period, formatter2);
+                if (!period.equals(yearMonth.format(formatter2))) {
+                    return new ArrayList<>();
+                }
                 dates.add(period);
             } catch (DateTimeParseException e) {
                 return new ArrayList<>();
