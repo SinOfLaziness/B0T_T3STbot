@@ -135,7 +135,7 @@ public class UpdateHandler {
             messageSender.send(chatID, Constants.INVALID_SUM);
             return;
         }
-        messageSender.send(chatID, new Message("Ваша сумма в " + amount + " рублей была успешно записана"));
+        messageSender.send(chatID, new Message("Ваша сумма в " + amount + " рублей была успешно записана\uD83C\uDF89"));
         dbHandler.getDatabaseTools().inputEntry(chatID, buttonInfo, amount);
     }
 
