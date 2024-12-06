@@ -42,11 +42,11 @@ public class DatabaseTools extends Configs {
         return resultSet;
     }
 
-    public ArrayList<String> parsePeriod(String period) {
+    public ArrayList<String> parsePeriod(String period, int flag) {
         ArrayList<String> dates = new ArrayList<>();
         DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM");
-        if (period.matches("(\\d{4}-\\d{2}-\\d{2})\\s+(\\d{4}-\\d{2}-\\d{2})")) {
+        if (period.matches("(\\d{4}-\\d{2}-\\d{2})\\s+(\\d{4}-\\d{2}-\\d{2})") && flag == 2) {
             String[] splitDates = period.split("\\s+");
             for (String dateStr : splitDates) {
                 try {
@@ -56,7 +56,7 @@ public class DatabaseTools extends Configs {
                     return new ArrayList<>();
                 }
             }
-        } else if (period.matches("\\d{4}-\\d{2}")) {
+        } else if (period.matches("\\d{4}-\\d{2}") && flag == 1) {
             try {
                 YearMonth yearMonth = YearMonth.parse(period, formatter2);
                 dates.add(period);

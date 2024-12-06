@@ -30,24 +30,18 @@ public class Constants {
     public final static String START = "/start";
     public final static String COM_LIST = "Список команд";
     public final static String SET_EXP = "\uD83D\uDCB8Записать расходы";
-    public final static String SEND_EXP = "Вывести список расходов";
+    public final static String SEND_EXP = "\uD83D\uDCCAВывести список расходов";
     public final static String WAIT_PERIOD = "WAITING_FOR_PERIOD";
     public final static Message ASK_PERIOD = new Message("""
-            Напишите период, за который вы хотите получить статистику
-            
-            Он может быть представлен в виде двух дат формата, записанных через пробел📆
-            
-            гггг-мм-дд   гггг-мм-дд
-            
-            Если вы хотите получить статистику за конкретный месяц📅:
-            
-            гггг-мм
-            
-            Порядок автоматически сделается хронологическим""");
+            Укажите, каким образом вы хотите записать интервал времени📆""",attachedButtons.createButtonsForPeriodFormat());
+    public final static Message MONTH_PATTERN = new Message("""
+            📅Запишите месяц в формате:\n\nгггг-мм""");
+    public final static Message PERIOD_PATTERN = new Message("""
+            🗓️Укажите период, за который вы хотите получить статистику\nХронологический порядок выставится автоматически:\n\nгггг-мм-дд    гггг-мм-дд""");
     public final static Message EXP_LIST = new Message(String.format
-            ("\uD83D\uDCC9Какие расходы ты хочешь указать?\n\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n",
+            ("Какие расходы ты хочешь указать?\n\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n",
                     ConstantDB.HOME_AND_RENOVATION,ConstantDB.ITEMS_OF_CLOTHING,ConstantDB.TRANSPORT,
-                    ConstantDB.ELECTRONICS_AND_TECHNOLOGY,ConstantDB.BOOKS,ConstantDB.OTHER,ConstantDB.TRANSFERS,
+                    ConstantDB.ELECTRONICS,ConstantDB.BILL_PAYMENT,ConstantDB.OTHER,ConstantDB.TRANSFERS,
                     ConstantDB.ENTERTAINMENT,ConstantDB.COSMETICS,ConstantDB.SUPERMARKETS,ConstantDB.PHARMACIES,
                     ConstantDB.FOOD), attachedButtons.createButtonsForExpenses());
 }

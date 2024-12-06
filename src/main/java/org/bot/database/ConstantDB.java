@@ -19,11 +19,15 @@ public class ConstantDB {
     public static final String USERS_ITEMS_OF_CLOTHING = "ItemsOfClothing";
     public static final String USERS_SUPERMARKETS = "Supermarkets";
     public static final String USERS_TRANSFERS = "Transfers";
-    public static final String USERS_ELECTRONICS_AND_TECHNOLOGY = "ElectronicsAndTechnology";
-    public static final String USERS_BOOKS = "Books";
+    public static final String USERS_ELECTRONICS = "Electronics";
+    public static final String USERS_BILL_PAYMENT = "BillPayment";
     public static final String USERS_REGISTRATION = "/register";
     public static final String USERS_OTHER = "Other";
     public static final String USERS_COMMANDS = "/help";
+    public static final String USERS_MONTH = "Month";
+    public static final String USERS_PERIOD = "Period";
+    public static final String MONTH = "Указать месяц";
+    public static final String PERIOD = "Указать период";
     public final static String COM_LIST = "Список команд";
     public static final String REGISTRATION = "Зарегистрироваться";
     public static final String HOME_AND_RENOVATION = "\uD83C\uDFE1Дом и ремонт";
@@ -35,15 +39,15 @@ public class ConstantDB {
     public static final String ITEMS_OF_CLOTHING = "\uD83D\uDC56Предметы одежды";
     public static final String SUPERMARKETS = "\uD83C\uDFEAСупермаркет";
     public static final String TRANSFERS = "\uD83D\uDCE8Переводы";
-    public static final String ELECTRONICS_AND_TECHNOLOGY = "\uD83D\uDDA5\uFE0FЭлектроника и технологии";
-    public static final String BOOKS = "\uD83D\uDCDAКниги";
+    public static final String ELECTRONICS = "\uD83D\uDDA5\uFE0FЭлектроника";
+    public static final String BILL_PAYMENT = "\uD83D\uDCCBОплата счетов";
     public static final String OTHER = "\uD83D\uDCDCДругое";
 
     public static final String[] list_type_amounts = {ConstantDB.HOME_AND_RENOVATION, ConstantDB.TRANSPORT, ConstantDB.FOOD,
             ConstantDB.ENTERTAINMENT, ConstantDB.PHARMACIES, ConstantDB.COSMETICS, ConstantDB.ITEMS_OF_CLOTHING,
-            ConstantDB.SUPERMARKETS, ConstantDB.TRANSFERS, ConstantDB.ELECTRONICS_AND_TECHNOLOGY, ConstantDB.BOOKS, ConstantDB.OTHER};
+            ConstantDB.SUPERMARKETS, ConstantDB.TRANSFERS, ConstantDB.ELECTRONICS, ConstantDB.BILL_PAYMENT, ConstantDB.OTHER};
     public static final String[] list_amounts = {ConstantDB.USERS_HOME_AND_RENOVATION, ConstantDB.USERS_TRANSPORT, ConstantDB.USERS_FOOD,
             ConstantDB.USERS_ENTERTAINMENT, ConstantDB.USERS_PHARMACIES, ConstantDB.USERS_COSMETICS,
             ConstantDB.USERS_ITEMS_OF_CLOTHING, ConstantDB.USERS_SUPERMARKETS, ConstantDB.USERS_TRANSFERS,
-            ConstantDB.USERS_ELECTRONICS_AND_TECHNOLOGY, ConstantDB.USERS_BOOKS, ConstantDB.USERS_OTHER};
+            ConstantDB.USERS_ELECTRONICS, ConstantDB.USERS_BILL_PAYMENT, ConstantDB.USERS_OTHER};
 }

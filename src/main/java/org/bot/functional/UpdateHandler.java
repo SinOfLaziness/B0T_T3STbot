@@ -72,7 +72,6 @@ public class UpdateHandler {
             case Constants.SEND_EXP:
                 if (dbHandler.checkIfSigned(chatID)) {
                     messageSender.send(chatID, Constants.ASK_PERIOD);
-                    userStates.put(chatID, Constants.WAIT_PERIOD);
                 } else {
                     messageSender.send(chatID, Constants.ASK_FOR_REG);
                 }
@@ -83,16 +82,20 @@ public class UpdateHandler {
     }
 
     private void handleUserStates(long chatID, String sourceText) throws SQLException {
-        if (Objects.equals(userStates.get(chatID), Constants.WAIT_PERIOD)) {
-            makeStatisticAboutExpenses(chatID, sourceText);
-        } else {
+        if (Objects.equals(userStates.get(chatID), ConstantDB.USERS_MONTH)) {
+            int flag = 1;
+            makeStatisticAboutExpenses(chatID, sourceText, flag);
+        } else if (Objects.equals(userStates.get(chatID), ConstantDB.USERS_PERIOD)) {
+            int flag = 2;
+            makeStatisticAboutExpenses(chatID, sourceText, flag);
+        }else{
             makeEntryAboutExpenses(chatID, sourceText);
         }
     }
 
-    private void makeStatisticAboutExpenses(long chatID, String period) throws SQLException {
+    private void makeStatisticAboutExpenses(long chatID, String period, int flag) throws SQLException {
         userStates.remove(chatID);
-        ArrayList<String> datesList = dbHandler.getDatabaseTools().parsePeriod(period);
+        ArrayList<String> datesList = dbHandler.getDatabaseTools().parsePeriod(period, flag);
         if (datesList.isEmpty()) {
             messageSender.send(chatID, Constants.INV_PERIOD);
             return;
@@ -110,7 +113,13 @@ public class UpdateHandler {
             }
         }else if (Objects.equals(buttonInfo, ConstantDB.USERS_COMMANDS)){
             messageSender.send(chatID, Constants.HELP_COM);
-        } else {
+        } else if (Objects.equals(buttonInfo, ConstantDB.USERS_MONTH)){
+            messageSender.send(chatID, Constants.MONTH_PATTERN);
+            userStates.put(chatID, ConstantDB.USERS_MONTH);
+        }else if (Objects.equals(buttonInfo, ConstantDB.USERS_PERIOD)) {
+            messageSender.send(chatID, Constants.PERIOD_PATTERN);
+            userStates.put(chatID, ConstantDB.USERS_PERIOD);
+        }else {
             messageSender.send(chatID, Constants.EXP_SUM);
             userStates.put(chatID, buttonInfo);
             buttonInfoState.put(chatID, buttonInfo);

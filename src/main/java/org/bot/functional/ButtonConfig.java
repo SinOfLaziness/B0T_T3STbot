@@ -8,6 +8,7 @@ import java.util.Map;
 public class ButtonConfig {
     private static final Map<String, String> expensesButtonMap = new HashMap<>();
     private static final Map<String, String> registrationButtonMap = new HashMap<>();
+    private static final Map<String, String> askForPeriodFormatButtonMap = new HashMap<>();
 
     static {
         expensesButtonMap.put(ConstantDB.HOME_AND_RENOVATION, ConstantDB.USERS_HOME_AND_RENOVATION);
@@ -19,12 +20,15 @@ public class ButtonConfig {
         expensesButtonMap.put(ConstantDB.ITEMS_OF_CLOTHING, ConstantDB.USERS_ITEMS_OF_CLOTHING);
         expensesButtonMap.put(ConstantDB.SUPERMARKETS, ConstantDB.USERS_SUPERMARKETS);
         expensesButtonMap.put(ConstantDB.TRANSFERS, ConstantDB.USERS_TRANSFERS);
-        expensesButtonMap.put(ConstantDB.ELECTRONICS_AND_TECHNOLOGY, ConstantDB.USERS_ELECTRONICS_AND_TECHNOLOGY);
-        expensesButtonMap.put(ConstantDB.BOOKS, ConstantDB.USERS_BOOKS);
+        expensesButtonMap.put(ConstantDB.ELECTRONICS, ConstantDB.USERS_ELECTRONICS);
+        expensesButtonMap.put(ConstantDB.BILL_PAYMENT, ConstantDB.USERS_BILL_PAYMENT);
         expensesButtonMap.put(ConstantDB.OTHER, ConstantDB.USERS_OTHER);
 
         registrationButtonMap.put(ConstantDB.REGISTRATION, ConstantDB.USERS_REGISTRATION);
         registrationButtonMap.put(ConstantDB.COM_LIST, ConstantDB.USERS_COMMANDS);
+
+        askForPeriodFormatButtonMap.put(ConstantDB.MONTH, ConstantDB.USERS_MONTH);
+        askForPeriodFormatButtonMap.put(ConstantDB.PERIOD, ConstantDB.USERS_PERIOD);
     }
 
     public static Map<String, String> getExpensesButtonMap() {
@@ -33,5 +37,9 @@ public class ButtonConfig {
 
     public static Map<String, String> getRegistrationButtonMap() {
         return registrationButtonMap;
+    }
+
+    public static Map<String, String> getPeriodFormatButtonMap() {
+        return askForPeriodFormatButtonMap;
     }
 }

@@ -40,4 +40,9 @@ public class AttachedButtons {
         Map<String, String> buttonMap = ButtonConfig.getRegistrationButtonMap();
         return createButtons(buttonMap);
     }
+
+    public InlineKeyboardMarkup createButtonsForPeriodFormat() {
+        Map<String, String> buttonMap = ButtonConfig.getPeriodFormatButtonMap();
+        return createButtons(buttonMap);
+    }
 }
