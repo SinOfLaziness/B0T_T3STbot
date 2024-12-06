@@ -9,11 +9,9 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
 
 public class UpdateHandler {
 
@@ -82,61 +80,49 @@ public class UpdateHandler {
     }
 
     private void handleUserStates(long chatID, String sourceText) throws SQLException {
-        if (Objects.equals(userStates.get(chatID), ConstantDB.USERS_MONTH)) {
-            int flag = 1;
-            makeStatisticAboutExpenses(chatID, sourceText, flag);
-        } else if (Objects.equals(userStates.get(chatID), ConstantDB.USERS_PERIOD)) {
-            int flag = 2;
-            makeStatisticAboutExpenses(chatID, sourceText, flag);
-        }else{
-            makeEntryAboutExpenses(chatID, sourceText);
+        switch (userStates.get(chatID)) {
+            case ConstantDB.USERS_MONTH:
+                int flag = 1;
+                dbHandler.getDatabaseTools().makeStatisticAboutExpenses(chatID, sourceText, flag, messageSender);
+                break;
+            case ConstantDB.USERS_PERIOD:
+                flag = 2;
+                dbHandler.getDatabaseTools().makeStatisticAboutExpenses(chatID, sourceText, flag, messageSender);
+                break;
+            default:
+                String buttonInfo = buttonInfoState.get(chatID);
+                buttonInfoState.remove(chatID);
+                dbHandler.getDatabaseTools().makeEntryAboutExpenses(chatID, sourceText, buttonInfo, messageSender);
+                break;
         }
-    }
-
-    private void makeStatisticAboutExpenses(long chatID, String period, int flag) throws SQLException {
         userStates.remove(chatID);
-        ArrayList<String> datesList = dbHandler.getDatabaseTools().parsePeriod(period, flag);
-        if (datesList.isEmpty()) {
-            messageSender.send(chatID, Constants.INV_PERIOD);
-            return;
-        }
-        //dbHandler.getDatabaseTools().sendAllAmounts(chatID, messageSender, datesList);
-        messageSender.send(chatID, new Message("Круто"));
     }
 
     private void handleCallbackQuery(long chatID, String buttonInfo) throws SQLException {
-        if (Objects.equals(buttonInfo, ConstantDB.USERS_REGISTRATION)) {
-            if (!dbHandler.checkIfSigned(chatID)) {
-                dbHandler.caseSignUpUsers(chatID, messageSender);
-            } else {
-                messageSender.send(chatID, Constants.ALR_REG);
-            }
-        }else if (Objects.equals(buttonInfo, ConstantDB.USERS_COMMANDS)){
-            messageSender.send(chatID, Constants.HELP_COM);
-        } else if (Objects.equals(buttonInfo, ConstantDB.USERS_MONTH)){
-            messageSender.send(chatID, Constants.MONTH_PATTERN);
-            userStates.put(chatID, ConstantDB.USERS_MONTH);
-        }else if (Objects.equals(buttonInfo, ConstantDB.USERS_PERIOD)) {
-            messageSender.send(chatID, Constants.PERIOD_PATTERN);
-            userStates.put(chatID, ConstantDB.USERS_PERIOD);
-        }else {
-            messageSender.send(chatID, Constants.EXP_SUM);
-            userStates.put(chatID, buttonInfo);
-            buttonInfoState.put(chatID, buttonInfo);
+        switch (buttonInfo) {
+            case ConstantDB.USERS_REGISTRATION:
+                if (!dbHandler.checkIfSigned(chatID)) {
+                    dbHandler.caseSignUpUsers(chatID, messageSender);
+                } else {
+                    messageSender.send(chatID, Constants.ALR_REG);
+                }
+                break;
+            case ConstantDB.USERS_COMMANDS:
+                messageSender.send(chatID, Constants.HELP_COM);
+                break;
+            case ConstantDB.USERS_MONTH:
+                messageSender.send(chatID, Constants.MONTH_PATTERN);
+                userStates.put(chatID, ConstantDB.USERS_MONTH);
+                break;
+            case ConstantDB.USERS_PERIOD:
+                messageSender.send(chatID, Constants.PERIOD_PATTERN);
+                userStates.put(chatID, ConstantDB.USERS_PERIOD);
+                break;
+            default:
+                messageSender.send(chatID, Constants.EXP_SUM);
+                userStates.put(chatID, buttonInfo);
+                buttonInfoState.put(chatID, buttonInfo);
+                break;
         }
     }
-
-    private void makeEntryAboutExpenses(long chatID, String stringAmount) throws SQLException {
-        String buttonInfo = buttonInfoState.get(chatID);
-        userStates.remove(chatID);
-        buttonInfoState.remove(chatID);
-        float amount = dbHandler.getDatabaseTools().parseFloat(stringAmount);
-        if (amount == -1) {
-            messageSender.send(chatID, Constants.INVALID_SUM);
-            return;
-        }
-        messageSender.send(chatID, new Message("Ваша сумма в " + amount + " рублей была успешно записана\uD83C\uDF89"));
-        dbHandler.getDatabaseTools().inputEntry(chatID, buttonInfo, amount);
-    }
-
 }

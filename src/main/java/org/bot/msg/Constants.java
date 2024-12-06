@@ -34,10 +34,5 @@ public class Constants {
             📅Запишите месяц в формате:\n\nгггг-мм""");
     public final static Message PERIOD_PATTERN = new Message("""
             🗓️Укажите период, за который вы хотите получить статистику\nХронологический порядок выставится автоматически:\n\nгггг-мм-дд    гггг-мм-дд""");
-    public final static Message EXP_LIST = new Message(String.format
-            ("Какие расходы ты хочешь указать?\n\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n",
-                    ConstantDB.HOME_AND_RENOVATION,ConstantDB.ITEMS_OF_CLOTHING,ConstantDB.TRANSPORT,
-                    ConstantDB.ELECTRONICS,ConstantDB.BILL_PAYMENT,ConstantDB.OTHER,ConstantDB.TRANSFERS,
-                    ConstantDB.ENTERTAINMENT,ConstantDB.COSMETICS,ConstantDB.SUPERMARKETS,ConstantDB.PHARMACIES,
-                    ConstantDB.FOOD), attachedButtons.createButtonsForExpenses());
+    public final static Message EXP_LIST = new Message("Какие расходы ты хочешь указать?⬇\uFE0F", attachedButtons.createButtonsForExpenses());
 }

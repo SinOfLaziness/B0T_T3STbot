@@ -1,6 +1,8 @@
 package org.bot.database;
 
 import org.bot.functional.ExpenseChart;
+import org.bot.msg.Constants;
+import org.bot.msg.Message;
 import org.bot.msg.MessageSender;
 
 import java.sql.Connection;
@@ -21,11 +23,11 @@ public class DatabaseTools extends Configs {
         this.dbConnection = dbConnection;
     }
 
-    public ArrayList<Float> getAllAmounts(long chatID) throws SQLException {
+    private ArrayList<Float> getAllAmounts(long chatID) throws SQLException {
         return null;
     }
 
-    public void sendAllAmounts(long chatID, MessageSender messageSender, ArrayList<String> datesList) throws SQLException {
+    private void sendAllAmounts(long chatID, MessageSender messageSender, ArrayList<String> datesList) throws SQLException {
 
     }
 
@@ -42,7 +44,7 @@ public class DatabaseTools extends Configs {
         return resultSet;
     }
 
-    public ArrayList<String> parsePeriod(String period, int flag) {
+    private ArrayList<String> parsePeriod(String period, int flag) {
         ArrayList<String> dates = new ArrayList<>();
         DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM");
@@ -76,7 +78,7 @@ public class DatabaseTools extends Configs {
         return dates;
     }
 
-    public float parseFloat(String string_amount) throws SQLException {
+    private float parseFloat(String string_amount) throws SQLException {
         if (string_amount.matches("(\\d+(\\.\\d+)?)") && !string_amount.matches("0")) {
             return Float.parseFloat(string_amount);
         } else {
@@ -119,7 +121,7 @@ public class DatabaseTools extends Configs {
         }
     }
 
-    public void inputEntry(long chatID, String category, float insertable) {
+    private void inputEntry(long chatID, String category, float insertable) {
         addNewCategory(category);
         String currentData = getCurrentData();
         String insert = String.format("INSERT INTO %s(%s,%s,%s,%s) " +
@@ -143,5 +145,22 @@ public class DatabaseTools extends Configs {
         }
     }
 
+    public void makeEntryAboutExpenses(long chatID, String stringAmount, String buttonInfo, MessageSender messageSender) throws SQLException {
+        float amount = parseFloat(stringAmount);
+        if (amount == -1) {
+            messageSender.send(chatID, Constants.INVALID_SUM);
+            return;
+        }
+        messageSender.send(chatID, new Message("Ваша сумма в " + amount + " рублей была успешно записана\uD83C\uDF89"));
+        inputEntry(chatID, buttonInfo, amount);
+    }
 
+    public void makeStatisticAboutExpenses(long chatID, String period, int flag, MessageSender messageSender) throws SQLException {
+        ArrayList<String> datesList = parsePeriod(period, flag);
+        if (datesList.isEmpty()) {
+            messageSender.send(chatID, Constants.INV_PERIOD);
+            return;
+        }
+        messageSender.send(chatID, new Message("Круто"));
+    }
 }
