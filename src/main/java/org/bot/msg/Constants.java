@@ -11,7 +11,7 @@ public class Constants {
     public final static Message EXP_SUM = new Message("\uD83D\uDCB3 Впишите потраченную сумму в рублях");
     public final static Message INVALID_SUM = new Message("Некорректный формат ввода, проверьте:\n" +
             "\uD83D\uDFE9 Положительное ли число вы вводите \n" +
-            "\uD83D\uDCBE Соответствует ли текст формату ввода:\n\n❗ПОЛОЖИТЕЛЬНОЕ ЧИСЛО МЕНЕЕ 10 ТРИЛЛИОНОВ \n");
+            "\uD83D\uDCBE Соответствует ли текст формату ввода:\n\n❗ПОЛОЖИТЕЛЬНОЕ ЧИСЛО МЕНЕЕ 10 ТРИЛЛИОНОВ. ЧИСЛО ЗНАКОВ ПОСЛЕ ЗАПЯТОЙ НЕ БОЛЕЕ ДВУХ");
     public final static Message UNK_COM = new Message("Извини, такую команду я не знаю\uD83E\uDD14. Напиши /help, чтобы увидеть полный список команд");
     public final static Message EMPTY_RESULT = new Message("За этот период не было записано ни одной траты\uD83E\uDD74");
     public final static Message HELP_COM = new Message("""
