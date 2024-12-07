@@ -1,10 +1,9 @@
 package org.bot.database;
 
-import org.bot.functional.ExpenseChart;
+import org.bot.functional.ButtonConfig;
 import org.bot.msg.Constants;
 import org.bot.msg.Message;
 import org.bot.msg.MessageSender;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,9 +12,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class DatabaseTools extends Configs {
     private final Connection dbConnection;
@@ -24,15 +21,65 @@ public class DatabaseTools extends Configs {
         this.dbConnection = dbConnection;
     }
 
-    private ArrayList<Float> getAllAmounts(long chatID) throws SQLException {
-        return null;
+    public void signUpUser(String telegramID) {
+        String insert = String.format("INSERT INTO %s(%s) VALUES (?)",
+                ConstantDB.USER_TABLE, ConstantDB.USERS_ID);
+        try (PreparedStatement prSt = dbConnection.prepareStatement(insert)) {
+            prSt.setInt(1, Integer.parseInt(telegramID));
+            prSt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void sendAllAmounts(long chatID, MessageSender messageSender, ArrayList<String> datesList) throws SQLException {
-
+    public boolean checkIfSigned(long chatID) throws SQLException {
+        int counter = 0;
+        try (ResultSet result = getUserCount(chatID)) {
+            if (result.next()) {
+                counter = result.getInt(1);
+            }
+        }
+        return counter >= 1;
     }
 
-    public ResultSet getUserCount(long chatID) {
+    private Map<String, Double> getAllAmounts(long chatID, List<String> datesList, MessageSender messageSender) throws SQLException {
+        String firstDate = datesList.get(0);
+        String secondDate = datesList.get(1);
+        String insert = String.format(
+                "SELECT %s.%s, %s.%s FROM %s " +
+                        "JOIN %s ON %s.%s = %s.%s " +
+                        "JOIN %s ON %s.%s = %s.%s " +
+                        "WHERE %s.%s = ? AND %s.%s BETWEEN ? AND ? " +
+                        "ORDER BY %s.%s",
+                ConstantDB.CATEGORIES_TABLE, ConstantDB.TABLE_CATEGORY, ConstantDB.ACCOUNTINGS_TABLE, ConstantDB.TABLE_AMOUNT, ConstantDB.ACCOUNTINGS_TABLE,
+                ConstantDB.CATEGORIES_TABLE, ConstantDB.ACCOUNTINGS_TABLE, ConstantDB.TABLE_CATEGORIES, ConstantDB.CATEGORIES_TABLE, ConstantDB.TABLE_CATEGORIES,
+                ConstantDB.USER_TABLE, ConstantDB.ACCOUNTINGS_TABLE, ConstantDB.TABLE_USER_ID, ConstantDB.USER_TABLE, ConstantDB.TABLE_USER_ID,
+                ConstantDB.USER_TABLE, ConstantDB.USERS_ID, ConstantDB.ACCOUNTINGS_TABLE, ConstantDB.TABLE_DATE,
+                ConstantDB.ACCOUNTINGS_TABLE, ConstantDB.TABLE_DATE
+        );
+        try (PreparedStatement prSt = dbConnection.prepareStatement(insert)) {
+            prSt.setLong(1, chatID);
+            prSt.setString(2, firstDate);
+            prSt.setString(3, secondDate);
+            ResultSet resultSet = prSt.executeQuery();
+            return summarizeExpenses(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Collections.emptyMap();
+    }
+
+    private Map<String, Double> summarizeExpenses(ResultSet resultSet) throws SQLException {
+        Map<String, Double> categorySumMap = new HashMap<>();
+        while (resultSet.next()) {
+            String category = resultSet.getString(ConstantDB.TABLE_CATEGORY);
+            double amount = resultSet.getDouble(ConstantDB.TABLE_AMOUNT);
+            categorySumMap.put(category, categorySumMap.getOrDefault(category, 0.0) + amount);
+        }
+        return categorySumMap;
+    }
+
+    private ResultSet getUserCount(long chatID) {
         ResultSet resultSet = null;
         String insert = "SELECT COUNT(*) FROM " + ConstantDB.USER_TABLE + " WHERE " + ConstantDB.USERS_ID + "=?";
         try {
@@ -68,25 +115,24 @@ public class DatabaseTools extends Configs {
                 if (!period.equals(yearMonth.format(formatter1))) {
                     return List.of();
                 }
-                dates.add(period);
+                dates.add(yearMonth.atDay(1).format(formatter2));
+                dates.add(yearMonth.atEndOfMonth().format(formatter2));
             } catch (DateTimeParseException e) {
                 return List.of();
             }
         } else {
             return List.of();
         }
-        if (dates.size() > 1) {
-            Collections.sort(dates, (date1, date2) -> {
-                LocalDate d1 = LocalDate.parse(date1, formatter2);
-                LocalDate d2 = LocalDate.parse(date2, formatter2);
-                return d1.compareTo(d2);
-            });
-        }
+        Collections.sort(dates, (date1, date2) -> {
+            LocalDate d1 = LocalDate.parse(date1, formatter2);
+            LocalDate d2 = LocalDate.parse(date2, formatter2);
+            return d1.compareTo(d2);
+        });
         return dates;
     }
 
-    private float parseFloat(String string_amount) throws SQLException {
-        if (string_amount.matches("(\\d+(\\.\\d+)?)") && !string_amount.matches("0")) {
+    private float parseFloat(String string_amount) {
+        if (string_amount.matches("(\\d{1,12}(\\.\\d+)?)") && !string_amount.matches("0")) {
             return Float.parseFloat(string_amount);
         } else {
             return -1;
@@ -131,18 +177,23 @@ public class DatabaseTools extends Configs {
     private void inputEntry(long chatID, String category, float insertable) {
         addNewCategory(category);
         String currentData = getCurrentData();
-        String insert = String.format("INSERT INTO %s(%s,%s,%s,%s) " +
-                        "VALUES ((SELECT %s FROM %s WHERE %s = ?),(SELECT %s FROM %s WHERE %s = ?),?,?)",
-                ConstantDB.ACCOUNTINGS_TABLE, ConstantDB.ACCOUNTINGS_TABLE + '.' + ConstantDB.TABLE_USER_ID,
-                ConstantDB.ACCOUNTINGS_TABLE + '.' + ConstantDB.TABLE_CATEGORIES,
-                ConstantDB.ACCOUNTINGS_TABLE + '.' + ConstantDB.TABLE_DATE,
-                ConstantDB.ACCOUNTINGS_TABLE + '.' + ConstantDB.TABLE_AMOUNT,
-                ConstantDB.USER_TABLE + '.' + ConstantDB.TABLE_USER_ID, ConstantDB.USER_TABLE,
-                ConstantDB.USER_TABLE + '.' + ConstantDB.USERS_ID,
-                ConstantDB.CATEGORIES_TABLE + '.' + ConstantDB.TABLE_CATEGORIES, ConstantDB.CATEGORIES_TABLE,
-                ConstantDB.CATEGORIES_TABLE + '.' + ConstantDB.TABLE_CATEGORY);
+        String insert = String.format(
+                        "INSERT INTO %s(%s.%s,%s.%s,%s.%s,%s.%s) " +
+                        "VALUES ((SELECT %s.%s FROM %s WHERE %s.%s = ?),(SELECT %s.%s FROM %s WHERE %s.%s = ?),?,?)",
+                ConstantDB.ACCOUNTINGS_TABLE,
+                ConstantDB.ACCOUNTINGS_TABLE, ConstantDB.TABLE_USER_ID,
+                ConstantDB.ACCOUNTINGS_TABLE, ConstantDB.TABLE_CATEGORIES,
+                ConstantDB.ACCOUNTINGS_TABLE, ConstantDB.TABLE_DATE,
+                ConstantDB.ACCOUNTINGS_TABLE, ConstantDB.TABLE_AMOUNT,
+                ConstantDB.USER_TABLE, ConstantDB.TABLE_USER_ID,
+                ConstantDB.USER_TABLE,
+                ConstantDB.USER_TABLE, ConstantDB.USERS_ID,
+                ConstantDB.CATEGORIES_TABLE, ConstantDB.TABLE_CATEGORIES,
+                ConstantDB.CATEGORIES_TABLE,
+                ConstantDB.CATEGORIES_TABLE, ConstantDB.TABLE_CATEGORY
+        );
         try (PreparedStatement prSt = dbConnection.prepareStatement(insert)) {
-            prSt.setInt(1, (int) chatID);
+            prSt.setLong(1, chatID);
             prSt.setString(2, category);
             prSt.setString(3, currentData);
             prSt.setFloat(4, insertable);
@@ -158,8 +209,8 @@ public class DatabaseTools extends Configs {
             messageSender.send(chatID, Constants.INVALID_SUM);
             return;
         }
-        messageSender.send(chatID, new Message("Ваша сумма в " + amount + " рублей была успешно записана\uD83C\uDF89"));
         inputEntry(chatID, buttonInfo, amount);
+        messageSender.send(chatID, new Message("Ваша сумма в " + amount + " рублей была успешно записана\uD83C\uDF89"));
     }
 
     public void makeStatisticAboutExpenses(long chatID, String period, int flag, MessageSender messageSender) throws SQLException {
@@ -168,6 +219,23 @@ public class DatabaseTools extends Configs {
             messageSender.send(chatID, Constants.INV_PERIOD);
             return;
         }
-        messageSender.send(chatID, new Message("Круто"));
+        Map<String, Double> categorySumMap = getAllAmounts(chatID, datesList, messageSender);
+        Map<String, String> expensesButtonMap = ButtonConfig.getExpensesButtonMap();
+        StringBuilder response = new StringBuilder();
+        Double total = 0.0D;
+        for (Map.Entry<String, Double> entry : categorySumMap.entrySet()) {
+            String category = entry.getKey();
+            Double amount = entry.getValue();
+            total += amount;
+            String buttonText = expensesButtonMap.get(category);
+            response.append(buttonText).append(":   ").append(amount).append(" рублей\n");
+        }
+        response.append("\n\uD83E\uDEE3ИТОГО").append(":   ").append(total).append(" рублей\n");
+        if (!response.isEmpty()) {
+            messageSender.send(chatID, new Message(response.toString()));
+        } else {
+            messageSender.send(chatID, Constants.EMPTY_RESULT);
+        }
     }
+
 }

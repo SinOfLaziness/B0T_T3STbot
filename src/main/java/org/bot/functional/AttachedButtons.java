@@ -16,8 +16,8 @@ public class AttachedButtons {
         List<InlineKeyboardButton> row = new ArrayList<>();
         for (Map.Entry<String, String> entry : buttonMap.entrySet()) {
             InlineKeyboardButton inlineButton = new InlineKeyboardButton();
-            inlineButton.setText(EmojiParser.parseToUnicode(entry.getKey()));
-            inlineButton.setCallbackData(entry.getValue());
+            inlineButton.setText(EmojiParser.parseToUnicode(entry.getValue()));
+            inlineButton.setCallbackData(EmojiParser.parseToUnicode(entry.getKey()));
             row.add(inlineButton);
             if (row.size() == 2) {
                 keyboardRowList.add(row);

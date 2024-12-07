@@ -11,24 +11,24 @@ public class ButtonConfig {
     private static final Map<String, String> askForPeriodFormatButtonMap = new HashMap<>();
 
     static {
-        expensesButtonMap.put(ConstantDB.HOME_AND_RENOVATION, ConstantDB.USERS_HOME_AND_RENOVATION);
-        expensesButtonMap.put(ConstantDB.TRANSPORT, ConstantDB.USERS_TRANSPORT);
-        expensesButtonMap.put(ConstantDB.FOOD, ConstantDB.USERS_FOOD);
-        expensesButtonMap.put(ConstantDB.ENTERTAINMENT, ConstantDB.USERS_ENTERTAINMENT);
-        expensesButtonMap.put(ConstantDB.PHARMACIES, ConstantDB.USERS_PHARMACIES);
-        expensesButtonMap.put(ConstantDB.COSMETICS, ConstantDB.USERS_COSMETICS);
-        expensesButtonMap.put(ConstantDB.ITEMS_OF_CLOTHING, ConstantDB.USERS_ITEMS_OF_CLOTHING);
-        expensesButtonMap.put(ConstantDB.SUPERMARKETS, ConstantDB.USERS_SUPERMARKETS);
-        expensesButtonMap.put(ConstantDB.TRANSFERS, ConstantDB.USERS_TRANSFERS);
-        expensesButtonMap.put(ConstantDB.ELECTRONICS, ConstantDB.USERS_ELECTRONICS);
-        expensesButtonMap.put(ConstantDB.BILL_PAYMENT, ConstantDB.USERS_BILL_PAYMENT);
-        expensesButtonMap.put(ConstantDB.OTHER, ConstantDB.USERS_OTHER);
+        expensesButtonMap.put(ConstantDB.USERS_HOME_AND_RENOVATION, ConstantDB.HOME_AND_RENOVATION);
+        expensesButtonMap.put(ConstantDB.USERS_TRANSPORT, ConstantDB.TRANSPORT);
+        expensesButtonMap.put(ConstantDB.USERS_FOOD, ConstantDB.FOOD);
+        expensesButtonMap.put(ConstantDB.USERS_ENTERTAINMENT, ConstantDB.ENTERTAINMENT);
+        expensesButtonMap.put(ConstantDB.USERS_PHARMACIES, ConstantDB.PHARMACIES);
+        expensesButtonMap.put(ConstantDB.USERS_COSMETICS, ConstantDB.COSMETICS);
+        expensesButtonMap.put(ConstantDB.USERS_ITEMS_OF_CLOTHING, ConstantDB.ITEMS_OF_CLOTHING);
+        expensesButtonMap.put(ConstantDB.USERS_SUPERMARKETS, ConstantDB.SUPERMARKETS);
+        expensesButtonMap.put(ConstantDB.USERS_TRANSFERS, ConstantDB.TRANSFERS);
+        expensesButtonMap.put(ConstantDB.USERS_ELECTRONICS, ConstantDB.ELECTRONICS);
+        expensesButtonMap.put(ConstantDB.USERS_BILL_PAYMENT, ConstantDB.BILL_PAYMENT);
+        expensesButtonMap.put(ConstantDB.USERS_OTHER, ConstantDB.OTHER);
 
-        registrationButtonMap.put(ConstantDB.REGISTRATION, ConstantDB.USERS_REGISTRATION);
-        registrationButtonMap.put(ConstantDB.COM_LIST, ConstantDB.USERS_COMMANDS);
+        registrationButtonMap.put(ConstantDB.USERS_REGISTRATION, ConstantDB.REGISTRATION);
+        registrationButtonMap.put(ConstantDB.USERS_COMMANDS, ConstantDB.COM_LIST);
 
-        askForPeriodFormatButtonMap.put(ConstantDB.MONTH, ConstantDB.USERS_MONTH);
-        askForPeriodFormatButtonMap.put(ConstantDB.PERIOD, ConstantDB.USERS_PERIOD);
+        askForPeriodFormatButtonMap.put(ConstantDB.USERS_MONTH, ConstantDB.MONTH);
+        askForPeriodFormatButtonMap.put(ConstantDB.USERS_PERIOD, ConstantDB.PERIOD);
     }
 
     public static Map<String, String> getExpensesButtonMap() {

@@ -25,31 +25,6 @@ public class DatabaseInitializer extends Configs {
         return dbConnection;
     }
 
-    public void signUpUser(String telegramID) {
-        String insert = String.format("INSERT INTO %s(%s) VALUES (?)",
-                ConstantDB.USER_TABLE, ConstantDB.USERS_ID);
-        try (PreparedStatement prSt = dbConnection.prepareStatement(insert)) {
-            prSt.setInt(1, Integer.parseInt(telegramID));
-            prSt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public boolean checkIfSigned(long chatID) throws SQLException {
-        int counter = 0;
-        try (ResultSet result = databaseTools.getUserCount(chatID)) {
-            if (result.next()) {
-                counter = result.getInt(1);
-            }
-        }
-        return counter >= 1;
-    }
-
-    public void caseSignUpUsers(long chatID, MessageSender messageSender) {
-        signUpUser(String.valueOf(chatID));
-        messageSender.send(chatID, Constants.NOW_REG);
-    }
 
     public DatabaseTools getDatabaseTools() {
         return databaseTools;

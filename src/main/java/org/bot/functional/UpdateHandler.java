@@ -43,7 +43,7 @@ public class UpdateHandler {
     private void handleCommand(long chatID, String sourceText, Update update) throws SQLException {
         switch (sourceText) {
             case Constants.START:
-                if (!dbHandler.checkIfSigned(chatID)) {
+                if (!dbHandler.getDatabaseTools().checkIfSigned(chatID)) {
                     messageSender.send(chatID, Constants.START_TEXT_TEMPL);
                 } else {
                     messageSender.send(chatID, Constants.ALR_REG);
@@ -53,21 +53,22 @@ public class UpdateHandler {
                 messageSender.send(chatID, Constants.HELP_COM);
                 break;
             case ConstantDB.USERS_REGISTRATION:
-                if (!dbHandler.checkIfSigned(chatID)) {
-                    dbHandler.caseSignUpUsers(chatID, messageSender);
+                if (!dbHandler.getDatabaseTools().checkIfSigned(chatID)) {
+                    dbHandler.getDatabaseTools().signUpUser(String.valueOf(chatID));
+                    messageSender.send(chatID, Constants.NOW_REG);
                 } else {
                     messageSender.send(chatID, Constants.ALR_REG);
                 }
                 break;
             case Constants.SET_EXP:
-                if (dbHandler.checkIfSigned(chatID)) {
+                if (dbHandler.getDatabaseTools().checkIfSigned(chatID)) {
                     messageSender.send(chatID, Constants.EXP_LIST);
                 } else {
                     messageSender.send(chatID, Constants.ASK_FOR_REG);
                 }
                 break;
             case Constants.SEND_EXP:
-                if (dbHandler.checkIfSigned(chatID)) {
+                if (dbHandler.getDatabaseTools().checkIfSigned(chatID)) {
                     messageSender.send(chatID, Constants.ASK_PERIOD);
                 } else {
                     messageSender.send(chatID, Constants.ASK_FOR_REG);
@@ -100,8 +101,9 @@ public class UpdateHandler {
     private void handleCallbackQuery(long chatID, String buttonInfo) throws SQLException {
         switch (buttonInfo) {
             case ConstantDB.USERS_REGISTRATION:
-                if (!dbHandler.checkIfSigned(chatID)) {
-                    dbHandler.caseSignUpUsers(chatID, messageSender);
+                if (!dbHandler.getDatabaseTools().checkIfSigned(chatID)) {
+                    dbHandler.getDatabaseTools().signUpUser(String.valueOf(chatID));
+                    messageSender.send(chatID, Constants.NOW_REG);
                 } else {
                     messageSender.send(chatID, Constants.ALR_REG);
                 }
