@@ -1,5 +1,6 @@
 package org.bot.functional;
 
+import com.vdurmont.emoji.EmojiParser;
 import org.bot.msg.Constants;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
@@ -13,7 +14,9 @@ public class Keyboard {
         ReplyKeyboardMarkup replyKeyboard = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboardRowList = new ArrayList<>();
         KeyboardRow row = new KeyboardRow();
-        row.addAll(buttons);
+        for (String button : buttons) {
+            row.add(EmojiParser.parseToUnicode(button));
+        }
         keyboardRowList.add(row);
         replyKeyboard.setKeyboard(keyboardRowList);
         replyKeyboard.setResizeKeyboard(true);
@@ -27,11 +30,5 @@ public class Keyboard {
         buttons.add(Constants.SEND_EXP);
         return createKeyboard(buttons);
     }
-
-    public ReplyKeyboardMarkup generateStartKeyboard() {
-        List<String> buttons = new ArrayList<>();
-        buttons.add(Constants.REGISTRATION);
-        buttons.add(Constants.COM_LIST);
-        return createKeyboard(buttons);
-    }
+    
 }

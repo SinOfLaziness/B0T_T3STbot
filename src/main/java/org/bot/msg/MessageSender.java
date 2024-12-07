@@ -5,9 +5,10 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import com.vdurmont.emoji.EmojiParser;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
+
 
 public class MessageSender {
     private final SendMessage newMessage;
@@ -20,9 +21,9 @@ public class MessageSender {
         this.bot = bot;
     }
 
-    public void send (long chatID, Message message){
+    public void send(long chatID, Message message) {
         newMessage.setChatId(String.valueOf(chatID));
-        newMessage.setText(message.answerToSend());
+        newMessage.setText(EmojiParser.parseToUnicode(message.answerToSend()));
         if (message.replyKeyboard() != null) {
             newMessage.setReplyMarkup(message.replyKeyboard());
         }
@@ -39,7 +40,7 @@ public class MessageSender {
     public void sendPhoto(long chatID, byte[] file, String text) {
         newPhoto.setChatId(String.valueOf(chatID));
         newPhoto.setPhoto(new InputFile(new ByteArrayInputStream(file), "1.jpg"));
-        newPhoto.setCaption(text);
+        newPhoto.setCaption(EmojiParser.parseToUnicode(text));
         try {
             bot.execute(newPhoto);
         } catch (TelegramApiException e) {
