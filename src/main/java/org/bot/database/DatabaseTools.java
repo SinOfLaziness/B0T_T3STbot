@@ -132,7 +132,7 @@ public class DatabaseTools extends Configs {
     }
 
     private float parseFloat(String string_amount) {
-        if (string_amount.matches("(\\d{1,12}(\\.\\d+)?)") && !string_amount.matches("0")) {
+        if (string_amount.matches("(\\d{1,12}(\\.\\d{1,2})?)") && !string_amount.matches("0")) {
             return Float.parseFloat(string_amount);
         } else {
             return -1;
