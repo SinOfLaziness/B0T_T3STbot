@@ -32,7 +32,7 @@ public class UpdateHandler {
                 handleUserStates(chatID, sourceText);
                 return;
             }
-            handleCommand(chatID, sourceText, update);
+            handleCommand(chatID, sourceText);
         } else if (update.hasCallbackQuery()) {
             long chatID = update.getCallbackQuery().getMessage().getChatId();
             String buttonInfo = update.getCallbackQuery().getData();
@@ -40,7 +40,7 @@ public class UpdateHandler {
         }
     }
 
-    private void handleCommand(long chatID, String sourceText, Update update) throws SQLException {
+    private void handleCommand(long chatID, String sourceText) throws SQLException {
         switch (sourceText) {
             case Constants.START:
                 if (!dbHandler.getDatabaseTools().checkIfSigned(chatID)) {
