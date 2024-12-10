@@ -42,7 +42,7 @@ public class DatabaseTools extends Configs {
         return counter >= 1;
     }
 
-    private Map<String, Double> getAllAmounts(long chatID, List<String> datesList, MessageSender messageSender) throws SQLException {
+    private Map<String, Double> getAllAmounts(long chatID, List<String> datesList) throws SQLException {
         String firstDate = datesList.get(0);
         String secondDate = datesList.get(1);
         String insert = String.format(
@@ -102,26 +102,26 @@ public class DatabaseTools extends Configs {
                 try {
                     LocalDate date = LocalDate.parse(dateStr, formatter2);
                     if (!dateStr.equals(date.format(formatter2))) {
-                        return List.of();
+                        return Collections.emptyList();
                     }
                     dates.add(dateStr);
                 } catch (DateTimeParseException e) {
-                    return List.of();
+                    return Collections.emptyList();
                 }
             }
         } else if (period.matches("\\d{4}-\\d{2}") && flag == 1) {
             try {
                 YearMonth yearMonth = YearMonth.parse(period, formatter1);
                 if (!period.equals(yearMonth.format(formatter1))) {
-                    return List.of();
+                    return Collections.emptyList();
                 }
                 dates.add(yearMonth.atDay(1).format(formatter2));
                 dates.add(yearMonth.atEndOfMonth().format(formatter2));
             } catch (DateTimeParseException e) {
-                return List.of();
+                return Collections.emptyList();
             }
         } else {
-            return List.of();
+            return Collections.emptyList();
         }
         Collections.sort(dates, (date1, date2) -> {
             LocalDate d1 = LocalDate.parse(date1, formatter2);
@@ -219,7 +219,7 @@ public class DatabaseTools extends Configs {
             messageSender.send(chatID, Constants.INV_PERIOD);
             return;
         }
-        Map<String, Double> categorySumMap = getAllAmounts(chatID, datesList, messageSender);
+        Map<String, Double> categorySumMap = getAllAmounts(chatID, datesList);
         Map<String, String> expensesButtonMap = ButtonConfig.getExpensesButtonMap();
         StringBuilder response = new StringBuilder();
         Double total = 0.0D;

@@ -49,10 +49,10 @@ public class UpdateHandler {
                     messageSender.send(chatID, Constants.ALR_REG);
                 }
                 break;
-            case ConstantDB.USERS_COMMANDS:
+            case ConstantDB.KEY_COMMANDS:
                 messageSender.send(chatID, Constants.HELP_COM);
                 break;
-            case ConstantDB.USERS_REGISTRATION:
+            case ConstantDB.KEY_REGISTRATION:
                 if (!dbHandler.getDatabaseTools().checkIfSigned(chatID)) {
                     dbHandler.getDatabaseTools().signUpUser(String.valueOf(chatID));
                     messageSender.send(chatID, Constants.NOW_REG);
@@ -81,11 +81,11 @@ public class UpdateHandler {
 
     private void handleUserStates(long chatID, String sourceText) throws SQLException {
         switch (userStates.get(chatID)) {
-            case ConstantDB.USERS_MONTH:
+            case ConstantDB.KEY_MONTH:
                 int flag = 1;
                 dbHandler.getDatabaseTools().makeStatisticAboutExpenses(chatID, sourceText, flag, messageSender);
                 break;
-            case ConstantDB.USERS_PERIOD:
+            case ConstantDB.KEY_PERIOD:
                 flag = 2;
                 dbHandler.getDatabaseTools().makeStatisticAboutExpenses(chatID, sourceText, flag, messageSender);
                 break;
@@ -100,7 +100,7 @@ public class UpdateHandler {
 
     private void handleCallbackQuery(long chatID, String buttonInfo) throws SQLException {
         switch (buttonInfo) {
-            case ConstantDB.USERS_REGISTRATION:
+            case ConstantDB.KEY_REGISTRATION:
                 if (!dbHandler.getDatabaseTools().checkIfSigned(chatID)) {
                     dbHandler.getDatabaseTools().signUpUser(String.valueOf(chatID));
                     messageSender.send(chatID, Constants.NOW_REG);
@@ -108,16 +108,16 @@ public class UpdateHandler {
                     messageSender.send(chatID, Constants.ALR_REG);
                 }
                 break;
-            case ConstantDB.USERS_COMMANDS:
+            case ConstantDB.KEY_COMMANDS:
                 messageSender.send(chatID, Constants.HELP_COM);
                 break;
-            case ConstantDB.USERS_MONTH:
+            case ConstantDB.KEY_MONTH:
                 messageSender.send(chatID, Constants.MONTH_PATTERN);
-                userStates.put(chatID, ConstantDB.USERS_MONTH);
+                userStates.put(chatID, ConstantDB.KEY_MONTH);
                 break;
-            case ConstantDB.USERS_PERIOD:
+            case ConstantDB.KEY_PERIOD:
                 messageSender.send(chatID, Constants.PERIOD_PATTERN);
-                userStates.put(chatID, ConstantDB.USERS_PERIOD);
+                userStates.put(chatID, ConstantDB.KEY_PERIOD);
                 break;
             default:
                 messageSender.send(chatID, Constants.EXP_SUM);
