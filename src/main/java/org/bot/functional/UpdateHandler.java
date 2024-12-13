@@ -89,6 +89,9 @@ public class UpdateHandler {
                 flag = 2;
                 dbHandler.getDatabaseTools().makeStatisticAboutExpenses(chatID, sourceText, flag, messageSender);
                 break;
+            case ConstantDB.KEY_USERS_CATEGORY:
+                dbHandler.getDatabaseTools().makeEntryAboutExpenses(chatID, sourceText, messageSender);
+                break;
             default:
                 String buttonInfo = buttonInfoState.get(chatID);
                 buttonInfoState.remove(chatID);
@@ -118,6 +121,10 @@ public class UpdateHandler {
             case ConstantDB.KEY_PERIOD:
                 messageSender.send(chatID, Constants.PERIOD_PATTERN);
                 userStates.put(chatID, ConstantDB.KEY_PERIOD);
+                break;
+            case ConstantDB.KEY_USERS_CATEGORY:
+                messageSender.send(chatID, Constants.USR_CAT);
+                userStates.put(chatID, ConstantDB.KEY_USERS_CATEGORY);
                 break;
             default:
                 messageSender.send(chatID, Constants.EXP_SUM);

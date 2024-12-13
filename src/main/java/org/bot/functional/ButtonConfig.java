@@ -23,6 +23,9 @@ public class ButtonConfig {
         expensesButtonMap.put(ConstantDB.KEY_ELECTRONICS, ConstantDB.ELECTRONICS);
         expensesButtonMap.put(ConstantDB.KEY_BILL_PAYMENT, ConstantDB.BILL_PAYMENT);
         expensesButtonMap.put(ConstantDB.KEY_OTHER, ConstantDB.OTHER);
+        expensesButtonMap.put(ConstantDB.KEY_ONLINE_PAYMENTS, ConstantDB.ONLINE_PAYMENTS);
+        expensesButtonMap.put(ConstantDB.KEY_ANIMALS, ConstantDB.ANIMALS);
+        expensesButtonMap.put(ConstantDB.KEY_USERS_CATEGORY, ConstantDB.USERS_CATEGORY);
 
         registrationButtonMap.put(ConstantDB.KEY_REGISTRATION, ConstantDB.REGISTRATION);
         registrationButtonMap.put(ConstantDB.KEY_COMMANDS, ConstantDB.COM_LIST);

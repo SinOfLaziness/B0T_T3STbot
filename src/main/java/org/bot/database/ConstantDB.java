@@ -26,6 +26,12 @@ public class ConstantDB {
     public static final String KEY_COMMANDS = "/help";
     public static final String KEY_MONTH = "Month";
     public static final String KEY_PERIOD = "Period";
+    public static final String KEY_USERS_CATEGORY = "UserCategory";
+    public static final String KEY_ANIMALS = "Animals";
+    public static final String KEY_ONLINE_PAYMENTS = "OnlinePayments";
+    public static final String ONLINE_PAYMENTS = "\uD83D\uDCE6Онлайн покупки";
+    public static final String ANIMALS = "\uD83D\uDC08Животные";
+    public static final String USERS_CATEGORY = "\uD83E\uDD13Указать свою";
     public static final String MONTH = "Указать месяц";
     public static final String PERIOD = "Указать период";
     public final static String COM_LIST = "Список команд";
