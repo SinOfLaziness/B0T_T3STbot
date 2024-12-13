@@ -4,6 +4,7 @@ import org.bot.functional.ButtonConfig;
 import org.bot.msg.Constants;
 import org.bot.msg.Message;
 import org.bot.msg.MessageSender;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,6 +14,9 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class DatabaseTools extends Configs {
     private final Connection dbConnection;
@@ -42,7 +46,7 @@ public class DatabaseTools extends Configs {
         return counter >= 1;
     }
 
-    private Map<String, Double> getAllAmounts(long chatID, List<String> datesList, MessageSender messageSender) throws SQLException {
+    private Map<String, Double> getAllAmounts(long chatID, List<String> datesList) throws SQLException {
         String firstDate = datesList.get(0);
         String secondDate = datesList.get(1);
         String insert = String.format(
@@ -76,7 +80,10 @@ public class DatabaseTools extends Configs {
             double amount = resultSet.getDouble(ConstantDB.TABLE_AMOUNT);
             categorySumMap.put(category, categorySumMap.getOrDefault(category, 0.0) + amount);
         }
-        return categorySumMap;
+        return categorySumMap.entrySet()
+                .stream()
+                .sorted(Map.Entry.<String, Double>comparingByValue().reversed())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
     }
 
     private ResultSet getUserCount(long chatID) {
@@ -102,26 +109,26 @@ public class DatabaseTools extends Configs {
                 try {
                     LocalDate date = LocalDate.parse(dateStr, formatter2);
                     if (!dateStr.equals(date.format(formatter2))) {
-                        return List.of();
+                        return Collections.emptyList();
                     }
                     dates.add(dateStr);
                 } catch (DateTimeParseException e) {
-                    return List.of();
+                    return Collections.emptyList();
                 }
             }
         } else if (period.matches("\\d{4}-\\d{2}") && flag == 1) {
             try {
                 YearMonth yearMonth = YearMonth.parse(period, formatter1);
                 if (!period.equals(yearMonth.format(formatter1))) {
-                    return List.of();
+                    return Collections.emptyList();
                 }
                 dates.add(yearMonth.atDay(1).format(formatter2));
                 dates.add(yearMonth.atEndOfMonth().format(formatter2));
             } catch (DateTimeParseException e) {
-                return List.of();
+                return Collections.emptyList();
             }
         } else {
-            return List.of();
+            return Collections.emptyList();
         }
         Collections.sort(dates, (date1, date2) -> {
             LocalDate d1 = LocalDate.parse(date1, formatter2);
@@ -132,7 +139,7 @@ public class DatabaseTools extends Configs {
     }
 
     private float parseFloat(String string_amount) {
-        if (string_amount.matches("(\\d{1,12}(\\.\\d{1,2})?)") && !string_amount.matches("0")) {
+        if (string_amount.matches("(\\d{1,12}(\\.[0-9]{1,2})?)") && !string_amount.matches("0")) {
             return Float.parseFloat(string_amount);
         } else {
             return -1;
@@ -174,11 +181,12 @@ public class DatabaseTools extends Configs {
         }
     }
 
+
     private void inputEntry(long chatID, String category, float insertable) {
         addNewCategory(category);
         String currentData = getCurrentData();
         String insert = String.format(
-                        "INSERT INTO %s(%s.%s,%s.%s,%s.%s,%s.%s) " +
+                "INSERT INTO %s(%s.%s,%s.%s,%s.%s,%s.%s) " +
                         "VALUES ((SELECT %s.%s FROM %s WHERE %s.%s = ?),(SELECT %s.%s FROM %s WHERE %s.%s = ?),?,?)",
                 ConstantDB.ACCOUNTINGS_TABLE,
                 ConstantDB.ACCOUNTINGS_TABLE, ConstantDB.TABLE_USER_ID,
@@ -213,13 +221,30 @@ public class DatabaseTools extends Configs {
         messageSender.send(chatID, new Message("Ваша сумма в " + amount + " рублей была успешно записана\uD83C\uDF89"));
     }
 
+    public void makeEntryAboutExpenses(long chatID, String userInput, MessageSender messageSender) throws SQLException {
+        String regex = "(.+)\\s+(.+)";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(userInput);
+        if (!matcher.find()) {
+            messageSender.send(chatID, Constants.INVALID_INPUT);
+            return;
+        }
+        String category = matcher.group(1);
+        String amount = matcher.group(2);
+        if (category.length() > 45) {
+            messageSender.send(chatID, Constants.TOO_LONG_CAT);
+            return;
+        }
+        makeEntryAboutExpenses(chatID, amount, category, messageSender);
+    }
+
     public void makeStatisticAboutExpenses(long chatID, String period, int flag, MessageSender messageSender) throws SQLException {
         List<String> datesList = parsePeriod(period, flag);
         if (datesList.isEmpty()) {
             messageSender.send(chatID, Constants.INV_PERIOD);
             return;
         }
-        Map<String, Double> categorySumMap = getAllAmounts(chatID, datesList, messageSender);
+        Map<String, Double> categorySumMap = getAllAmounts(chatID, datesList);
         Map<String, String> expensesButtonMap = ButtonConfig.getExpensesButtonMap();
         StringBuilder response = new StringBuilder();
         Double total = 0.0D;
@@ -227,11 +252,11 @@ public class DatabaseTools extends Configs {
             String category = entry.getKey();
             Double amount = entry.getValue();
             total += amount;
-            String buttonText = expensesButtonMap.get(category);
-            response.append(buttonText).append(":   ").append(amount).append(" рублей\n");
+            String buttonText = expensesButtonMap.getOrDefault(category, "\uD83D\uDC64" + category);
+            response.append(buttonText).append(":   ").append(amount).append("₽\n");
         }
-        response.append("\n\uD83E\uDEE3ИТОГО").append(":   ").append(total).append(" рублей\n");
         if (!response.isEmpty()) {
+            response.append("\n\uD83E\uDEE3ИТОГО").append(":   ").append(total).append("₽\n");
             messageSender.send(chatID, new Message(response.toString()));
         } else {
             messageSender.send(chatID, Constants.EMPTY_RESULT);

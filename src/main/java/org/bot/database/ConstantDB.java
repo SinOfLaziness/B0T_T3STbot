@@ -10,22 +10,28 @@ public class ConstantDB {
     public static final String TABLE_DATE = "Date";
     public static final String TABLE_AMOUNT = "Amount";
     public static final String USERS_ID = "chatID";
-    public static final String USERS_HOME_AND_RENOVATION = "HomeAndRenovation";
-    public static final String USERS_TRANSPORT = "Transport";
-    public static final String USERS_FOOD = "Food";
-    public static final String USERS_ENTERTAINMENT = "Entertainment";
-    public static final String USERS_PHARMACIES = "Pharmacies";
-    public static final String USERS_COSMETICS = "Cosmetics";
-    public static final String USERS_ITEMS_OF_CLOTHING = "ItemsOfClothing";
-    public static final String USERS_SUPERMARKETS = "Supermarkets";
-    public static final String USERS_TRANSFERS = "Transfers";
-    public static final String USERS_ELECTRONICS = "Electronics";
-    public static final String USERS_BILL_PAYMENT = "BillPayment";
-    public static final String USERS_REGISTRATION = "/register";
-    public static final String USERS_OTHER = "Other";
-    public static final String USERS_COMMANDS = "/help";
-    public static final String USERS_MONTH = "Month";
-    public static final String USERS_PERIOD = "Period";
+    public static final String KEY_HOME_AND_RENOVATION = "HomeAndRenovation";
+    public static final String KEY_TRANSPORT = "Transport";
+    public static final String KEY_FOOD = "Food";
+    public static final String KEY_ENTERTAINMENT = "Entertainment";
+    public static final String KEY_PHARMACIES = "Pharmacies";
+    public static final String KEY_COSMETICS = "Cosmetics";
+    public static final String KEY_ITEMS_OF_CLOTHING = "ItemsOfClothing";
+    public static final String KEY_SUPERMARKETS = "Supermarkets";
+    public static final String KEY_TRANSFERS = "Transfers";
+    public static final String KEY_ELECTRONICS = "Electronics";
+    public static final String KEY_BILL_PAYMENT = "BillPayment";
+    public static final String KEY_REGISTRATION = "/register";
+    public static final String KEY_OTHER = "Other";
+    public static final String KEY_COMMANDS = "/help";
+    public static final String KEY_MONTH = "Month";
+    public static final String KEY_PERIOD = "Period";
+    public static final String KEY_USERS_CATEGORY = "UserCategory";
+    public static final String KEY_ANIMALS = "Animals";
+    public static final String KEY_ONLINE_PAYMENTS = "OnlinePayments";
+    public static final String ONLINE_PAYMENTS = "\uD83D\uDCE6Онлайн покупки";
+    public static final String ANIMALS = "\uD83D\uDC08Животные";
+    public static final String USERS_CATEGORY = "\uD83E\uDD13Указать свою";
     public static final String MONTH = "Указать месяц";
     public static final String PERIOD = "Указать период";
     public final static String COM_LIST = "Список команд";
@@ -46,8 +52,8 @@ public class ConstantDB {
     public static final String[] list_type_amounts = {ConstantDB.HOME_AND_RENOVATION, ConstantDB.TRANSPORT, ConstantDB.FOOD,
             ConstantDB.ENTERTAINMENT, ConstantDB.PHARMACIES, ConstantDB.COSMETICS, ConstantDB.ITEMS_OF_CLOTHING,
             ConstantDB.SUPERMARKETS, ConstantDB.TRANSFERS, ConstantDB.ELECTRONICS, ConstantDB.BILL_PAYMENT, ConstantDB.OTHER};
-    public static final String[] list_amounts = {ConstantDB.USERS_HOME_AND_RENOVATION, ConstantDB.USERS_TRANSPORT, ConstantDB.USERS_FOOD,
-            ConstantDB.USERS_ENTERTAINMENT, ConstantDB.USERS_PHARMACIES, ConstantDB.USERS_COSMETICS,
-            ConstantDB.USERS_ITEMS_OF_CLOTHING, ConstantDB.USERS_SUPERMARKETS, ConstantDB.USERS_TRANSFERS,
-            ConstantDB.USERS_ELECTRONICS, ConstantDB.USERS_BILL_PAYMENT, ConstantDB.USERS_OTHER};
+    public static final String[] list_amounts = {ConstantDB.KEY_HOME_AND_RENOVATION, ConstantDB.KEY_TRANSPORT, ConstantDB.KEY_FOOD,
+            ConstantDB.KEY_ENTERTAINMENT, ConstantDB.KEY_PHARMACIES, ConstantDB.KEY_COSMETICS,
+            ConstantDB.KEY_ITEMS_OF_CLOTHING, ConstantDB.KEY_SUPERMARKETS, ConstantDB.KEY_TRANSFERS,
+            ConstantDB.KEY_ELECTRONICS, ConstantDB.KEY_BILL_PAYMENT, ConstantDB.KEY_OTHER};
 }
