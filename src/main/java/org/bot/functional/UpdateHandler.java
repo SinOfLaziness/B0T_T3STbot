@@ -83,7 +83,7 @@ public class UpdateHandler {
                 break;
             case Constants.SEND_INCOME:
                 if (dbHandler.getDatabaseTools().checkIfSigned(chatID)) {
-                    messageSender.send(chatID, Constants.UNK_COM);
+                    dbHandler.getDatabaseTools().makeStatisticAboutIncome(chatID, messageSender);
                 } else {
                     messageSender.send(chatID, Constants.ASK_FOR_REG);
                 }

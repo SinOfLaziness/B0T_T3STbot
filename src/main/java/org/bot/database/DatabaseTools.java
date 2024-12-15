@@ -46,7 +46,7 @@ public class DatabaseTools extends Configs {
         return counter >= 1;
     }
 
-    private Map<String, Double> getAllAmounts(long chatID, List<String> datesList) throws SQLException {
+    private Map<String, Double> getAllExpenses(long chatID, List<String> datesList) throws SQLException {
         String firstDate = datesList.get(0);
         String secondDate = datesList.get(1);
         String insert = String.format(
@@ -66,18 +66,41 @@ public class DatabaseTools extends Configs {
             prSt.setString(2, firstDate);
             prSt.setString(3, secondDate);
             ResultSet resultSet = prSt.executeQuery();
-            return summarizeExpenses(resultSet);
+            return summarizeResult(resultSet, ConstantDB.TABLE_CATEGORY, ConstantDB.TABLE_AMOUNT);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return Collections.emptyMap();
     }
 
-    private Map<String, Double> summarizeExpenses(ResultSet resultSet) throws SQLException {
+    private Map<String, Double> getAllIncomes(long chatID) throws SQLException {
+        String insert = String.format(
+                        "SELECT %s.%s, %s.%s FROM %s " +
+                        "JOIN %s ON %s.%s = %s.%s " +
+                        "JOIN %s ON %s.%s = %s.%s " +
+                        "WHERE %s.%s = ?;",
+                ConstantDB.INCOMES_TABLE, ConstantDB.TABLE_INCOME,
+                ConstantDB.REVENUE_TABLE, ConstantDB.TABLE_AMOUNT,
+                ConstantDB.REVENUE_TABLE,
+                ConstantDB.INCOMES_TABLE, ConstantDB.INCOMES_TABLE, ConstantDB.TABLE_INCOME_ID, ConstantDB.REVENUE_TABLE, ConstantDB.TABLE_INCOME_ID,
+                ConstantDB.USER_TABLE, ConstantDB.REVENUE_TABLE, ConstantDB.TABLE_USER_ID, ConstantDB.USER_TABLE, ConstantDB.TABLE_USER_ID,
+                ConstantDB.USER_TABLE, ConstantDB.USERS_ID
+        );
+        try (PreparedStatement prSt = dbConnection.prepareStatement(insert)) {
+            prSt.setLong(1, chatID);
+            ResultSet resultSet = prSt.executeQuery();
+            return summarizeResult(resultSet, ConstantDB.TABLE_INCOME, ConstantDB.TABLE_AMOUNT);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Collections.emptyMap();
+    }
+
+    private Map<String, Double> summarizeResult(ResultSet resultSet, String tableName1, String tableName2) throws SQLException {
         Map<String, Double> categorySumMap = new HashMap<>();
         while (resultSet.next()) {
-            String category = resultSet.getString(ConstantDB.TABLE_CATEGORY);
-            double amount = resultSet.getDouble(ConstantDB.TABLE_AMOUNT);
+            String category = resultSet.getString(tableName1);
+            double amount = resultSet.getDouble(tableName2);
             categorySumMap.put(category, categorySumMap.getOrDefault(category, 0.0) + amount);
         }
         return categorySumMap.entrySet()
@@ -313,7 +336,11 @@ public class DatabaseTools extends Configs {
             return;
         }
         inputIncome(chatID, buttonInfo, amount);
-        messageSender.send(chatID, new Message("Ваш заработок в " + amount + " рублей был успешно записан\uD83C\uDF89"));
+        if(amount == 0.0){
+            messageSender.send(chatID, new Message("\uD83D\uDDD1\uFE0FУказанная вами категория дохода была успешно удалена"));
+        }else{
+            messageSender.send(chatID, new Message("Ваш доход в " + amount + " рублей был успешно записан\uD83C\uDF89"));
+        }
     }
 
     public void makeEntryAboutExpenses(long chatID, String stringAmount, String buttonInfo, MessageSender messageSender) throws SQLException {
@@ -361,7 +388,9 @@ public class DatabaseTools extends Configs {
             messageSender.send(chatID, Constants.INV_PERIOD);
             return;
         }
-        Map<String, Double> categorySumMap = getAllAmounts(chatID, datesList);
+        String firstDate = datesList.get(0);
+        String secondDate = datesList.get(1);
+        Map<String, Double> categorySumMap = getAllExpenses(chatID, datesList);
         if (categorySumMap.isEmpty()) {
             messageSender.send(chatID, Constants.EMPTY_RESULT);
             return;
@@ -369,7 +398,7 @@ public class DatabaseTools extends Configs {
         Map<String, String> expensesButtonMap = ButtonConfig.getExpensesButtonMap();
         StringBuilder response = new StringBuilder();
         Double total = 0.0D;
-        response.append("\uD83D\uDCC9Расходы:\n---\n");
+        response.append(String.format("\uD83D\uDCC9Расходы c %s по %s:\n---\n", firstDate, secondDate));
         for (Map.Entry<String, Double> entry : categorySumMap.entrySet()) {
             String category = entry.getKey();
             Double amount = entry.getValue();
@@ -378,6 +407,27 @@ public class DatabaseTools extends Configs {
             response.append(buttonText).append(":   ").append(amount).append("₽\n");
         }
         response.append("---\n\uD83E\uDEE3ИТОГО").append(":   ").append(total).append("₽\n");
+        messageSender.send(chatID, new Message(response.toString()));
+    }
+
+    public void makeStatisticAboutIncome(long chatID, MessageSender messageSender) throws SQLException {
+        Map<String, Double> incomeSumMap = getAllIncomes(chatID);
+        if (incomeSumMap.isEmpty()) {
+            messageSender.send(chatID, Constants.NO_INCOMES);
+            return;
+        }
+        Map<String, String> incomeButtonMap = ButtonConfig.getIncomeButtonMap();
+        StringBuilder response = new StringBuilder();
+        Double total = 0.0D;
+        response.append("\uD83D\uDCC8Ежемесячный доход:\n---\n");
+        for (Map.Entry<String, Double> entry : incomeSumMap.entrySet()) {
+            String category = entry.getKey();
+            Double amount = entry.getValue();
+            total += amount;
+            String buttonText = incomeButtonMap.getOrDefault(category, "\uD83D\uDC64" + category);
+            response.append(buttonText).append(":   ").append(amount).append("₽\n");
+        }
+        response.append("---\n\uD83E\uDD2DИТОГО").append(":   ").append(total).append("₽\n");
         messageSender.send(chatID, new Message(response.toString()));
     }
 
