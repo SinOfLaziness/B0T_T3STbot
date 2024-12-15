@@ -99,11 +99,11 @@ public class DatabaseTools extends Configs {
         return resultSet;
     }
 
-    private List<String> parsePeriod(String period, int flag) {
+    private List<String> parsePeriod(String period) {
         List<String> dates = new ArrayList<>();
         DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM");
         DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        if (period.matches("(\\d{4}-\\d{2}-\\d{2})\\s+(\\d{4}-\\d{2}-\\d{2})") && flag == 2) {
+        if (period.matches("(\\d{4}-\\d{2}-\\d{2})\\s+(\\d{4}-\\d{2}-\\d{2})")) {
             String[] splitDates = period.split("\\s+");
             for (String dateStr : splitDates) {
                 try {
@@ -116,7 +116,7 @@ public class DatabaseTools extends Configs {
                     return Collections.emptyList();
                 }
             }
-        } else if (period.matches("\\d{4}-\\d{2}") && flag == 1) {
+        } else if (period.matches("\\d{4}-\\d{2}")) {
             try {
                 YearMonth yearMonth = YearMonth.parse(period, formatter1);
                 if (!period.equals(yearMonth.format(formatter1))) {
@@ -327,6 +327,14 @@ public class DatabaseTools extends Configs {
     }
 
     public void makeEntryAboutExpenses(long chatID, String userInput, MessageSender messageSender) throws SQLException {
+        processUserInput(chatID, userInput, messageSender, true);
+    }
+
+    public void makeEntryAboutIncome(long chatID, String userInput, MessageSender messageSender) throws SQLException {
+        processUserInput(chatID, userInput, messageSender, false);
+    }
+
+    private void processUserInput(long chatID, String userInput, MessageSender messageSender, boolean isExpense) throws SQLException {
         String regex = "(.+)\\s+(.+)";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(userInput);
@@ -340,11 +348,15 @@ public class DatabaseTools extends Configs {
             messageSender.send(chatID, Constants.TOO_LONG_CAT);
             return;
         }
-        makeEntryAboutExpenses(chatID, amount, category, messageSender);
+        if (isExpense) {
+            makeEntryAboutExpenses(chatID, amount, category, messageSender);
+        } else {
+            makeEntryAboutIncome(chatID, amount, category, messageSender);
+        }
     }
 
-    public void makeStatisticAboutExpenses(long chatID, String period, int flag, MessageSender messageSender) throws SQLException {
-        List<String> datesList = parsePeriod(period, flag);
+    public void makeStatisticAboutExpenses(long chatID, String period, MessageSender messageSender) throws SQLException {
+        List<String> datesList = parsePeriod(period);
         if (datesList.isEmpty()) {
             messageSender.send(chatID, Constants.INV_PERIOD);
             return;

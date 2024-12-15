@@ -5,7 +5,7 @@ import org.bot.functional.AttachedButtons;
 import org.bot.functional.Keyboard;
 
 public class Constants {
-    public static final Message INVALID_INPUT = new Message("\uD83D\uDE28 Вы неверно указали значения. Нужный формат ввода:\n\n❗ НАЗВАНИЕ_КАТЕГОРИИ   ЧИСЛОВОЕ_ЗНАЧЕНИЕ");
+    public static final Message INVALID_INPUT = new Message("\uD83D\uDE28 Вы неверно указали значения. Нужный формат ввода:\n\n❗ НАЗВАНИЕ   ЧИСЛОВОЕ_ЗНАЧЕНИЕ");
     ;
     private final static Keyboard keyboard = new Keyboard();
     private final static AttachedButtons attachedButtons = new AttachedButtons();
@@ -22,6 +22,11 @@ public class Constants {
             Напиши название своей категории расходов и сумму, которую хочешь записать🤩
             
             ✅Пример ввода:  Подарок маме 1599.99
+            """);
+    public final static Message USR_INCOME = new Message("""
+            Напиши название своей категории расходов и сумму, которую хочешь записать🤩
+            
+            ✅Пример ввода:  Помощь от папы 2599.99
             """);
     public final static Message HELP_COM = new Message("""
             Функционал бота😁\s
@@ -52,5 +57,5 @@ public class Constants {
     public final static Message PERIOD_PATTERN = new Message("""
             🗓️Укажите период, за который вы хотите получить статистику\nХронологический порядок выставится автоматически:\n\nгггг-мм-дд    гггг-мм-дд\n\n✅Пример ввода:  2024-12-03 2024-12-22""");
     public final static Message EXP_LIST = new Message("Выбери название категории, которую ты хочешь указать⬇\uFE0F", attachedButtons.createButtonsForExpenses());
-    public final static Message INCOME_LIST = new Message("⬇\uFE0FУкажи свой доход\n❕При повторном указании текущее значение изменится на новое.\n❕При указании нуля, статья дохода будет удалена", attachedButtons.createButtonsForIncome());
+    public final static Message INCOME_LIST = new Message("⬇\uFE0FВыбери источник дохода\n❕При повторном указании текущее значение изменится на новое.\n❕При указании нуля, статья дохода будет удалена", attachedButtons.createButtonsForIncome());
 }

@@ -35,7 +35,7 @@ public class ButtonConfig {
         incomeButtonMap.put(ConstantDB.KEY_SOCIAL_BENEFITS, ConstantDB.SOCIAL_BENEFITS);
         incomeButtonMap.put(ConstantDB.KEY_PENSION, ConstantDB.PENSION);
         incomeButtonMap.put(ConstantDB.KEY_FREELANCING, ConstantDB.FREELANCING);
-
+        incomeButtonMap.put(ConstantDB.KEY_USERS_INCOME, ConstantDB.USERS_INCOME);
 
         registrationButtonMap.put(ConstantDB.KEY_REGISTRATION, ConstantDB.REGISTRATION);
         registrationButtonMap.put(ConstantDB.KEY_COMMANDS, ConstantDB.COM_LIST);

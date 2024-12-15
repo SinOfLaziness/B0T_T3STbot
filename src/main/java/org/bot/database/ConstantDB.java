@@ -42,6 +42,8 @@ public class ConstantDB {
     public static final String BILL_PAYMENT = "\uD83D\uDCCBОплата счетов";
     public static final String KEY_OTHER = "Other";
     public static final String OTHER = "\uD83D\uDCDCДругое";
+    public static final String KEY_USERS_INCOME = "UserIncome";
+    public static final String USERS_INCOME = "\uD83E\uDD2DУказать свой";
     public static final String KEY_USERS_CATEGORY = "UserCategory";
     public static final String USERS_CATEGORY = "\uD83E\uDD13Указать свою";
     public static final String KEY_ANIMALS = "Animals";

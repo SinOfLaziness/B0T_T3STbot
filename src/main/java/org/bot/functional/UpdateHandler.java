@@ -96,15 +96,14 @@ public class UpdateHandler {
     private void handleUserStates(long chatID, String sourceText) throws SQLException {
         switch (userStates.get(chatID)) {
             case ConstantDB.KEY_MONTH:
-                int flag = 1;
-                dbHandler.getDatabaseTools().makeStatisticAboutExpenses(chatID, sourceText, flag, messageSender);
-                break;
             case ConstantDB.KEY_PERIOD:
-                flag = 2;
-                dbHandler.getDatabaseTools().makeStatisticAboutExpenses(chatID, sourceText, flag, messageSender);
+                dbHandler.getDatabaseTools().makeStatisticAboutExpenses(chatID, sourceText, messageSender);
                 break;
             case ConstantDB.KEY_USERS_CATEGORY:
                 dbHandler.getDatabaseTools().makeEntryAboutExpenses(chatID, sourceText, messageSender);
+                break;
+            case ConstantDB.KEY_USERS_INCOME:
+                dbHandler.getDatabaseTools().makeEntryAboutIncome(chatID, sourceText, messageSender);
                 break;
             case ConstantDB.KEY_EXPENSES:
                 String buttonInfo = buttonInfoState.get(chatID);
@@ -144,6 +143,10 @@ public class UpdateHandler {
             case ConstantDB.KEY_USERS_CATEGORY:
                 messageSender.send(chatID, Constants.USR_CAT);
                 userStates.put(chatID, ConstantDB.KEY_USERS_CATEGORY);
+                break;
+            case ConstantDB.KEY_USERS_INCOME:
+                messageSender.send(chatID, Constants.USR_INCOME);
+                userStates.put(chatID, ConstantDB.KEY_USERS_INCOME);
                 break;
             default:
                 if (ConstantDB.allExpenses.contains(buttonInfo)){
