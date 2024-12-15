@@ -7,6 +7,7 @@ import java.util.Map;
 
 public class ButtonConfig {
     private static final Map<String, String> expensesButtonMap = new HashMap<>();
+    private static final Map<String, String> incomeButtonMap = new HashMap<>();
     private static final Map<String, String> registrationButtonMap = new HashMap<>();
     private static final Map<String, String> askForPeriodFormatButtonMap = new HashMap<>();
 
@@ -27,6 +28,15 @@ public class ButtonConfig {
         expensesButtonMap.put(ConstantDB.KEY_ANIMALS, ConstantDB.ANIMALS);
         expensesButtonMap.put(ConstantDB.KEY_USERS_CATEGORY, ConstantDB.USERS_CATEGORY);
 
+        incomeButtonMap.put(ConstantDB.KEY_WAGES, ConstantDB.WAGES);
+        incomeButtonMap.put(ConstantDB.KEY_BUSINESS, ConstantDB.BUSINESS);
+        incomeButtonMap.put(ConstantDB.KEY_INVESTMENTS, ConstantDB.INVESTMENTS);
+        incomeButtonMap.put(ConstantDB.KEY_RENT, ConstantDB.RENT);
+        incomeButtonMap.put(ConstantDB.KEY_SOCIAL_BENEFITS, ConstantDB.SOCIAL_BENEFITS);
+        incomeButtonMap.put(ConstantDB.KEY_PENSION, ConstantDB.PENSION);
+        incomeButtonMap.put(ConstantDB.KEY_FREELANCING, ConstantDB.FREELANCING);
+
+
         registrationButtonMap.put(ConstantDB.KEY_REGISTRATION, ConstantDB.REGISTRATION);
         registrationButtonMap.put(ConstantDB.KEY_COMMANDS, ConstantDB.COM_LIST);
 
@@ -36,6 +46,10 @@ public class ButtonConfig {
 
     public static Map<String, String> getExpensesButtonMap() {
         return expensesButtonMap;
+    }
+
+    public static Map<String, String> getIncomeButtonMap() {
+        return incomeButtonMap;
     }
 
     public static Map<String, String> getRegistrationButtonMap() {

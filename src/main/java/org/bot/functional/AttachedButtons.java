@@ -36,6 +36,11 @@ public class AttachedButtons {
         return createButtons(buttonMap);
     }
 
+    public InlineKeyboardMarkup createButtonsForIncome() {
+        Map<String, String> buttonMap = ButtonConfig.getIncomeButtonMap();
+        return createButtons(buttonMap);
+    }
+
     public InlineKeyboardMarkup createButtonsForRegistration() {
         Map<String, String> buttonMap = ButtonConfig.getRegistrationButtonMap();
         return createButtons(buttonMap);

@@ -11,6 +11,7 @@ public class Constants {
     private final static AttachedButtons attachedButtons = new AttachedButtons();
 
     public final static Message EXP_SUM = new Message("\uD83D\uDCB3 Впишите потраченную сумму в рублях");
+    public final static Message INCOME_SUM = new Message("\uD83D\uDCB3 Впишите сумму в рублях");
     public final static Message INVALID_SUM = new Message("Некорректный формат ввода, проверьте:\n\n" +
             "\uD83D\uDFE9 Положительное ли число вы вводите \n" +
             "\uD83D\uDCDD Соответствует ли число формату ввода:\n\n❗ ПОЛОЖИТЕЛЬНОЕ ЧИСЛО МЕНЕЕ 10 ТРИЛЛИОНОВ\n❗ ЧИСЛО ЗНАКОВ ПОСЛЕ ЗАПЯТОЙ НЕ БОЛЕЕ ДВУХ");
@@ -20,7 +21,7 @@ public class Constants {
     public final static Message USR_CAT = new Message("""
             Напиши название своей категории расходов и сумму, которую хочешь записать🤩
             
-            ✅Пример ввода:  Кот 159.99
+            ✅Пример ввода:  Подарок маме 1599.99
             """);
     public final static Message HELP_COM = new Message("""
             Функционал бота😁\s
@@ -42,6 +43,8 @@ public class Constants {
     public final static String START = "/start";
     public final static String SET_EXP = "\uD83D\uDCB8Записать расходы";
     public final static String SEND_EXP = "\uD83D\uDCCAВывести список расходов";
+    public final static String SET_INCOME = "\uD83D\uDCC8Записать доходы";
+    public final static String SEND_INCOME = "\uD83D\uDCB0Вывести список доходов";
     public final static Message ASK_PERIOD = new Message("""
             Укажите, каким образом вы хотите записать интервал времени📆""", attachedButtons.createButtonsForPeriodFormat());
     public final static Message MONTH_PATTERN = new Message("""
@@ -49,4 +52,5 @@ public class Constants {
     public final static Message PERIOD_PATTERN = new Message("""
             🗓️Укажите период, за который вы хотите получить статистику\nХронологический порядок выставится автоматически:\n\nгггг-мм-дд    гггг-мм-дд\n\n✅Пример ввода:  2024-12-03 2024-12-22""");
     public final static Message EXP_LIST = new Message("Выбери название категории, которую ты хочешь указать⬇\uFE0F", attachedButtons.createButtonsForExpenses());
+    public final static Message INCOME_LIST = new Message("⬇\uFE0FУкажи свой доход\n❕При повторном указании текущее значение изменится на новое.\n❕При указании нуля, статья дохода будет удалена", attachedButtons.createButtonsForIncome());
 }

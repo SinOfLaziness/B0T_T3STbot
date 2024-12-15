@@ -74,6 +74,20 @@ public class UpdateHandler {
                     messageSender.send(chatID, Constants.ASK_FOR_REG);
                 }
                 break;
+            case Constants.SET_INCOME:
+                if (dbHandler.getDatabaseTools().checkIfSigned(chatID)) {
+                    messageSender.send(chatID, Constants.INCOME_LIST);
+                } else {
+                    messageSender.send(chatID, Constants.ASK_FOR_REG);
+                }
+                break;
+            case Constants.SEND_INCOME:
+                if (dbHandler.getDatabaseTools().checkIfSigned(chatID)) {
+                    messageSender.send(chatID, Constants.UNK_COM);
+                } else {
+                    messageSender.send(chatID, Constants.ASK_FOR_REG);
+                }
+                break;
             default:
                 messageSender.send(chatID, Constants.UNK_COM);
         }
@@ -92,10 +106,15 @@ public class UpdateHandler {
             case ConstantDB.KEY_USERS_CATEGORY:
                 dbHandler.getDatabaseTools().makeEntryAboutExpenses(chatID, sourceText, messageSender);
                 break;
-            default:
+            case ConstantDB.KEY_EXPENSES:
                 String buttonInfo = buttonInfoState.get(chatID);
                 buttonInfoState.remove(chatID);
                 dbHandler.getDatabaseTools().makeEntryAboutExpenses(chatID, sourceText, buttonInfo, messageSender);
+                break;
+            case ConstantDB.KEY_INCOME:
+                buttonInfo = buttonInfoState.get(chatID);
+                buttonInfoState.remove(chatID);
+                dbHandler.getDatabaseTools().makeEntryAboutIncome(chatID, sourceText, buttonInfo, messageSender);
                 break;
         }
         userStates.remove(chatID);
@@ -127,8 +146,13 @@ public class UpdateHandler {
                 userStates.put(chatID, ConstantDB.KEY_USERS_CATEGORY);
                 break;
             default:
-                messageSender.send(chatID, Constants.EXP_SUM);
-                userStates.put(chatID, buttonInfo);
+                if (ConstantDB.allExpenses.contains(buttonInfo)){
+                    messageSender.send(chatID, Constants.EXP_SUM);
+                    userStates.put(chatID, ConstantDB.KEY_EXPENSES);
+                }else{
+                    messageSender.send(chatID, Constants.INCOME_SUM);
+                    userStates.put(chatID, ConstantDB.KEY_INCOME);
+                }
                 buttonInfoState.put(chatID, buttonInfo);
                 break;
         }

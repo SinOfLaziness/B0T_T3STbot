@@ -152,10 +152,10 @@ public class DatabaseTools extends Configs {
         return currentDate.format(formattedDatePattern);
     }
 
-    private boolean ifCategoryExists(String category) {
-        String insert = "SELECT COUNT(*) FROM " + ConstantDB.CATEGORIES_TABLE + " WHERE " + ConstantDB.TABLE_CATEGORY + "=?";
+    private boolean ifExistsInSideTable(String value, String tableName, String columnName) {
+        String insert = "SELECT COUNT(*) FROM " + tableName + " WHERE " + columnName + "=?";
         try (PreparedStatement prSt = dbConnection.prepareStatement(insert)) {
-            prSt.setString(1, category);
+            prSt.setString(1, value);
             try (ResultSet resultSet = prSt.executeQuery()) {
                 if (resultSet.next()) {
                     return resultSet.getInt(1) >= 1;
@@ -167,14 +167,14 @@ public class DatabaseTools extends Configs {
         return false;
     }
 
-    private void addNewCategory(String category) {
-        if (ifCategoryExists(category)) {
+    private void addNewSideTableValue(String value, String tableName, String columnName) {
+        if (ifExistsInSideTable(value, tableName, columnName)) {
             return;
         }
         String insert = String.format("INSERT INTO %s(%s) VALUES (?)",
-                ConstantDB.CATEGORIES_TABLE, ConstantDB.TABLE_CATEGORY);
+                tableName, columnName);
         try (PreparedStatement prSt = dbConnection.prepareStatement(insert)) {
-            prSt.setString(1, category);
+            prSt.setString(1, value);
             prSt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -182,7 +182,16 @@ public class DatabaseTools extends Configs {
     }
 
 
-    private void inputEntry(long chatID, String category, float insertable) {
+    private void addNewCategory(String category) {
+        addNewSideTableValue(category, ConstantDB.CATEGORIES_TABLE, ConstantDB.TABLE_CATEGORY);
+    }
+
+    private void addNewIncome(String category) {
+        addNewSideTableValue(category, ConstantDB.INCOMES_TABLE, ConstantDB.TABLE_INCOME);
+    }
+
+
+    private void inputExpense(long chatID, String category, float value) {
         addNewCategory(category);
         String currentData = getCurrentData();
         String insert = String.format(
@@ -204,11 +213,47 @@ public class DatabaseTools extends Configs {
             prSt.setLong(1, chatID);
             prSt.setString(2, category);
             prSt.setString(3, currentData);
-            prSt.setFloat(4, insertable);
+            prSt.setFloat(4, value);
             prSt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private void inputIncome(long chatID, String income, float value) {
+        addNewIncome(income);
+        String insert = String.format(
+                "INSERT INTO %s(%s.%s,%s.%s,%s.%s) " +
+                        "VALUES ((SELECT %s.%s FROM %s WHERE %s.%s = ?),(SELECT %s.%s FROM %s WHERE %s.%s = ?),?)",
+                ConstantDB.REVENUE_TABLE,
+                ConstantDB.REVENUE_TABLE, ConstantDB.TABLE_USER_ID,
+                ConstantDB.REVENUE_TABLE, ConstantDB.TABLE_INCOME_ID,
+                ConstantDB.REVENUE_TABLE, ConstantDB.TABLE_AMOUNT,
+                ConstantDB.USER_TABLE, ConstantDB.TABLE_USER_ID,
+                ConstantDB.USER_TABLE,
+                ConstantDB.USER_TABLE, ConstantDB.USERS_ID,
+                ConstantDB.INCOMES_TABLE, ConstantDB.TABLE_INCOME_ID,
+                ConstantDB.INCOMES_TABLE,
+                ConstantDB.INCOMES_TABLE, ConstantDB.TABLE_INCOME
+        );
+        try (PreparedStatement prSt = dbConnection.prepareStatement(insert)) {
+            prSt.setLong(1, chatID);
+            prSt.setString(2, income);
+            prSt.setFloat(3, value);
+            prSt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void makeEntryAboutIncome(long chatID, String stringAmount, String buttonInfo, MessageSender messageSender) throws SQLException {
+        float amount = parseFloat(stringAmount);
+        if (amount == -1) {
+            messageSender.send(chatID, Constants.INVALID_SUM);
+            return;
+        }
+        inputIncome(chatID, buttonInfo, amount);
+        messageSender.send(chatID, new Message("Ваш заработок в " + amount + " рублей был успешно записан\uD83C\uDF89"));
     }
 
     public void makeEntryAboutExpenses(long chatID, String stringAmount, String buttonInfo, MessageSender messageSender) throws SQLException {
@@ -217,7 +262,7 @@ public class DatabaseTools extends Configs {
             messageSender.send(chatID, Constants.INVALID_SUM);
             return;
         }
-        inputEntry(chatID, buttonInfo, amount);
+        inputExpense(chatID, buttonInfo, amount);
         messageSender.send(chatID, new Message("Ваша сумма в " + amount + " рублей была успешно записана\uD83C\uDF89"));
     }
 
@@ -245,9 +290,14 @@ public class DatabaseTools extends Configs {
             return;
         }
         Map<String, Double> categorySumMap = getAllAmounts(chatID, datesList);
+        if (categorySumMap.isEmpty()) {
+            messageSender.send(chatID, Constants.EMPTY_RESULT);
+            return;
+        }
         Map<String, String> expensesButtonMap = ButtonConfig.getExpensesButtonMap();
         StringBuilder response = new StringBuilder();
         Double total = 0.0D;
+        response.append("\uD83D\uDCC9Расходы:\n---\n");
         for (Map.Entry<String, Double> entry : categorySumMap.entrySet()) {
             String category = entry.getKey();
             Double amount = entry.getValue();
@@ -255,12 +305,8 @@ public class DatabaseTools extends Configs {
             String buttonText = expensesButtonMap.getOrDefault(category, "\uD83D\uDC64" + category);
             response.append(buttonText).append(":   ").append(amount).append("₽\n");
         }
-        if (!response.isEmpty()) {
-            response.append("\n\uD83E\uDEE3ИТОГО").append(":   ").append(total).append("₽\n");
-            messageSender.send(chatID, new Message(response.toString()));
-        } else {
-            messageSender.send(chatID, Constants.EMPTY_RESULT);
-        }
+        response.append("---\n\uD83E\uDEE3ИТОГО").append(":   ").append(total).append("₽\n");
+        messageSender.send(chatID, new Message(response.toString()));
     }
 
 }
