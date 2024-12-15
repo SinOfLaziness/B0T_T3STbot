@@ -50,7 +50,7 @@ public class DatabaseTools extends Configs {
         String firstDate = datesList.get(0);
         String secondDate = datesList.get(1);
         String insert = String.format(
-                "SELECT %s.%s, %s.%s FROM %s " +
+                        "SELECT %s.%s, %s.%s FROM %s " +
                         "JOIN %s ON %s.%s = %s.%s " +
                         "JOIN %s ON %s.%s = %s.%s " +
                         "WHERE %s.%s = ? AND %s.%s BETWEEN ? AND ? " +
@@ -139,7 +139,7 @@ public class DatabaseTools extends Configs {
     }
 
     private float parseFloat(String string_amount) {
-        if (string_amount.matches("(\\d{1,12}(\\.[0-9]{1,2})?)") && !string_amount.matches("0")) {
+        if (string_amount.matches("(\\d{1,12}(\\.[0-9]{1,2})?)")) {
             return Float.parseFloat(string_amount);
         } else {
             return -1;
@@ -190,12 +190,11 @@ public class DatabaseTools extends Configs {
         addNewSideTableValue(category, ConstantDB.INCOMES_TABLE, ConstantDB.TABLE_INCOME);
     }
 
-
     private void inputExpense(long chatID, String category, float value) {
         addNewCategory(category);
         String currentData = getCurrentData();
         String insert = String.format(
-                "INSERT INTO %s(%s.%s,%s.%s,%s.%s,%s.%s) " +
+                        "INSERT INTO %s(%s.%s,%s.%s,%s.%s,%s.%s) " +
                         "VALUES ((SELECT %s.%s FROM %s WHERE %s.%s = ?),(SELECT %s.%s FROM %s WHERE %s.%s = ?),?,?)",
                 ConstantDB.ACCOUNTINGS_TABLE,
                 ConstantDB.ACCOUNTINGS_TABLE, ConstantDB.TABLE_USER_ID,
@@ -220,26 +219,87 @@ public class DatabaseTools extends Configs {
         }
     }
 
-    private void inputIncome(long chatID, String income, float value) {
-        addNewIncome(income);
+    public boolean incomeAlreadyDefined(long chatID, String income) {
         String insert = String.format(
-                "INSERT INTO %s(%s.%s,%s.%s,%s.%s) " +
-                        "VALUES ((SELECT %s.%s FROM %s WHERE %s.%s = ?),(SELECT %s.%s FROM %s WHERE %s.%s = ?),?)",
+                        "SELECT COUNT(*) FROM %s " +
+                        "WHERE %s.%s = (SELECT %s.%s FROM %s WHERE %s.%s = ?) " +
+                        "AND %s.%s = (SELECT %s.%s FROM %s WHERE %s.%s = ?)",
                 ConstantDB.REVENUE_TABLE,
                 ConstantDB.REVENUE_TABLE, ConstantDB.TABLE_USER_ID,
+                ConstantDB.USER_TABLE, ConstantDB.TABLE_USER_ID, ConstantDB.USER_TABLE, ConstantDB.USER_TABLE, ConstantDB.USERS_ID,
                 ConstantDB.REVENUE_TABLE, ConstantDB.TABLE_INCOME_ID,
-                ConstantDB.REVENUE_TABLE, ConstantDB.TABLE_AMOUNT,
-                ConstantDB.USER_TABLE, ConstantDB.TABLE_USER_ID,
-                ConstantDB.USER_TABLE,
-                ConstantDB.USER_TABLE, ConstantDB.USERS_ID,
-                ConstantDB.INCOMES_TABLE, ConstantDB.TABLE_INCOME_ID,
-                ConstantDB.INCOMES_TABLE,
-                ConstantDB.INCOMES_TABLE, ConstantDB.TABLE_INCOME
+                ConstantDB.INCOMES_TABLE, ConstantDB.TABLE_INCOME_ID, ConstantDB.INCOMES_TABLE, ConstantDB.INCOMES_TABLE, ConstantDB.TABLE_INCOME
         );
         try (PreparedStatement prSt = dbConnection.prepareStatement(insert)) {
             prSt.setLong(1, chatID);
             prSt.setString(2, income);
-            prSt.setFloat(3, value);
+            try (ResultSet resultSet = prSt.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private void inputIncome(long chatID, String income, float value) {
+        addNewIncome(income);
+        String insert = "";
+        if (value == 0.0){
+            insert = String.format(
+                            "DELETE FROM %s " +
+                            "WHERE %s.%s = (SELECT %s.%s FROM %s WHERE %s.%s = ?) " +
+                            "AND %s.%s = (SELECT %s.%s FROM %s WHERE %s.%s = ?)",
+                    ConstantDB.REVENUE_TABLE,
+                    ConstantDB.REVENUE_TABLE, ConstantDB.TABLE_USER_ID,
+                    ConstantDB.USER_TABLE, ConstantDB.TABLE_USER_ID, ConstantDB.USER_TABLE, ConstantDB.USER_TABLE, ConstantDB.USERS_ID,
+                    ConstantDB.REVENUE_TABLE, ConstantDB.TABLE_INCOME_ID,
+                    ConstantDB.INCOMES_TABLE, ConstantDB.TABLE_INCOME_ID, ConstantDB.INCOMES_TABLE, ConstantDB.INCOMES_TABLE, ConstantDB.TABLE_INCOME
+            );
+        } else if (incomeAlreadyDefined(chatID, income)){
+            insert = String.format(
+                            "UPDATE %s " +
+                            "SET %s.%s =? " +
+                            "WHERE %s.%s = (SELECT %s.%s FROM %s WHERE %s.%s = ?) " +
+                            "AND %s.%s = (SELECT %s.%s FROM %s WHERE %s.%s = ?)",
+                    ConstantDB.REVENUE_TABLE,
+                    ConstantDB.REVENUE_TABLE, ConstantDB.TABLE_AMOUNT,
+                    ConstantDB.REVENUE_TABLE, ConstantDB.TABLE_USER_ID,
+                    ConstantDB.USER_TABLE, ConstantDB.TABLE_USER_ID, ConstantDB.USER_TABLE, ConstantDB.USER_TABLE, ConstantDB.USERS_ID,
+                    ConstantDB.REVENUE_TABLE, ConstantDB.TABLE_INCOME_ID,
+                    ConstantDB.INCOMES_TABLE, ConstantDB.TABLE_INCOME_ID, ConstantDB.INCOMES_TABLE, ConstantDB.INCOMES_TABLE, ConstantDB.TABLE_INCOME
+            );
+        }else{
+            insert = String.format(
+                            "INSERT INTO %s(%s.%s,%s.%s,%s.%s) " +
+                            "VALUES ((SELECT %s.%s FROM %s WHERE %s.%s = ?),(SELECT %s.%s FROM %s WHERE %s.%s = ?),?)",
+                    ConstantDB.REVENUE_TABLE,
+                    ConstantDB.REVENUE_TABLE, ConstantDB.TABLE_USER_ID,
+                    ConstantDB.REVENUE_TABLE, ConstantDB.TABLE_INCOME_ID,
+                    ConstantDB.REVENUE_TABLE, ConstantDB.TABLE_AMOUNT,
+                    ConstantDB.USER_TABLE, ConstantDB.TABLE_USER_ID,
+                    ConstantDB.USER_TABLE,
+                    ConstantDB.USER_TABLE, ConstantDB.USERS_ID,
+                    ConstantDB.INCOMES_TABLE, ConstantDB.TABLE_INCOME_ID,
+                    ConstantDB.INCOMES_TABLE,
+                    ConstantDB.INCOMES_TABLE, ConstantDB.TABLE_INCOME
+            );
+        }
+        try (PreparedStatement prSt = dbConnection.prepareStatement(insert)) {
+            if (value == 0.0) {
+                prSt.setLong(1, chatID);
+                prSt.setString(2, income);
+            } else if (incomeAlreadyDefined(chatID, income)) {
+                prSt.setFloat(1, value);
+                prSt.setLong(2, chatID);
+                prSt.setString(3, income);
+            } else {
+                prSt.setLong(1, chatID);
+                prSt.setString(2, income);
+                prSt.setFloat(3, value);
+            }
             prSt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -258,7 +318,7 @@ public class DatabaseTools extends Configs {
 
     public void makeEntryAboutExpenses(long chatID, String stringAmount, String buttonInfo, MessageSender messageSender) throws SQLException {
         float amount = parseFloat(stringAmount);
-        if (amount == -1) {
+        if (amount == -1 || amount == 0.0) {
             messageSender.send(chatID, Constants.INVALID_SUM);
             return;
         }
