@@ -25,7 +25,7 @@ public class DatabaseTools extends Configs {
         String insert = String.format("INSERT INTO %s(%s) VALUES (?)",
                 ConstantDB.USER_TABLE, ConstantDB.USERS_ID);
         try (PreparedStatement prSt = dbConnection.prepareStatement(insert)) {
-            prSt.setInt(1, Integer.parseInt(telegramID));
+            prSt.setString(1, telegramID);
             prSt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
