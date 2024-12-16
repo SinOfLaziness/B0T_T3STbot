@@ -52,6 +52,9 @@ public class Constants {
     public final static String SET_INCOME = "\uD83D\uDCC8Записать доходы";
     public final static String SEND_INCOME = "\uD83D\uDCB0Вывести список доходов";
     public final static String COMPARE = "\uD83D\uDCCAФинансовый отчет";
+    public final static String GOOD_REPORT = "Похоже ваши дела идут достаточно хорошо\uD83D\uDE0E";
+    public final static String BAD_REPORT = "Вам явно стоит следить за тем, куда вы тратите деньги\uD83D\uDE2D";
+    public final static String NOT_BAD_REPORT = "Идеальный баланс. Возможно, вам стоит задуматься о том, как сэкономить побольше денег\uD83D\uDE42";
     public final static Message ASK_PERIOD_EXP = new Message("""
             Укажите, каким образом вы хотите записать интервал времени📆""", attachedButtons.createButtonsForPeriodFormat(true,false));
     public final static Message ASK_PERIOD_INCOME = new Message("""

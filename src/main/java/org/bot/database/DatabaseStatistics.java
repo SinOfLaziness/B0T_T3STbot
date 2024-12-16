@@ -15,7 +15,6 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -92,21 +91,27 @@ public class DatabaseStatistics extends Configs {
         return Collections.emptyMap();
     }
 
-    private Map<String, Double> getAllIncomes(long chatID) throws SQLException {
+    private Map<String, Double> getAllIncomes(long chatID, List<String> datesList) throws SQLException {
+        String firstDate = datesList.get(0);
+        String secondDate = datesList.get(1);
         String insert = String.format(
                 "SELECT %s.%s, %s.%s FROM %s " +
                         "JOIN %s ON %s.%s = %s.%s " +
                         "JOIN %s ON %s.%s = %s.%s " +
-                        "WHERE %s.%s = ?;",
+                        "WHERE %s.%s = ? AND %s.%s BETWEEN ? AND ? " +
+                        "ORDER BY %s.%s",
                 ConstantDB.INCOMES_TABLE, ConstantDB.TABLE_INCOME,
                 ConstantDB.REVENUE_TABLE, ConstantDB.TABLE_AMOUNT,
                 ConstantDB.REVENUE_TABLE,
                 ConstantDB.INCOMES_TABLE, ConstantDB.INCOMES_TABLE, ConstantDB.TABLE_INCOME_ID, ConstantDB.REVENUE_TABLE, ConstantDB.TABLE_INCOME_ID,
                 ConstantDB.USER_TABLE, ConstantDB.REVENUE_TABLE, ConstantDB.TABLE_USER_ID, ConstantDB.USER_TABLE, ConstantDB.TABLE_USER_ID,
-                ConstantDB.USER_TABLE, ConstantDB.USERS_ID
+                ConstantDB.USER_TABLE, ConstantDB.USERS_ID, ConstantDB.REVENUE_TABLE, ConstantDB.TABLE_DATE,
+                ConstantDB.REVENUE_TABLE, ConstantDB.TABLE_DATE
         );
         try (PreparedStatement prSt = dbConnection.prepareStatement(insert)) {
             prSt.setLong(1, chatID);
+            prSt.setString(2, firstDate);
+            prSt.setString(3, secondDate);
             ResultSet resultSet = prSt.executeQuery();
             return summarizeResult(resultSet, ConstantDB.TABLE_INCOME, ConstantDB.TABLE_AMOUNT);
         } catch (SQLException e) {
@@ -115,11 +120,12 @@ public class DatabaseStatistics extends Configs {
         return Collections.emptyMap();
     }
 
-    private Map<String, Double> summarizeResult(ResultSet resultSet, String tableName1, String tableName2) throws SQLException {
+
+    private Map<String, Double> summarizeResult(ResultSet resultSet, String columnName1, String columnName2) throws SQLException {
         Map<String, Double> categorySumMap = new HashMap<>();
         while (resultSet.next()) {
-            String category = resultSet.getString(tableName1);
-            double amount = resultSet.getDouble(tableName2);
+            String category = resultSet.getString(columnName1);
+            double amount = resultSet.getDouble(columnName2);
             categorySumMap.put(category, categorySumMap.getOrDefault(category, 0.0) + amount);
         }
         return categorySumMap.entrySet()
@@ -156,8 +162,15 @@ public class DatabaseStatistics extends Configs {
         messageSender.send(chatID, new Message(response.toString()));
     }
 
-    public void makeStatisticAboutIncome(long chatID, MessageSender messageSender) throws SQLException {
-        Map<String, Double> incomeSumMap = getAllIncomes(chatID);
+    public void makeStatisticAboutIncome(long chatID, String period, MessageSender messageSender) throws SQLException {
+        List<String> datesList = parsePeriod(period);
+        if (datesList.isEmpty()) {
+            messageSender.send(chatID, Constants.INV_PERIOD);
+            return;
+        }
+        String firstDate = datesList.get(0);
+        String secondDate = datesList.get(1);
+        Map<String, Double> incomeSumMap = getAllIncomes(chatID, datesList);
         if (incomeSumMap.isEmpty()) {
             messageSender.send(chatID, Constants.NO_INCOMES);
             return;
@@ -165,7 +178,7 @@ public class DatabaseStatistics extends Configs {
         Map<String, String> incomeButtonMap = ButtonConfig.getIncomeButtonMap();
         StringBuilder response = new StringBuilder();
         Double total = 0.0D;
-        response.append("\uD83D\uDCC8Ежемесячный доход:\n---\n");
+        response.append(String.format("\uD83D\uDCC8Доходы за период с %s по %s:\n---\n", firstDate, secondDate));
         for (Map.Entry<String, Double> entry : incomeSumMap.entrySet()) {
             String category = entry.getKey();
             Double amount = entry.getValue();
@@ -183,40 +196,32 @@ public class DatabaseStatistics extends Configs {
             messageSender.send(chatID, Constants.INV_PERIOD);
             return;
         }
-        String firstDate = datesList.get(0);
-        String secondDate = datesList.get(1);
         Map<String, Double> expensesMap = getAllExpenses(chatID, datesList);
-        Map<String, Double> incomesMap = getAllIncomes(chatID);
-        if (expensesMap.isEmpty() && incomesMap.isEmpty()){
+        Map<String, Double> incomesMap = getAllIncomes(chatID, datesList);
+        if (expensesMap.isEmpty() && incomesMap.isEmpty()) {
             messageSender.send(chatID, Constants.NO_DATA);
             return;
         }
         double totalExpenses = 0.0;
-        double totalMonthlyIncome = 0.0;
+        double totalIncome = 0.0;
         for (Map.Entry<String, Double> entry : expensesMap.entrySet()) {
             totalExpenses += entry.getValue();
         }
         for (Map.Entry<String, Double> entry : incomesMap.entrySet()) {
-            totalMonthlyIncome += entry.getValue();
+            totalIncome += entry.getValue();
         }
-        LocalDate startDate = LocalDate.parse(firstDate);
-        LocalDate endDate = LocalDate.parse(secondDate);
-        long monthsBetween = ChronoUnit.MONTHS.between(startDate, endDate) + 1;
-        double totalIncome = totalMonthlyIncome * monthsBetween;
         double total = totalIncome - totalExpenses;
         BigDecimal totalOut = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP);
         StringBuilder response = new StringBuilder();
-        response.append(String.format("\uD83D\uDCCAОтчёт за период с %s по %s:\n---\n", firstDate, secondDate));
+        response.append(String.format("\uD83D\uDCCAОтчёт за период с %s по %s:\n---\n", datesList.get(0), datesList.get(1)));
         response.append("\uD83D\uDCC8Доходы: ").append(totalIncome).append("₽\n\n");
         response.append("\uD83D\uDCC9Расходы: ").append(totalExpenses).append("₽\n");
-        if (total > 0)
-        {
-            response.append("---\n\uD83D\uDFE2ИТОГО").append(":   ").append(totalOut).append("₽\n\n").append("Похоже ваши дела идут достаточно хорошо\uD83D\uDE0E");
-        }else if (total < 0){
-            response.append("---\n\uD83D\uDD34ИТОГО").append(":   ").append(totalOut).append("₽\n\n").append("Вам явно стоит следить за тем, куда вы тратите деньги\uD83D\uDE2D");
-        }else{
-            response.append("---\n\uD83D\uDD35ИТОГО").append(":   ").append(totalOut).append("₽\n\n").append("Идеальный баланс. Возможно, вам стоит задуматься о том, как сэкономить побольше денег\uD83D\uDE42");
-
+        if (total > 0) {
+            response.append("---\n\uD83D\uDFE2ИТОГО").append(":   ").append(totalOut).append("₽\n\n").append(Constants.GOOD_REPORT);
+        } else if (total < 0) {
+            response.append("---\n\uD83D\uDD34ИТОГО").append(":   ").append(totalOut).append("₽\n\n").append(Constants.BAD_REPORT);
+        } else {
+            response.append("---\n\uD83D\uDD35ИТОГО").append(":   ").append(totalOut).append("₽\n\n").append(Constants.NOT_BAD_REPORT);
         }
         messageSender.send(chatID, new Message(response.toString()));
     }

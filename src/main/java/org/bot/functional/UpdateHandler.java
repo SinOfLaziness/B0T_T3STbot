@@ -83,7 +83,7 @@ public class UpdateHandler {
                 break;
             case Constants.SEND_INCOME:
                 if (dbHandler.getDatabaseTools().checkIfSigned(chatID)) {
-                    dbHandler.getDatabaseStatistics().makeStatisticAboutIncome(chatID, messageSender);
+                    messageSender.send(chatID, Constants.ASK_PERIOD_INCOME);
                 } else {
                     messageSender.send(chatID, Constants.ASK_FOR_REG);
                 }
@@ -105,6 +105,10 @@ public class UpdateHandler {
             case ConstantDB.KEY_MONTH_EXP:
             case ConstantDB.KEY_PERIOD_EXP:
                 dbHandler.getDatabaseStatistics().makeStatisticAboutExpenses(chatID, sourceText, messageSender);
+                break;
+            case ConstantDB.KEY_MONTH_INCOME:
+            case ConstantDB.KEY_PERIOD_INCOME:
+                dbHandler.getDatabaseStatistics().makeStatisticAboutIncome(chatID, sourceText, messageSender);
                 break;
             case ConstantDB.KEY_MONTH_TOTAL:
             case ConstantDB.KEY_PERIOD_TOTAL:
@@ -150,6 +154,14 @@ public class UpdateHandler {
             case ConstantDB.KEY_PERIOD_EXP:
                 messageSender.send(chatID, Constants.PERIOD_PATTERN);
                 userStates.put(chatID, ConstantDB.KEY_PERIOD_EXP);
+                break;
+            case ConstantDB.KEY_MONTH_INCOME:
+                messageSender.send(chatID, Constants.MONTH_PATTERN);
+                userStates.put(chatID, ConstantDB.KEY_MONTH_INCOME);
+                break;
+            case ConstantDB.KEY_PERIOD_INCOME:
+                messageSender.send(chatID, Constants.PERIOD_PATTERN);
+                userStates.put(chatID, ConstantDB.KEY_PERIOD_INCOME);
                 break;
             case ConstantDB.KEY_MONTH_TOTAL:
                 messageSender.send(chatID, Constants.MONTH_PATTERN);
