@@ -1,6 +1,6 @@
-package org.bot.functional;
+package com.github.FinancialAssistant.functional;
 
-import org.bot.database.ConstantDB;
+import com.github.FinancialAssistant.database.ConstantDB;
 
 import java.util.HashMap;
 import java.util.Map;

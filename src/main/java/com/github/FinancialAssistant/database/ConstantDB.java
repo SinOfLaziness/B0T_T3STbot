@@ -1,4 +1,4 @@
-package org.bot.database;
+package com.github.FinancialAssistant.database;
 
 import java.util.Arrays;
 import java.util.List;
@@ -89,8 +89,8 @@ public class ConstantDB {
     );
 
     public static final List<String> allIncomes = Arrays.asList(
-            ConstantDB.KEY_WAGES, ConstantDB.KEY_BUSINESS,ConstantDB.KEY_INVESTMENTS, ConstantDB.KEY_RENT,
-            ConstantDB.KEY_SOCIAL_BENEFITS,ConstantDB.KEY_PENSION,ConstantDB.KEY_FREELANCING
+            ConstantDB.KEY_WAGES, ConstantDB.KEY_BUSINESS, ConstantDB.KEY_INVESTMENTS, ConstantDB.KEY_RENT,
+            ConstantDB.KEY_SOCIAL_BENEFITS, ConstantDB.KEY_PENSION, ConstantDB.KEY_FREELANCING
     );
 }
 

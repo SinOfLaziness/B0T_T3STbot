@@ -1,6 +1,6 @@
-package org.bot;
+package com.github.FinancialAssistant;
 
-import org.bot.functional.TelegramBot;
+import com.github.FinancialAssistant.functional.TelegramBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;

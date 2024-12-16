@@ -1,7 +1,4 @@
-package org.bot.database;
-
-import org.bot.msg.Constants;
-import org.bot.msg.MessageSender;
+package com.github.FinancialAssistant.database;
 
 import java.sql.*;
 
@@ -9,6 +6,7 @@ public class DatabaseInitializer extends Configs {
     private Connection dbConnection;
     private DatabaseTools databaseTools;
     private DatabaseStatistics databaseStatistics;
+
     public DatabaseInitializer() {
         try {
             dbConnection = getDbConnection();

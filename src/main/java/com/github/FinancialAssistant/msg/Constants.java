@@ -1,7 +1,7 @@
-package org.bot.msg;
+package com.github.FinancialAssistant.msg;
 
-import org.bot.functional.AttachedButtons;
-import org.bot.functional.Keyboard;
+import com.github.FinancialAssistant.functional.AttachedButtons;
+import com.github.FinancialAssistant.functional.Keyboard;
 
 public class Constants {
     public static final Message INVALID_INPUT = new Message("\uD83D\uDE28 Вы неверно указали значения. Нужный формат ввода:\n\n❗ НАЗВАНИЕ   ЧИСЛОВОЕ_ЗНАЧЕНИЕ");
@@ -18,7 +18,7 @@ public class Constants {
     public final static Message TOO_LONG_CAT = new Message("Название не должно превышать 45 символов\uD83E\uDD13");
     public final static Message EMPTY_RESULT = new Message("За этот период не было записано ни одной траты\uD83E\uDD74");
     public final static Message NO_INCOMES = new Message("На данный момент у вас не указан ни один источник дохода\uD83E\uDEE1");
-    public final static Message NO_DATA = new Message("Для начала укажите ваши расходы или доходы за текущий период\uD83D\uDC7B");
+    public final static Message NO_DATA = new Message("За данный период не найдено ни одной записи\uD83D\uDC7B");
     public final static Message USR_CAT = new Message("""
             Напиши название своей категории расходов и сумму, которую хочешь записать🤩
             
@@ -56,11 +56,11 @@ public class Constants {
     public final static String BAD_REPORT = "Вам явно стоит следить за тем, куда вы тратите деньги\uD83D\uDE2D";
     public final static String NOT_BAD_REPORT = "Идеальный баланс. Возможно, вам стоит задуматься о том, как сэкономить побольше денег\uD83D\uDE42";
     public final static Message ASK_PERIOD_EXP = new Message("""
-            Укажите, каким образом вы хотите записать интервал времени📆""", attachedButtons.createButtonsForPeriodFormat(true,false));
+            Укажите, каким образом вы хотите записать интервал времени📆""", attachedButtons.createButtonsForPeriodFormat(true, false));
     public final static Message ASK_PERIOD_INCOME = new Message("""
-            Укажите, каким образом вы хотите записать интервал времени📆""", attachedButtons.createButtonsForPeriodFormat(false,true));
+            Укажите, каким образом вы хотите записать интервал времени📆""", attachedButtons.createButtonsForPeriodFormat(false, true));
     public final static Message ASK_PERIOD_TOTAL = new Message("""
-            Укажите, каким образом вы хотите записать интервал времени📆""", attachedButtons.createButtonsForPeriodFormat(false,false));
+            Укажите, каким образом вы хотите записать интервал времени📆""", attachedButtons.createButtonsForPeriodFormat(false, false));
     public final static Message MONTH_PATTERN = new Message("""
             📅Запишите месяц в формате:\n\nгггг-мм\n\n✅Пример ввода:  2024-12""");
     public final static Message PERIOD_PATTERN = new Message("""

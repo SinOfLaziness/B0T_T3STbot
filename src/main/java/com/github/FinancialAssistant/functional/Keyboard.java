@@ -1,6 +1,6 @@
-package org.bot.functional;
+package com.github.FinancialAssistant.functional;
 
-import org.bot.msg.Constants;
+import com.github.FinancialAssistant.msg.Constants;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import com.vdurmont.emoji.EmojiParser;

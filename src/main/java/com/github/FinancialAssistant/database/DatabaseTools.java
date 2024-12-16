@@ -1,25 +1,18 @@
-package org.bot.database;
+package com.github.FinancialAssistant.database;
 
-import org.bot.functional.ButtonConfig;
-import org.bot.msg.Constants;
-import org.bot.msg.Message;
-import org.bot.msg.MessageSender;
+import com.github.FinancialAssistant.msg.Constants;
+import com.github.FinancialAssistant.msg.Message;
+import com.github.FinancialAssistant.msg.MessageSender;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+
 
 public class DatabaseTools extends Configs {
     private final Connection dbConnection;

@@ -1,4 +1,4 @@
-package org.bot.functional;
+package com.github.FinancialAssistant.functional;
 
 import com.vdurmont.emoji.EmojiParser;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;

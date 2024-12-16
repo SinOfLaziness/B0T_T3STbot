@@ -1,9 +1,9 @@
-package org.bot.functional;
+package com.github.FinancialAssistant.functional;
 
-import org.bot.database.ConstantDB;
-import org.bot.database.DatabaseInitializer;
-import org.bot.msg.Constants;
-import org.bot.msg.MessageSender;
+import com.github.FinancialAssistant.database.ConstantDB;
+import com.github.FinancialAssistant.database.DatabaseInitializer;
+import com.github.FinancialAssistant.msg.Constants;
+import com.github.FinancialAssistant.msg.MessageSender;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -180,10 +180,10 @@ public class UpdateHandler {
                 userStates.put(chatID, ConstantDB.KEY_USERS_INCOME);
                 break;
             default:
-                if (ConstantDB.allExpenses.contains(buttonInfo)){
+                if (ConstantDB.allExpenses.contains(buttonInfo)) {
                     messageSender.send(chatID, Constants.EXP_SUM);
                     userStates.put(chatID, ConstantDB.KEY_EXPENSES);
-                }else{
+                } else {
                     messageSender.send(chatID, Constants.INCOME_SUM);
                     userStates.put(chatID, ConstantDB.KEY_INCOME);
                 }
