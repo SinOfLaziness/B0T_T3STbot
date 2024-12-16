@@ -82,15 +82,11 @@ public class ConstantDB {
     public final static String COM_LIST = "Список команд";
 
     public static final List<String> allExpenses = Arrays.asList(
-            ConstantDB.KEY_HOME_AND_RENOVATION, ConstantDB.KEY_TRANSPORT, ConstantDB.KEY_FOOD,
-            ConstantDB.KEY_ENTERTAINMENT, ConstantDB.KEY_PHARMACIES, ConstantDB.KEY_COSMETICS,
-            ConstantDB.KEY_ITEMS_OF_CLOTHING, ConstantDB.KEY_SUPERMARKETS, ConstantDB.KEY_TRANSFERS,
-            ConstantDB.KEY_ELECTRONICS, ConstantDB.KEY_BILL_PAYMENT, ConstantDB.KEY_OTHER, ConstantDB.KEY_USERS_CATEGORY
-    );
-
-    public static final List<String> allIncomes = Arrays.asList(
-            ConstantDB.KEY_WAGES, ConstantDB.KEY_BUSINESS, ConstantDB.KEY_INVESTMENTS, ConstantDB.KEY_RENT,
-            ConstantDB.KEY_SOCIAL_BENEFITS, ConstantDB.KEY_PENSION, ConstantDB.KEY_FREELANCING
+            KEY_HOME_AND_RENOVATION, KEY_TRANSPORT, KEY_FOOD,
+            KEY_ENTERTAINMENT, KEY_PHARMACIES, KEY_COSMETICS,
+            KEY_ITEMS_OF_CLOTHING, KEY_SUPERMARKETS, KEY_TRANSFERS,
+            KEY_ELECTRONICS, KEY_BILL_PAYMENT, KEY_OTHER, KEY_USERS_CATEGORY,
+            KEY_USERS_INCOME, KEY_ANIMALS, KEY_ONLINE_PAYMENTS
     );
 }
 
