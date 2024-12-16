@@ -46,8 +46,8 @@ public class AttachedButtons {
         return createButtons(buttonMap);
     }
 
-    public InlineKeyboardMarkup createButtonsForPeriodFormat() {
-        Map<String, String> buttonMap = ButtonConfig.getPeriodFormatButtonMap();
+    public InlineKeyboardMarkup createButtonsForPeriodFormat(boolean isExpense, boolean isIncome) {
+        Map<String, String> buttonMap = ButtonConfig.getPeriodFormatButtonMap(isExpense, isIncome);
         return createButtons(buttonMap);
     }
 }

@@ -68,9 +68,13 @@ public class ConstantDB {
 
     public static final String KEY_EXPENSES = "Expenses";
     public static final String KEY_INCOME = "Income";
-    public static final String KEY_MONTH = "Month";
+    public static final String KEY_MONTH_EXP = "MonthExp";
+    public static final String KEY_MONTH_INCOME = "MonthInc";
+    public static final String KEY_MONTH_TOTAL = "MonthTot";
     public static final String MONTH = "Указать месяц";
-    public static final String KEY_PERIOD = "Period";
+    public static final String KEY_PERIOD_EXP = "PeriodExp";
+    public static final String KEY_PERIOD_INCOME = "PeriodInc";
+    public static final String KEY_PERIOD_TOTAL = "PeriodTot";
     public static final String PERIOD = "Указать период";
     public static final String KEY_REGISTRATION = "/register";
     public static final String REGISTRATION = "Зарегистрироваться";

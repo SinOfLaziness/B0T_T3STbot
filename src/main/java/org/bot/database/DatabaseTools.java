@@ -5,6 +5,8 @@ import org.bot.msg.Constants;
 import org.bot.msg.Message;
 import org.bot.msg.MessageSender;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,6 +15,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -428,6 +431,50 @@ public class DatabaseTools extends Configs {
             response.append(buttonText).append(":   ").append(amount).append("₽\n");
         }
         response.append("---\n\uD83E\uDD2DИТОГО").append(":   ").append(total).append("₽\n");
+        messageSender.send(chatID, new Message(response.toString()));
+    }
+
+    public void makeStatisticAboutTotal(long chatID, String period, MessageSender messageSender) throws SQLException {
+        List<String> datesList = parsePeriod(period);
+        if (datesList.isEmpty()) {
+            messageSender.send(chatID, Constants.INV_PERIOD);
+            return;
+        }
+        String firstDate = datesList.get(0);
+        String secondDate = datesList.get(1);
+        Map<String, Double> expensesMap = getAllExpenses(chatID, datesList);
+        Map<String, Double> incomesMap = getAllIncomes(chatID);
+        if (expensesMap.isEmpty() && incomesMap.isEmpty()){
+            messageSender.send(chatID, Constants.NO_DATA);
+            return;
+        }
+        double totalExpenses = 0.0;
+        double totalMonthlyIncome = 0.0;
+        for (Map.Entry<String, Double> entry : expensesMap.entrySet()) {
+            totalExpenses += entry.getValue();
+        }
+        for (Map.Entry<String, Double> entry : incomesMap.entrySet()) {
+            totalMonthlyIncome += entry.getValue();
+        }
+        LocalDate startDate = LocalDate.parse(firstDate);
+        LocalDate endDate = LocalDate.parse(secondDate);
+        long monthsBetween = ChronoUnit.MONTHS.between(startDate, endDate) + 1;
+        double totalIncome = totalMonthlyIncome * monthsBetween;
+        double total = totalIncome - totalExpenses;
+        BigDecimal totalOut = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP);
+        StringBuilder response = new StringBuilder();
+        response.append(String.format("\uD83D\uDCCAОтчёт за период с %s по %s:\n---\n", firstDate, secondDate));
+        response.append("\uD83D\uDCC8Доходы: ").append(totalIncome).append("₽\n\n");
+        response.append("\uD83D\uDCC9Расходы: ").append(totalExpenses).append("₽\n");
+        if (total > 0)
+        {
+            response.append("---\n\uD83D\uDFE2ИТОГО").append(":   ").append(totalOut).append("₽\n\n").append("Похоже ваши дела идут достаточно хорошо\uD83D\uDE0E");
+        }else if (total < 0){
+            response.append("---\n\uD83D\uDD34ИТОГО").append(":   ").append(totalOut).append("₽\n\n").append("Вам явно стоит следить за тем, куда вы тратите деньги\uD83D\uDE2D");
+        }else{
+            response.append("---\n\uD83D\uDD35ИТОГО").append(":   ").append(totalOut).append("₽\n\n").append("Идеальный баланс. Возможно, вам стоит задуматься о том, как сэкономить побольше денег\uD83D\uDE42");
+
+        }
         messageSender.send(chatID, new Message(response.toString()));
     }
 

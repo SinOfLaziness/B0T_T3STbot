@@ -33,6 +33,7 @@ public class Keyboard {
         buttons.add(Constants.SEND_EXP);
         buttons.add(Constants.SET_INCOME);
         buttons.add(Constants.SEND_INCOME);
+        buttons.add(Constants.COMPARE);
         return createKeyboard(buttons);
     }
 }
