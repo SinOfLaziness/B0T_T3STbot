@@ -1,4 +1,4 @@
-package org.bot.database;
+package com.github.FinancialAssistant.database;
 
 public class Configs {
     protected String dbHost = "localhost";

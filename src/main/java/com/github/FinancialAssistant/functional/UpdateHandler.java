@@ -1,9 +1,9 @@
-package org.bot.functional;
+package com.github.FinancialAssistant.functional;
 
-import org.bot.database.ConstantDB;
-import org.bot.database.DatabaseInitializer;
-import org.bot.msg.Constants;
-import org.bot.msg.MessageSender;
+import com.github.FinancialAssistant.database.ConstantDB;
+import com.github.FinancialAssistant.database.DatabaseInitializer;
+import com.github.FinancialAssistant.msg.Constants;
+import com.github.FinancialAssistant.msg.MessageSender;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -69,7 +69,28 @@ public class UpdateHandler {
                 break;
             case Constants.SEND_EXP:
                 if (dbHandler.getDatabaseTools().checkIfSigned(chatID)) {
-                    messageSender.send(chatID, Constants.ASK_PERIOD);
+                    messageSender.send(chatID, Constants.ASK_PERIOD_EXP);
+                } else {
+                    messageSender.send(chatID, Constants.ASK_FOR_REG);
+                }
+                break;
+            case Constants.SET_INCOME:
+                if (dbHandler.getDatabaseTools().checkIfSigned(chatID)) {
+                    messageSender.send(chatID, Constants.INCOME_LIST);
+                } else {
+                    messageSender.send(chatID, Constants.ASK_FOR_REG);
+                }
+                break;
+            case Constants.SEND_INCOME:
+                if (dbHandler.getDatabaseTools().checkIfSigned(chatID)) {
+                    messageSender.send(chatID, Constants.ASK_PERIOD_INCOME);
+                } else {
+                    messageSender.send(chatID, Constants.ASK_FOR_REG);
+                }
+                break;
+            case Constants.COMPARE:
+                if (dbHandler.getDatabaseTools().checkIfSigned(chatID)) {
+                    messageSender.send(chatID, Constants.ASK_PERIOD_TOTAL);
                 } else {
                     messageSender.send(chatID, Constants.ASK_FOR_REG);
                 }
@@ -81,21 +102,33 @@ public class UpdateHandler {
 
     private void handleUserStates(long chatID, String sourceText) throws SQLException {
         switch (userStates.get(chatID)) {
-            case ConstantDB.KEY_MONTH:
-                int flag = 1;
-                dbHandler.getDatabaseTools().makeStatisticAboutExpenses(chatID, sourceText, flag, messageSender);
+            case ConstantDB.KEY_MONTH_EXP:
+            case ConstantDB.KEY_PERIOD_EXP:
+                dbHandler.getDatabaseStatistics().makeStatisticAboutExpenses(chatID, sourceText, messageSender);
                 break;
-            case ConstantDB.KEY_PERIOD:
-                flag = 2;
-                dbHandler.getDatabaseTools().makeStatisticAboutExpenses(chatID, sourceText, flag, messageSender);
+            case ConstantDB.KEY_MONTH_INCOME:
+            case ConstantDB.KEY_PERIOD_INCOME:
+                dbHandler.getDatabaseStatistics().makeStatisticAboutIncome(chatID, sourceText, messageSender);
+                break;
+            case ConstantDB.KEY_MONTH_TOTAL:
+            case ConstantDB.KEY_PERIOD_TOTAL:
+                dbHandler.getDatabaseStatistics().makeStatisticAboutTotal(chatID, sourceText, messageSender);
                 break;
             case ConstantDB.KEY_USERS_CATEGORY:
                 dbHandler.getDatabaseTools().makeEntryAboutExpenses(chatID, sourceText, messageSender);
                 break;
-            default:
+            case ConstantDB.KEY_USERS_INCOME:
+                dbHandler.getDatabaseTools().makeEntryAboutIncome(chatID, sourceText, messageSender);
+                break;
+            case ConstantDB.KEY_EXPENSES:
                 String buttonInfo = buttonInfoState.get(chatID);
                 buttonInfoState.remove(chatID);
                 dbHandler.getDatabaseTools().makeEntryAboutExpenses(chatID, sourceText, buttonInfo, messageSender);
+                break;
+            case ConstantDB.KEY_INCOME:
+                buttonInfo = buttonInfoState.get(chatID);
+                buttonInfoState.remove(chatID);
+                dbHandler.getDatabaseTools().makeEntryAboutIncome(chatID, sourceText, buttonInfo, messageSender);
                 break;
         }
         userStates.remove(chatID);
@@ -114,21 +147,46 @@ public class UpdateHandler {
             case ConstantDB.KEY_COMMANDS:
                 messageSender.send(chatID, Constants.HELP_COM);
                 break;
-            case ConstantDB.KEY_MONTH:
+            case ConstantDB.KEY_MONTH_EXP:
                 messageSender.send(chatID, Constants.MONTH_PATTERN);
-                userStates.put(chatID, ConstantDB.KEY_MONTH);
+                userStates.put(chatID, ConstantDB.KEY_MONTH_EXP);
                 break;
-            case ConstantDB.KEY_PERIOD:
+            case ConstantDB.KEY_PERIOD_EXP:
                 messageSender.send(chatID, Constants.PERIOD_PATTERN);
-                userStates.put(chatID, ConstantDB.KEY_PERIOD);
+                userStates.put(chatID, ConstantDB.KEY_PERIOD_EXP);
+                break;
+            case ConstantDB.KEY_MONTH_INCOME:
+                messageSender.send(chatID, Constants.MONTH_PATTERN);
+                userStates.put(chatID, ConstantDB.KEY_MONTH_INCOME);
+                break;
+            case ConstantDB.KEY_PERIOD_INCOME:
+                messageSender.send(chatID, Constants.PERIOD_PATTERN);
+                userStates.put(chatID, ConstantDB.KEY_PERIOD_INCOME);
+                break;
+            case ConstantDB.KEY_MONTH_TOTAL:
+                messageSender.send(chatID, Constants.MONTH_PATTERN);
+                userStates.put(chatID, ConstantDB.KEY_MONTH_TOTAL);
+                break;
+            case ConstantDB.KEY_PERIOD_TOTAL:
+                messageSender.send(chatID, Constants.PERIOD_PATTERN);
+                userStates.put(chatID, ConstantDB.KEY_PERIOD_TOTAL);
                 break;
             case ConstantDB.KEY_USERS_CATEGORY:
                 messageSender.send(chatID, Constants.USR_CAT);
                 userStates.put(chatID, ConstantDB.KEY_USERS_CATEGORY);
                 break;
+            case ConstantDB.KEY_USERS_INCOME:
+                messageSender.send(chatID, Constants.USR_INCOME);
+                userStates.put(chatID, ConstantDB.KEY_USERS_INCOME);
+                break;
             default:
-                messageSender.send(chatID, Constants.EXP_SUM);
-                userStates.put(chatID, buttonInfo);
+                if (ConstantDB.allExpenses.contains(buttonInfo)) {
+                    messageSender.send(chatID, Constants.EXP_SUM);
+                    userStates.put(chatID, ConstantDB.KEY_EXPENSES);
+                } else {
+                    messageSender.send(chatID, Constants.INCOME_SUM);
+                    userStates.put(chatID, ConstantDB.KEY_INCOME);
+                }
                 buttonInfoState.put(chatID, buttonInfo);
                 break;
         }

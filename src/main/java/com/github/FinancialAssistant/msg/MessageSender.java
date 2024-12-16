@@ -1,4 +1,4 @@
-package org.bot.msg;
+package com.github.FinancialAssistant.msg;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;

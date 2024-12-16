@@ -1,6 +1,6 @@
-package org.bot.msg;
+package com.github.FinancialAssistant.msg;
 
-import org.bot.functional.Keyboard;
+import com.github.FinancialAssistant.functional.Keyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 

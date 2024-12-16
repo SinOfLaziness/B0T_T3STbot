@@ -1,4 +1,4 @@
-package org.bot.functional;
+package com.github.FinancialAssistant.functional;
 
 import com.vdurmont.emoji.EmojiParser;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -36,13 +36,18 @@ public class AttachedButtons {
         return createButtons(buttonMap);
     }
 
+    public InlineKeyboardMarkup createButtonsForIncome() {
+        Map<String, String> buttonMap = ButtonConfig.getIncomeButtonMap();
+        return createButtons(buttonMap);
+    }
+
     public InlineKeyboardMarkup createButtonsForRegistration() {
         Map<String, String> buttonMap = ButtonConfig.getRegistrationButtonMap();
         return createButtons(buttonMap);
     }
 
-    public InlineKeyboardMarkup createButtonsForPeriodFormat() {
-        Map<String, String> buttonMap = ButtonConfig.getPeriodFormatButtonMap();
+    public InlineKeyboardMarkup createButtonsForPeriodFormat(boolean isExpense, boolean isIncome) {
+        Map<String, String> buttonMap = ButtonConfig.getPeriodFormatButtonMap(isExpense, isIncome);
         return createButtons(buttonMap);
     }
 }
