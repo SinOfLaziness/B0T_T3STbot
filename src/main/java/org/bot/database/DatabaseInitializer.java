@@ -8,11 +8,12 @@ import java.sql.*;
 public class DatabaseInitializer extends Configs {
     private Connection dbConnection;
     private DatabaseTools databaseTools;
-
+    private DatabaseStatistics databaseStatistics;
     public DatabaseInitializer() {
         try {
             dbConnection = getDbConnection();
             databaseTools = new DatabaseTools(dbConnection);
+            databaseStatistics = new DatabaseStatistics(dbConnection);
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
@@ -28,6 +29,10 @@ public class DatabaseInitializer extends Configs {
 
     public DatabaseTools getDatabaseTools() {
         return databaseTools;
+    }
+
+    public DatabaseStatistics getDatabaseStatistics() {
+        return databaseStatistics;
     }
 
 }
