@@ -13,7 +13,7 @@ public class Constants {
     public final static Message INCOME_SUM = new Message("\uD83D\uDCB3 Впишите сумму в рублях");
     public final static Message INVALID_SUM = new Message("Некорректный формат ввода, проверьте:\n\n" +
             "\uD83D\uDFE9 Положительное ли число вы вводите \n" +
-            "\uD83D\uDCDD Соответствует ли число формату ввода:\n\n❗ ПОЛОЖИТЕЛЬНОЕ ЧИСЛО МЕНЕЕ 10 ТРИЛЛИОНОВ\n❗ ЧИСЛО ЗНАКОВ ПОСЛЕ ЗАПЯТОЙ НЕ БОЛЕЕ ДВУХ");
+            "\uD83D\uDCDD Соответствует ли число формату ввода:\n\n❗ ПОЛОЖИТЕЛЬНОЕ ЧИСЛО МЕНЕЕ 10 ТРИЛЛИОНОВ\n❗ ЧИСЛО ЗНАКОВ ПОСЛЕ ЗАПЯТОЙ НЕ БОЛЕЕ ДВУХ\n\n✅Примеры ввода:     1234.56    1500    255.5");
     public final static Message UNK_COM = new Message("Извини, такую команду я не знаю\uD83E\uDD14. Напиши /help, чтобы увидеть полный список команд");
     public final static Message TOO_LONG_CAT = new Message("Название не должно превышать 45 символов\uD83E\uDD13");
     public final static Message EMPTY_RESULT = new Message("За этот период не было записано ни одной траты\uD83E\uDD74");
